@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold "Server=210.1.60.85; Database=dbkobchailog; persist security info=True;user id=sa;password=C0mputersc!ence;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -o Models/Entities/LOG -f -v --no-onconfiguring --context DbTMSContext

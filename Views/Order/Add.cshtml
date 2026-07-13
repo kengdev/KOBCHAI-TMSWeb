@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.TopActive = "Job";
+    ViewBag.MidActive = "daily";
+    ViewBag.Title = "ข้อมูลงาน";
+}
+@section Styles {
+    <style>
+        #domesticBody tr, #domesticBody td {
+            border: none !important;
+        }
+
+        #domesticBody td {
+            font-size: 13px !important;
+            text-align: left !important;
+        }
+
+        th {
+            font-size: 13px !important;
+        }
+
+            th.code, td.code {
+                width: 150px;
+            }
+
+        td.code {
+            text-align: center;
+        }
+
+        th.action {
+            width: 70px;
+        }
+
+        td.action {
+            width: 70px;
+            text-align: center !important;
+            padding-left: 25px !important;
+        }
+
+        div.action {
+            padding-top: 25px !important;
+            font-size: 16px;
+        }
+    </style>
+}
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a href="javascript:;">ข้อมูลงาน</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a href="/order/">ข้อมูลงานประจำวัน</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a href="/order/add">เพิ่ม</a>
+        </li>
+    </ul>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12 col-lg-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fad fa-plus-circle"></i>
+                    <span class="caption-subject bold uppercase"> ทำรายการ</span>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                @Html.Hidden("job_type_handle", "cont")
+                <div class="row">
+                    <div class="col-md-12">
+                        @await Component.InvokeAsync("EntryContainerJob")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/js/autocomplete/bootstrap3-typeahead.min.js" type="text/javascript"></script>
+    <script src="~/js/site/order.script.js" type="text/javascript"></script>
+}

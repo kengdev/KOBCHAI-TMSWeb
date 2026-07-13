@@ -1,0 +1,65 @@
+﻿@model TMSWeb.Models.Entities.LOG.ViewJobListActive
+@{
+    Layout = null;
+    var transactionData = (TMSWeb.Models.ViewModels.BudgetViewModel)ViewBag.Transaction;
+}
+@using (Html.BeginForm("UpdateAdvanceData", "Job", FormMethod.Post, new
+{
+    role = "form",
+    id = "frmFinish",
+    onsubmit = "return OnValidate()"
+}))
+{
+    @Html.Hidden("job_detail_code", Model.JobDetailCode)
+    <div class="modal-wrapper-content-title">
+        <div class="text-center" style="width:550px">
+            <div class="title-modal">
+                จ่ายเงินสำรอง
+            </div>
+
+            <div class="form-content">
+                <ul class="chats">
+                    <li class="in">
+                        <img class="avatar" alt="" src="~/images/office-paperwork.jpg" />
+                        <div class="message">
+                            <span class="arrow"> </span>
+
+                            @if (Model.ContainerNo != "-" && Model.ContainerNo != "")
+                            {
+                                <div class="font-blue">@Model.TruckNo <span class="font-blue-hoki">[@Model.TruckTypegroupName]</span></div>
+                                <label class="bold font-green-jungle"> @Model.ContainerNo</label>
+                            }
+                            else
+                            {
+                                <div class="bold font-blue">@Model.TruckNo <span class="font-blue-hoki">[@Model.TruckTypegroupName]</span></div>
+                                <label class="bold font-red">ไม่ระบุเบอร์ตู้</label>
+                            }
+
+                            <span class="datetime"> | @Model.JobDate.ToString("dd MMM yyyy HH:mm") </span>
+                            <span class="body">@Model.StartName to @Model.MissionName</span>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="pull-right font-lg font-red bold">
+                    ยอดคงเหลือ : @transactionData.balance.ToString("#,##0.00")
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <label class="font-sm">ยอดเบิก</label>
+                    @Html.TextBox("cash_flow", Model.AdvanceValue, new { @Class = "form-control form-decimal", placeholder = "ยอดเงิน" })
+                </div>
+            </div>
+
+            <div class="actions-modal pull-right">
+                <div id="wrapper-action-modal">
+                    <a onclick="closeModal()" href="javascript:;">ยกเลิก</a> |
+                    <button type="button" onclick="setAdvance()" class="btn btn-sm btn-info">บันทึกข้อมูล</button>
+                </div>
+                <div id="spin-item">
+                    <div class="loader09"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
