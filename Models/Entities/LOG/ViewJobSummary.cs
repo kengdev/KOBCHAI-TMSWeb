@@ -7,7 +7,7 @@ public partial class ViewJobSummary
 {
     public string JobCode { get; set; } = null!;
 
-    public string JobType { get; set; } = null!;
+    public string? JobType { get; set; }
 
     public string CustomerCode { get; set; } = null!;
 
@@ -18,8 +18,6 @@ public partial class ViewJobSummary
     public string CustomerTypeCode { get; set; } = null!;
 
     public string BookingNo { get; set; } = null!;
-
-    public string ContainerType { get; set; } = null!;
 
     public string ContainerSizeCode { get; set; } = null!;
 

@@ -30,4 +30,8 @@ public partial class TblJobAllowance
     public virtual TblDriver DriverCodeNavigation { get; set; } = null!;
 
     public virtual TblJobDetail JobDetailCodeNavigation { get; set; } = null!;
+
+    public virtual TblSupplier SupplierCodeNavigation { get; set; } = null!;
+
+    public virtual TblTruck TruckCodeNavigation { get; set; } = null!;
 }

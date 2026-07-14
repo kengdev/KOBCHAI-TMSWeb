@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_PartialLayout.cshtml";
 
     var data = (TMSWeb.Models.Entities.LOG.ViewJobListActive)ViewBag.Data;
+    var allowanceData = (List<TMSWeb.Models.ViewModels.CashflowViewModel>)ViewBag.Allowance;
 }
 @section Styles {
     <link rel="stylesheet" type="text/css" href="~/css/profile/todo-2.min.css" />
@@ -47,57 +48,43 @@
             <div class="portlet-body form">
                 <div class="form-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-7">
                             <div class="table-scrollable table-scrollable-borderless">
                                 <table class="table table-light">
                                     <tr>
                                         <td class="topic">
-                                            <span class="font-green-sharp">ลูกค้า</span>
+                                            <span class="font-green-sharp">ชื่องาน</span>
                                         </td>
-                                        <td> @data.CustomerNameTh</td>
+                                        <td> @data.JobName</td>
                                     </tr>
                                     <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">พนักงานขับรถเดิม</span>
+                                        <td></td>
+                                        <td>
+                                            <span class="font-green-jungle bold">@data.StartName </span>
+                                            <i class="fad fa-arrow-alt-right" style="margin-left:20px;margin-right:20px;"></i>
+                                            <span class="font-red-flamingo bold">@data.MissionName</span>
+                                            <i class="fad fa-arrow-alt-right" style="margin-left:20px;margin-right:20px;"></i>
+                                            <span class="font-green-jungle bold">@data.FinishName</span>
                                         </td>
-                                        <td> @data.DriverFullname</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">ทะเบียนรถเดิม</span>
-                                        </td>
-                                        <td> @data.TruckLicense / @data.TrailerLicense</td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
                                             <span class="font-green-sharp">รับตู้</span>
                                         </td>
-                                        <td> @data.StartName </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">เปิดตู้/บรรจุ</span>
-                                        </td>
-                                        <td> @data.MissionName </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">คืนตู้</span>
-                                        </td>
-                                        <td> @data.FinishName</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">วันที่</span>
-                                        </td>
                                         <td> @data.JobDate.ToString("dd-MM-yyyy HH:mm") </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="topic">
+                                            <span class="font-green-sharp">เปิด/บรรจุ</span>
+                                        </td>
+                                        <td> @data.LoadingDate.ToString("dd-MM-yyyy HH:mm") </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
                                             <span class="font-green-sharp">ประเภทงาน/ขนาด</span>
                                         </td>
                                         <td>
-                                            @data.JobType / @data.ContainerSizeName
+                                            <div class="font-red-flamingo">@data.JobType / @data.ContainerAmount x @data.ContainerSizeName</div>
                                         </td>
                                     </tr>
 
@@ -115,6 +102,32 @@
                                     </tr>
                                     <tr>
                                         <td class="topic">
+                                            <span class="font-green-sharp">ประเภท</span>
+                                        </td>
+                                        <td> @data.TruckTypegroupName</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="topic" style="vertical-align:top;">
+                                            <span class="font-green-sharp">ทะเบียน/คนขับ</span>
+
+                                        </td>
+                                        <td>
+                                            @foreach (var item in allowanceData)
+                                            {
+
+                                                <div>
+                                                    <span> @item.job_date.ToString("yyyy-MM-dd")</span>
+                                                    <i class="fa fa-caret-right font-red-intense"></i>
+                                                    @item.license
+                                                    <i class="fad fa-dot-circle font-green-jungle"></i>
+                                                    @item.driver |
+                                                    <span class="bold font-red-mint">@item.cashflow.ToString("#,##0.00")</span>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="topic">
                                             <span class="font-green-sharp">หมายเหตุ</span>
                                         </td>
                                         <td> @data.JobRemark </td>
@@ -123,7 +136,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -222,18 +235,18 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>ค่าเที่ยวจ่าย พขร. (เดิม)<span class="required"> * </span></label>
+                                        <label>ค่าเที่ยวจ่ายรถ (เดิม)<span class="required"> * </span></label>
                                         @if (data.FleetTypeCode == "F1")
                                         {
-                                            @Html.TextBoxFor(m => m.driver_allowance, new
+                                            @Html.TextBoxFor(m => m.supplier_allowance, new
                                             {
-                                                @Class = "form-control",
+                                                @Class = "form-control form-decimal",
                                                 autocomplete = "off"
                                             })
                                         }
                                         else
                                         {
-                                            @Html.TextBoxFor(m => m.driver_allowance, new
+                                            @Html.TextBoxFor(m => m.supplier_allowance, new
                                             {
                                                 @Class = "form-control",
                                                 autocomplete = "off"
@@ -242,20 +255,21 @@
                                         <span class="help-block help-filter"></span>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>ค่าเที่ยวจ่ายรถ (เดิม)<span class="required"> * </span></label>
+                                        <label>ค่าเที่ยวจ่าย พขร. (เดิม)<span class="required"> * </span></label>
                                         @if (data.FleetTypeCode == "F1")
                                         {
-                                            @Html.TextBoxFor(m => m.supplier_allowance, new
+                                            @Html.TextBoxFor(m => m.driver_allowance, new
                                             {
-                                                @Class = "form-control",
+                                                @Class = "form-control form-decimal",
                                                 autocomplete = "off"
                                             })
                                         }
                                         else
                                         {
-                                            @Html.TextBoxFor(m => m.supplier_allowance, new
+                                            @Html.TextBoxFor(m => m.driver_allowance, new
                                             {
                                                 @Class = "form-control",
                                                 autocomplete = "off"
@@ -268,42 +282,43 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="font-blue bold">ค่าเที่ยวจ่าย พขร. (ใหม่)<span class="required"> * </span></label>
+                                        <label class="font-blue bold">ค่าเที่ยวจ่ายรถ (ใหม่)<span class="required"> * </span></label>
                                         @if (data.FleetTypeCode == "F1")
                                         {
-                                            @Html.TextBoxFor(m => m.new_driver_allowance, new
+                                            @Html.TextBoxFor(m => m.new_supplier_allowance, new
                                             {
-                                                @Class = "form-control",
+                                                @Class = "form-control form-decimal",
                                                 autocomplete = "off"
                                             })
                                         }
                                         else
                                         {
-                                            @Html.TextBoxFor(m => m.new_driver_allowance, new
+                                            @Html.TextBoxFor(m => m.new_supplier_allowance, new
                                             {
-                                                @Class = "form-control",
+                                                @Class = "form-control form-decimal",
                                                 autocomplete = "off"
                                             })
                                         }
                                         <span class="help-block help-filter"></span>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="font-blue bold">ค่าเที่ยวจ่ายรถ (ใหม่)<span class="required"> * </span></label>
+                                        <label class="font-blue bold">ค่าเที่ยวจ่าย พขร. (ใหม่)<span class="required"> * </span></label>
                                         @if (data.FleetTypeCode == "F1")
                                         {
-                                            @Html.TextBoxFor(m => m.new_supplier_allowance, new
+                                            @Html.TextBoxFor(m => m.new_driver_allowance, new
                                             {
-                                                @Class = "form-control",
+                                                @Class = "form-control form-decimal",
                                                 autocomplete = "off"
                                             })
                                         }
                                         else
                                         {
-                                            @Html.TextBoxFor(m => m.new_supplier_allowance, new
+                                            @Html.TextBoxFor(m => m.new_driver_allowance, new
                                             {
-                                                @Class = "form-control",
+                                                @Class = "form-control form-decimal",
                                                 autocomplete = "off"
                                             })
                                         }
@@ -314,13 +329,14 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-actions">
-                <div class="row pull-right">
-                    <div class="col-md-12">
-                        <div class="tools-action">
-                            <a href="javascript:;" onclick="window.close();">ยกเลิก</a> |
-                            <button type="submit" class="btn green">บันทึกข้อมูล</button>
+
+                <div class="form-actions">
+                    <div class="row pull-right">
+                        <div class="col-md-12">
+                            <div class="tools-action">
+                                <a href="javascript:;" onclick="window.close();">ยกเลิก</a> |
+                                <button type="submit" class="btn green">บันทึกข้อมูล</button>
+                            </div>
                         </div>
                     </div>
                 </div>

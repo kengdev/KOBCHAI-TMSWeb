@@ -54,6 +54,7 @@ public class OrderRepository
     {
         return await db.TblJobMasters
             .AsNoTracking()
+            .Include(i => i.CostCodeNavigation)
             .Include(i => i.TruckTypegroupCodeNavigation)
             .FirstOrDefaultAsync(w => w.JobCode == code);
     }
@@ -205,13 +206,6 @@ public class OrderRepository
             .ToListAsync();
     }
 
-    public async Task<TblBindingGenerate?> Get2Short(string code)
-    {
-        return await db.TblBindingGenerates
-            .AsNoTracking()
-            .FirstOrDefaultAsync(w => w.JobDetailCode == code);
-    }
-
     public async Task<ResponseViewModel> OrderTruck(TblJobDetail model)
     {
         await using var tr = await db.Database.BeginTransactionAsync();
@@ -267,14 +261,12 @@ public class OrderRepository
             model.SealNo = "-";
             model.TareWeight = 0;
             model.JobStatus = "W";
-            model.AdvanceValue = 0;
             model.TrackingStatus = "PN";
             model.TrailerLicense = "-";
             model.IsCanceled = false;
             model.IsDocument = false;
             model.IsBilling = false;
             model.IsPayment = false;
-            model.IsAdvancePaid = false;
             db.TblJobDetails.Add(model);
 
             db.TblJobadvances.Add(new TblJobadvance
@@ -290,20 +282,6 @@ public class OrderRepository
                 IsBilling = false,
                 IsClearing = false,
                 ClearingDate = null,
-                IsEnabled = true,
-                CreateDate = now,
-                CreateBy = model.CreateBy,
-                UpdateDate = now,
-                UpdateBy = model.CreateBy
-            });
-
-            db.TblJobcashings.Add(new TblJobcashing
-            {
-                CashingCode = cashingCode,
-                JobDetailCode = model.JobDetailCode,
-                CashingFuel = 0,
-                CashingWaste = 0,
-                CashingRemark = "-",
                 IsEnabled = true,
                 CreateDate = now,
                 CreateBy = model.CreateBy,
@@ -849,15 +827,6 @@ public class OrderRepository
                 advance.AdvanceTotal = advance.AdvanceLifton + advance.AdvanceLiftoff + advance.AdvancePort + advance.AdvanceYard;
                 advance.UpdateDate = now;
                 advance.UpdateBy = updateBy;
-            }
-
-            if (cashingMap.TryGetValue(detail.JobDetailCode, out var cashing))
-            {
-                //cashing.CashingExpressway = place.ExpresswayValue;
-                //cashing.CashingTotal = place.ExpresswayValue;
-                cashing.IsEnabled = true;
-                cashing.UpdateDate = now;
-                cashing.UpdateBy = updateBy;
             }
         }
     }

@@ -45,6 +45,8 @@ public partial class TblSupplier
 
     public virtual ICollection<TblFleetInternal> TblFleetInternals { get; set; } = new List<TblFleetInternal>();
 
+    public virtual ICollection<TblJobAllowance> TblJobAllowances { get; set; } = new List<TblJobAllowance>();
+
     public virtual ICollection<TblJobDetail> TblJobDetails { get; set; } = new List<TblJobDetail>();
 
     public virtual ICollection<TblMonthlypayment> TblMonthlypayments { get; set; } = new List<TblMonthlypayment>();

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-//using Rotativa.AspNetCore;
+using Rotativa.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -20,7 +20,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using TMSWeb.Models;
 //using TMSWeb.Models.Entities.HR;
-using TMSWeb.Models.Entities.LOG;
 using TMSWeb.Models.Entities.LOG;
 using TMSWeb.Repositories;
 using TMSWeb.Services;
@@ -133,7 +132,7 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Home}/{action=Index}/{code?}");
 });
 
-//RotativaConfiguration.Setup(app.Environment.ContentRootPath, "wwwroot/Rotativa");
+RotativaConfiguration.Setup(app.Environment.ContentRootPath, "wwwroot/Rotativa");
 
 app.Run();
 

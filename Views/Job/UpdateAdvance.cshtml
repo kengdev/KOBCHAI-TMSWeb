@@ -10,7 +10,7 @@
     onsubmit = "return OnValidate()"
 }))
 {
-    @Html.Hidden("job_detail_code", Model.JobDetailCode)
+    @Html.Hidden("allowance_id", Model.Id)
     <div class="modal-wrapper-content-title">
         <div class="text-center" style="width:550px">
             <div class="title-modal">
@@ -47,7 +47,7 @@
                 <div class="clearfix"></div>
                 <div class="form-group">
                     <label class="font-sm">ยอดเบิก</label>
-                    @Html.TextBox("cash_flow", Model.AdvanceValue, new { @Class = "form-control form-decimal", placeholder = "ยอดเงิน" })
+                    @Html.TextBox("cash_flow", "", new { @Class = "form-control form-decimal", placeholder = "ยอดเงิน" })
                 </div>
             </div>
 

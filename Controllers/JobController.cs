@@ -36,11 +36,10 @@ public class JobController : Controller
     }
 
     [Authorize(Roles = "Administrator, Accounting, Super")]
-    public async Task<IActionResult> Finish(string code)
+    public async Task<IActionResult> Finish(int code)
     {
         var data = await _jobService.GetOrderByCode(code);
-        ViewBag.Data = data;
-        return View();
+        return View(data);
     }
 
     [HttpPost]
@@ -54,9 +53,9 @@ public class JobController : Controller
     }
 
     [Authorize(Roles = "Administrator, Transport, Super")]
-    public async Task<IActionResult> UpdateAdvance(string code)
+    public async Task<IActionResult> UpdateAdvance(int code)
     {
-        var data = await _jobService.GetOrderByCode(code);
+        var data = await _jobService.GetTblJobByIdAsync(code);
         var transaction = await _jobService.GetTrBudget();
 
         ViewBag.Transaction = transaction;
@@ -134,11 +133,11 @@ public class JobController : Controller
         });
     }
 
-    public async Task<IActionResult> StatusUpdate(string code)
+    public async Task<IActionResult> StatusUpdate(int code)
     {
         var model = new UpdateStatusModel();
         var data = await _jobService.GetOrderByCode(code);
-        var tracking = this.GetTracking(code, data.JobType);
+        var tracking = this.GetTracking(data.JobDetailCode, data.JobType);
         model.job_detail_code = data.JobDetailCode;
         model.status = this.NextStatus(data.TrackingStatus);
         model.status_stamp = DateTime.Now;
@@ -156,9 +155,9 @@ public class JobController : Controller
     }
 
     [Authorize(Roles = "Administrator, Transport, Super")]
-    public async Task<IActionResult> Update(string job_detail_code)
+    public async Task<IActionResult> Update(int code)
     {
-        var data = await _jobService.GetOrderByCode(job_detail_code);
+        var data = await _jobService.GetOrderByCode(code);
         ViewData["new_driver_code"] = from a in await _dropListService.GetDriver() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.DriverCode };
         ViewData["truck_code"] = from a in await _dropListService.GetTruck() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.TruckCode };
         return PartialView(data);
@@ -179,11 +178,11 @@ public class JobController : Controller
         return Json(result);
     }
 
-    public async Task<IActionResult> Detail(string code)
+    public async Task<IActionResult> Detail(int code)
     {
         var data = await _jobService.GetOrderByCode(code);
-        var image = await _jobService.GetOrderImagesByCode(code);
-        var tracking = this.GetTracking(code, data.JobType);
+        var image = await _jobService.GetOrderImagesByCode(data.JobDetailCode);
+        var tracking = this.GetTracking(data.JobDetailCode, data.JobType);
 
         ViewBag.Data = data;
         ViewBag.Image = image;
@@ -198,15 +197,17 @@ public class JobController : Controller
     }
 
     [Authorize(Roles = "Administrator, Transport, Super")]
-    public async Task<IActionResult> ChangeDriver(string code)
+    public async Task<IActionResult> ChangeDriver(int code)
     {
         var model = new ChangeDriverModel();
         var data = await _jobService.GetOrderByCode(code);
+        var allowance = await _jobService.GetJobAllowanceListAsync(data.JobDetailCode);
+
         model.driver_code = data.DriverCode;
         model.truck_code = data.TruckCode;
         model.supplier_code = data.SupplierCode;
         model.trailer_license = data.TrailerLicense;
-        model.job_detail_code = code;
+        model.job_detail_code = data.JobDetailCode;
         //model.driver_cost = 150;
 
         if (data.FleetTypeCode == "F1")
@@ -222,6 +223,7 @@ public class JobController : Controller
 
         ViewData["new_supplier_code"] = from a in await _dropListService.GetSupplierTransport() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.SupplierCode };
         ViewBag.Data = data;
+        ViewBag.Allowance = allowance;
         return View(model);
     }
 
@@ -237,12 +239,15 @@ public class JobController : Controller
     }
 
     [Authorize(Roles = "Administrator, Transport, Super")]
-    public async Task<IActionResult> CancelJob(string code)
+    public async Task<IActionResult> CancelJob(int code)
     {
         var model = new CancelJobModel();
         var data = await _jobService.GetOrderByCode(code);
+        var allowance = await _jobService.GetJobAllowanceListAsync(data.JobDetailCode);
+
         model.job_detail_code = data.JobDetailCode;
         ViewBag.Data = data;
+        ViewBag.Allowance = allowance;
         return View(model);
     }
 
@@ -256,15 +261,17 @@ public class JobController : Controller
     }
 
     [Authorize(Roles = "Administrator, Transport, Super")]
-    public async Task<IActionResult> Edit(string code)
+    public async Task<IActionResult> Edit(int code)
     {
-        var detail = await _jobService.GetDetailDataByCode(code);
-        var data = await _jobService.GetOrderByCode(detail.JobDetailCode);
+        var data = await _jobService.GetOrderByCode(code);
+        var detail = await _jobService.GetDetailDataByCode(data.JobDetailCode);
+        var allowance = await _jobService.GetJobAllowanceListAsync(data.JobDetailCode);
 
-        ViewData["new_supplier_code"] = from a in await _dropListService.GetSupplierTransport() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == detail.SupplierCode };
-        ViewData["new_truck_code"] = from a in await _dropListService.GetTruck() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == detail.TruckCode };
+        ViewData["new_supplier_code"] = from a in await _dropListService.GetSupplierTransport() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.SupplierCode };
+        ViewData["new_truck_code"] = from a in await _dropListService.GetTruck() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.TruckCode };
         ViewData["new_driver_code"] = from a in await _dropListService.GetDriver() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.DriverCode };
         ViewBag.Data = data;
+        ViewBag.Allowance = allowance;
         return View(detail);
     }
 
@@ -277,7 +284,7 @@ public class JobController : Controller
         jobToEdit.UpdateDate = DateTime.Now;
         jobToEdit.UpdateBy = username;
 
-        ResponseViewModel result = await _jobService.EditJob(jobToEdit);
+        ResponseViewModel result = await _jobService.EditJob(jobToEdit, model.job_allowance_id);
         return Json(result);
     }
 

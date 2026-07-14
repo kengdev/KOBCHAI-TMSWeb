@@ -1,7 +1,5 @@
-@model TMSWeb.Models.Entities.LOG.TblJobcashing
-@{
-    var list = (List<TMSWeb.Models.ViewModels.OtherJobViewModel>)ViewBag.Other;
-}
+@model List<TMSWeb.Models.Entities.LOG.TblJobcashing>
+
 <div>
     <div class="row">
         <div class="col-md-12">
@@ -20,28 +18,28 @@
                             <td></td>
                             <td>น้ำมัน (ลิตร)</td>
                             <td>
-                                @Html.TextBoxFor(m => m.CashingFuel, new { @Class = "form-control cashing-val form-box", autocomplete = "off" })
+                                
                             </td>
                         </tr>
                         <tr>
                             <td></td>
                             <td>ทางด่วน (บาท)</td>
                             <td>
-                                @Html.TextBoxFor(m => m.CashingExpressway, new { @Class = "form-control cashing-val form-box", autocomplete = "off" })
+                                
                             </td>
                         </tr>
-                        @foreach (var item in list)
+                        @foreach (var item in Model)
                         {
-                            Model.CashingTotal = Model.CashingTotal + item.value;
+
                             <tr>
                                 <td>
                                     <a href="#" class="closed" onclick="removeCashingItem(this)"><span class="icon-close"></span></a>
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control form-box" value="@item.name" name="nameCashing[]" autocomplete="off">
+                                    <input type="text" class="form-control form-box" value="@item.Cashing" name="nameCashing[]" autocomplete="off">
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control cashing-val form-box" name="valCashing[]" value="@item.value" autocomplete="off" />
+                                    <input type="text" class="form-control cashing-val form-box" name="valCashing[]" value="@item.CashingValue" autocomplete="off" />
                                 </td>
                             </tr>
                         }

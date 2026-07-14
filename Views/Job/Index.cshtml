@@ -2,7 +2,6 @@
     ViewBag.TopActive = "Job";
     ViewBag.MidActive = "invoice";
     ViewBag.Title = "ข้อมูลงาน";
-    bool isAdmin = User.IsInRole("Administrator");
 }
 @section Styles {
     <style>
@@ -48,6 +47,19 @@
                 font-size: 13px;
                 color: #000;
             }
+
+        .license-driver-td {
+            width: 150px;
+            text-align: left;
+        }
+        .license-driver-td span{
+            font-size:13px!important;
+        }
+
+        .datetime-td {
+            width: 130px !important;
+            text-align: center;
+        }
     </style>
 }
 <div class="page-bar">
@@ -108,8 +120,8 @@
                     <div class="col-md-6">
                         <div class="form-inline pull-right">
                             <input type="text" class="form-control"
-                                   value="@DateTime.Now.AddDays(-3).ToString(" yyyy/MM/dd")" id="filterDateRangeStart" />
-                            <span style="display:inline-block;" class="daterange-to-text">to</span>
+                                   value="@DateTime.Now.AddDays(-3).ToString("yyyy/MM/dd")" id="filterDateRangeStart" />
+                            <span style="display:inline-block;" class="daterange-to-text">ถึง</span>
 
                             <div class="input-group input-group-sm">
                                 <input type="text" class="form-control" value="@DateTime.Now.ToString("yyyy/MM/dd")"
@@ -128,7 +140,7 @@
                         <thead>
                             <tr>
                                 <th style="text-align:center!important;"></th>
-                                <th>วัน/เวลา</th>
+                                <th>เปิด/บรรจุ</th>
                                 <th style="font-size:13px!important;"> Booking</th>
                                 <th style="font-size:13px!important;"> Container</th>
                                 <th>ลูกค้า</th>
@@ -160,7 +172,7 @@
                                     <input type="text" class="form-control filterText"
                                            id="filterMission" />
                                 </th>
-                                
+
                                 <th class="filter">
                                     <input type="text" class="form-control filterText"
                                            id="filterLicense" />
@@ -170,8 +182,8 @@
                                            id="filterSupplyer" />
                                 </th>
                                 <th class="filter">
-                                    <select class="form-control">
-                                        <option>--เลือก--</option>
+                                    <select class="form-control filterDropdown" id="filterStatus">
+                                        <option value="">--ทุกสถานะ--</option>
                                         <option value="PN">รอ</option>
                                         <option value="ST">รับงาน</option>
                                         <option value="WP">รอรับตู้</option>
@@ -198,461 +210,643 @@
 {
     <script type="text/javascript">
         (function ($) {
-            var role = @Html.Raw(Json.Serialize(isAdmin));
-            var oTable = $('#table-station').DataTable({
-                "processing": true,
-                "serverSide": true,
-                "iDisplayLength": 20,
-                "scrollCollapse": false,
-                "searching": true,
-                "order": [
-                    [2, "desc"]
-                ],
-                "sAjaxSource": "/Job/GetJobDataList",
-                "fnServerParams": function (aoData) {
-                    aoData.push({
-                        "name": "filterDateRangeStart",
-                        "value": $("#filterDateRangeStart").val()
-                    });
-                    aoData.push({
-                        "name": "filterDateRangeEnd",
-                        "value": $("#filterDateRangeEnd").val()
-                    });
-                    aoData.push({
-                        "name": "filterCustomer",
-                        "value": $("#filterCustomer").val()
-                    });
-                    aoData.push({
-                        "name": "filterMission",
-                        "value": $("#filterMission").val()
-                    });
-                    aoData.push({
-                        "name": "filterContainerSize",
-                        "value": $("#container option:selected").text()
-                    });
-                    aoData.push({
-                        "name": "filterBookingNo",
-                        "value": $("#filterBookingNo").val()
-                    });
-                    aoData.push({
-                        "name": "filterContainerNo",
-                        "value": $("#filterContainerNo").val()
-                    });
-                    aoData.push({
-                        "name": "filterSupplier",
-                        "value": $("#filterSupplyer").val()
-                    });
-                    aoData.push({
-                        "name": "filterLicense",
-                        "value": $("#filterLicense").val()
+            'use strict';
+
+            const tableSelector = '#table-station';
+            const statusClasses = 'PN ST WP PU AR FN DO BO';
+            let filterTimer = null;
+
+            function escapeHtml(value) {
+                return String(value == null ? '' : value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function getFilterValue(selector) {
+                return $(selector).val() || '';
+            }
+
+            function getTrackingStatus(row) {
+                switch (row.tracking_status) {
+                    case 'PN':
+                        return { cssClass: 'PN', text: 'รอ' };
+                    case 'ST':
+                        return { cssClass: 'ST', text: 'รับงาน' };
+                    case 'WP':
+                        return { cssClass: 'WP', text: 'รอรับตู้' };
+                    case 'PU':
+                        return { cssClass: 'PU', text: 'รับตู้แล้ว' };
+                    case 'AR':
+                        return {
+                            cssClass: 'AR',
+                            text: row.job_type === 'IMPORT' ? 'รอเปิด' : 'รอบรรจุ'
+                        };
+                    case 'FN':
+                        return {
+                            cssClass: 'FN',
+                            text: row.job_type === 'IMPORT' || row.job_type === 'OCEAN'
+                                ? 'เปิดตู้เรียบร้อย'
+                                : 'บรรจุเรียบร้อย'
+                        };
+                    case 'DO':
+                        return { cssClass: 'DO', text: 'เสร็จสิ้น' };
+                    case 'BO':
+                        return { cssClass: 'BO', text: 'คืนตู้' };
+                    default:
+                        return { cssClass: '', text: '-' };
+                }
+            }
+
+            function buildActionMenu(data) {
+
+                const id = data.job_allowance_id;
+                const jobDetailCode = data.job_detail_code;
+
+                return `
+                    <div class="btn-group dropup">
+                        <button type="button"
+                                class="btn blue btn-xs dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false">
+                            เครื่องมือ
+                            <i class="fa fa-angle-down"></i>
+                        </button>
+
+                        <ul class="dropdown-menu pull-left" role="menu">
+                            <li>
+                                <a href="#"
+                                   class="js-job-action"
+                                   data-action="edit"
+                                   data-code="${id}">
+                                    <i class="fad fa-pencil"></i>
+                                    แก้ไข
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                   class="js-job-action"
+                                   data-action="update"
+                                   data-code="${id}">
+                                    <i class="fad fa-sync"></i>
+                                    ปรับปรุงข้อมูล
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#"
+                                   class="js-job-action"
+                                   data-action="cashflow"
+                                   data-code="${id}">
+                                    <i class="fad fa-exchange-alt"></i>
+                                    จ่ายเงินสำรอง
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#"
+                                   class="js-job-action"
+                                   data-action="finish"
+                                   data-code="${id}">
+                                    <i class="fad fa-file-check"></i>
+                                    รับเอกสารคืน
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#"
+                                   class="js-job-action"
+                                   data-action="status"
+                                   data-code="${jobDetailCode}">
+                                    <i class="fad fa-map-signs"></i>
+                                    สถานะการส่งสินค้า
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#"
+                                   class="js-job-action"
+                                   data-action="detail"
+                                   data-code="${jobDetailCode}">
+                                    <i class="fad fa-clipboard-list"></i>
+                                    รายละเอียด
+                                </a>
+                            </li>
+
+                            <li class="divider"></li>
+
+                            <li class="dropdown-submenu">
+                                <a href="javascript:;">
+                                    <i class="fad fa-print"></i>
+                                    พิมพ์เอกสาร
+                                </a>
+
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#"
+                                           class="js-job-action"
+                                           data-action="truckDoc"
+                                           data-code="${jobDetailCode}">
+                                            <i class="fad fa-file-alt"></i>
+                                            ใบสั่งปฏิบัติ
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#"
+                                           class="js-job-action"
+                                           data-action="paidDoc"
+                                           data-code="${jobDetailCode}">
+                                            <i class="fad fa-file-alt"></i>
+                                            ใบจ่ายเงิน
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="divider"></li>
+
+                            <li class="dropdown-submenu">
+                                <a href="javascript:;">อื่น ๆ</a>
+
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#"
+                                           class="js-job-action"
+                                           data-action="driver"
+                                           data-code="${id}">
+                                            <i class="fad fa-users"></i>
+                                            เปลี่ยนพนักงานขับรถ
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#"
+                                           class="js-job-action"
+                                           data-action="cancel"
+                                           data-code="${id}">
+                                            <i class="fa fa-times"></i>
+                                            ยกเลิกงาน
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#"
+                                           class="js-job-action"
+                                           data-action="remove"
+                                           data-code="${jobDetailCode}">
+                                            <i class="fad fa-trash"></i>
+                                            ลบ
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            const jobTable = $(tableSelector).DataTable({
+                processing: true,
+                serverSide: true,
+                iDisplayLength: 20,
+                scrollCollapse: false,
+                searching: false,
+                order: [[2, 'desc']],
+                sAjaxSource: '/Job/GetJobDataList',
+
+                fnServerParams: function (aoData) {
+                    const filters = {
+                        filterDateRangeStart: getFilterValue('#filterDateRangeStart'),
+                        filterDateRangeEnd: getFilterValue('#filterDateRangeEnd'),
+                        filterCustomer: getFilterValue('#filterCustomer'),
+                        filterMission: getFilterValue('#filterMission'),
+                        filterBookingNo: getFilterValue('#filterBookingNo'),
+                        filterContainerNo: getFilterValue('#filterContainerNo'),
+                        filterSupplier: getFilterValue('#filterSupplyer'),
+                        filterLicense: getFilterValue('#filterLicense'),
+                        filterStatus: getFilterValue('#filterStatus')
+                    };
+
+                    $.each(filters, function (name, value) {
+                        aoData.push({
+                            name: name,
+                            value: value
+                        });
                     });
                 },
-                "fnRowCallback": function (row, aData, index) {
-                    var truckData = aData.truck_license + ' <i class="fa fa-dot-circle font-blue" style="font-size:9px"></i> ' + aData.driver_fullname;
+
+                fnRowCallback: function (row, rowData) {
+                    const license = escapeHtml(rowData.truck_license || '-');
+                    const driver = escapeHtml(rowData.driver_fullname || '-');
+                    const truckData = `<span class="font-blue bold">${license}</span>
+                        <i class="fa fa-dot-circle font-green-jungle" style="font-size:9px"></i>
+                        <span class="font-blue bold">${driver}</span>`;
+
                     $('td', row).eq(6).html(truckData);
 
-                    var status = aData.tracking_status;
-                    if (status == 'PN') {
-                        $('td', row).eq(8).addClass('PN');
-                        $('td', row).eq(8).html('รอ');
-                    } else if (status == 'ST') {
-                        $('td', row).eq(8).addClass('ST');
-                        $('td', row).eq(8).html('รับงาน');
-                    } else if (status == 'WP') {
-                        $('td', row).eq(8).addClass('WP');
-                        $('td', row).eq(8).html('รอรับตู้');
-                    } else if (status == 'PU') {
-                        $('td', row).eq(8).addClass('PU');
-                        $('td', row).eq(8).html('รับตู้แล้ว');
-                    } else if (status == 'AR') {
-                        var msg = aData.job_type == 'IMPORT' ? 'รอเปิด' : 'รอบรรจุ';
-                        $('td', row).eq(8).addClass('AR');
-                        $('td', row).eq(8).html(msg);
-                    } else if (status == 'FN') {
-                        var msg = aData.job_type == 'IMPORT' || aData.job_type == 'OCEAN' ? 'เปิดตู้เรียบร้อย' : 'บรรจุเรียบร้อย';
-                        $('td', row).eq(8).addClass('FN');
-                        $('td', row).eq(8).html(msg);
-                    } else if (status == 'DO') {
-                        $('td', row).eq(8).addClass('DO');
-                        $('td', row).eq(8).html('เสร็จสิ้น');
-                    } else if (status == 'BO') {
-                        $('td', row).eq(8).addClass('BO');
-                        $('td', row).eq(8).html('คืนตู้');
-                    }
+                    const status = getTrackingStatus(rowData);
+                    $('td', row)
+                        .eq(8)
+                        .removeClass(statusClasses)
+                        .addClass(status.cssClass)
+                        .text(status.text);
 
-                    if (aData.is_advance_paid) {
-                        $('td', row).eq(9).html('<span class="label label-sm label-danger"> Paid </span>');
+                    const paymentLabel = rowData.is_advance_paid
+                        ? '<span class="label label-sm label-danger">Paid</span>'
+                        : '<span class="label label-sm label-warning">Pending</span>';
+
+                    $('td', row).eq(9).html(paymentLabel);
+                },
+
+                oLanguage: {
+                    sInfoFiltered: '',
+                    sInfo: 'แสดง _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ',
+                    sLengthMenu:
+                        'แสดงจำนวน <select class="form-control">' +
+                            '<option value="10">10</option>' +
+                            '<option value="20" selected>20</option>' +
+                            '<option value="30">30</option>' +
+                            '<option value="40">40</option>' +
+                            '<option value="50">50</option>' +
+                            '<option value="100">100</option>' +
+                        '</select> รายการ',
+                    sProcessing: 'กำลังโหลดข้อมูล...',
+                    sZeroRecords: 'ไม่พบข้อมูล',
+                    sEmptyTable: 'ไม่มีข้อมูล'
+                },
+
+                columnDefs: [
+                    {
+                        className: 'dropdown-td text-left',
+                        targets: 0,
+                        orderable: false
+                    },
+                    {
+                        className: 'datetime-td',
+                        targets: 1,
+                        orderable: false
+                    },
+                    {
+                        className: 'booking-td',
+                        targets: 2
+                    },
+                    {
+                        className: 'container-td',
+                        targets: 3
+                    },
+                    {
+                        className: 'customer-td',
+                        targets: 4
+                    },
+                    {
+                        className: 'name-td',
+                        targets: 5
+                    },
+                    {
+                        className: 'license-driver-td',
+                        targets: 6
+                    },
+                    {
+                        className: 'status-td',
+                        targets: 7
+                    },
+                    {
+                        className: 'status-td',
+                        targets: [8, 9],
+                        orderable: false
                     }
-                    else {
-                        $('td', row).eq(9).html('<span class="label label-sm label-warning"> Pending </span>');
-                    }
-                },
-                "oLanguage": {
-                    "sSearch": "คำค้น: ",
-                    "sInfoFiltered": " ",
-                    "sInfo": "แสดงจำนวน _START_ to _END_ รายการ (ทั้งหมด _TOTAL_ รายการ)",
-                    "sLengthMenu": 'แสดงจำนวน <select class="form-control">' +
-                        '<option value="10">10</option>' +
-                        '<option value="20" selected>20</option>' +
-                        '<option value="30">30</option>' +
-                        '<option value="40">40</option>' +
-                        '<option value="50">50</option>' +
-                        '<option value="100">100</option>' +
-                        '</select> รายการ'
-                },
-                "columnDefs": [
-                {
-                    className: "dropdown-td text-left",
-                    targets: 0
-                },
-                {
-                    className: "datetime-td",
-                    targets: 1,
-                    "orderable": false
-                },
-                {
-                    className: "booking-td",
-                    targets: 2
-                },
-                {
-                    className: "container-td",
-                    targets: 3
-                },
-                {
-                    className: "customer-td",
-                    targets: 4
-                },
-                {
-                    className: "name-td",
-                    targets: 5
-                },
-                {
-                    className: "name-td",
-                    targets: 6
-                },
-                {
-                    className: "status-td",
-                    targets: 7
-                },
-                {
-                    className: "status-td",
-                    "orderable": false,
-                    targets: 8
-                },
-                {
-                    className: "status-td",
-                    "orderable": false,
-                    targets: 9
-                }
                 ],
-                "columns": [
-                {
-                    "data": "job_detail_code",
-                    "orderable": false,
-                    "render": function (data, type, row) {
-                        var action = '<div class="btn-group dropup">';
-                        action +=
-                            '<button class="btn blue btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> เครื่องมือ ';
-                        action += '<i class="fa fa-angle-down"></i>';
-                        action += '</button>';
-                        action += '<ul class="dropdown-menu pull-right" role="menu">';
 
+                columns: [
+                    {
+                        data: 'job_detail_code',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if (type !== 'display') {
+                                return '';
+                            }
 
-                        action += '<li><a href="javascript:;" onclick=getStatus("' + data +
-                            '")><i class="fad fa-map-signs"></i> สถานะการส่งสินค้า </a></li>';
-                        action += '<li><a href="javascript:;" onclick=getDetail("' + data +
-                            '")><i class="fad fa-clipboard-list"></i> รายละเอียด </a></li>';
-                        action += '<li class="divider"> </li>';
-
-                        action += '<li class="dropdown-submenu">';
-                        action +=
-                            '<a href="javascript:;"><i class="fad fa-print"></i> พิมพ์เอกสาร </a><ul class="dropdown-menu">';
-
-                        if (row.job_type == 'OCEAN')
-                        {
-                            action += '<li><a href="javascript:;" onclick=printJobOrder("' + data +
-                            '")><i class="fad fa-barcode-read"></i> &nbsp;ใบสั่งงาน </a></li>';
-
-                            action += '<li class="divider"> </li>';
-
-                            action += '<li><a href="javascript:;" onclick=printBooking("' + data + '")> HDMC </a></li>';
-                            action += '<li><a href="javascript:;" onclick=printTriumph("' + data + '")> TRIUMPH </a></li>';
+                            return buildActionMenu(row);
                         }
-                        else if(row.job_type == 'DOMESTIC'){
-                            action += '<li><a href="javascript:;" onclick=printDomesticBooking("' + data +
-                                '")><i class="fad fa-file-invoice"></i> &nbsp;ใบสั่งงาน </a></li>';
-                        }
-                        else{
-                            action += '<li><a href="javascript:;" onclick=printJobOrder("' + data +
-                            '")><i class="fad fa-barcode-read"></i> &nbsp;ใบสั่งงาน </a></li>';
-                        }
-
-                    
-
-                        action += '</ul>';
-
-                        if(role){
-                        action += '<li class="divider"> </li>';
-                        action += '<li class="dropdown-submenu">';
-                        action += '<a href="javascript:;"> อื่น ๆ </a><ul class="dropdown-menu">';
-                        action += '<li><a href="javascript:;" onclick=setDriver("' + data +'")><i class="fad fa-users"></i> เปลี่ยนพนักงานขับรถ </a></li>';
-                        action += '<li><a href="javascript:;" onclick=setCancel("' + data +'")><i class="fa fa-times"></i> ยกเลิกงาน </a></li>';
-                        action += '<li><a href="javascript:;" onclick=setRemove("' + data +'")><i class="fad fa-trash"></i> ลบ </a></li>';
-                        action += '</ul></li>';
-                        }
-                        action += '</ul></div>';
-                        return action;
-                    }
-                },
-                {
-                    "data": "job_date"
-                },
-                {
-                    "data": "booking_no"
-                },
-                {
-                    "data": "container_no"
-                },
-                {
-                    "data": "customer_name"
-                },
-                {
-                    "data": "mission_name"
-                },
-                {
-                    "data": "truck_license"
-                },
-                {
-                    "data": "supplier_name"
-                },
-                {
-                    "data": "job_detail_code"
-                },
-                {
-                    "data": "job_detail_code"
-                }
+                    },
+                    { data: 'job_date' },
+                    { data: 'booking_no' },
+                    { data: 'container_no' },
+                    { data: 'customer_name' },
+                    { data: 'mission_name' },
+                    { data: 'truck_license' },
+                    { data: 'supplier_name' },
+                    { data: 'tracking_status' },
+                    { data: 'is_advance_paid' }
                 ],
-                "createdRow": function (row, data, dataIndex) {
 
+                createdRow: function (row) {
                     $(row).find('[data-toggle="tooltip"]').tooltip();
                 }
             });
 
-            $('#filterDateRangeStart').datetimepicker({
-                format: 'Y/m/d',
+            function reloadTable(resetPaging) {
+                jobTable.ajax.reload(null, resetPaging === true);
+            }
 
-                onShow: function (ct) {
-                    this.setOptions({
-                        maxDate: jQuery('#filterDateRangeEnd').val() ? jQuery('#filterDateRangeEnd').val() : false
-                    })
-                },
-                timepicker: false
-            });
+            function setupDatePickers() {
+                $('#filterDateRangeStart').datetimepicker({
+                    format: 'Y/m/d',
+                    timepicker: false,
+                    onShow: function () {
+                        this.setOptions({
+                            maxDate: getFilterValue('#filterDateRangeEnd') || false
+                        });
+                    }
+                });
 
-            $('#filterDateRangeEnd').datetimepicker({
-                format: 'Y/m/d',
+                $('#filterDateRangeEnd').datetimepicker({
+                    format: 'Y/m/d',
+                    timepicker: false,
+                    onShow: function () {
+                        this.setOptions({
+                            minDate: getFilterValue('#filterDateRangeStart') || false
+                        });
+                    }
+                });
+            }
 
-                onShow: function (ct) {
-                    this.setOptions({
-                        minDate: jQuery('#filterDateRangeStart').val() ? jQuery('#filterDateRangeStart').val() : false
-                    })
-                },
-                timepicker: false
-            });
+            function runJobAction(action, code) {
+                switch (action) {
+                    case 'edit':
+                        getEdit(code);
+                        break;
+                    case 'status':
+                        getStatus(code);
+                        break;
+                    case 'detail':
+                        getDetail(code);
+                        break;
+                    case 'document':
+                        getDocument(code);
+                        break;
+                    case 'driver':
+                        setDriver(code);
+                        break;
+                    case 'cancel':
+                        setCancel(code);
+                        break;
+                    case 'remove':
+                        setRemove(code);
+                        break;
+                    case 'truckDoc':
+                        printJobOrder(code);
+                        break;
+                    case 'paidDoc':
+                        printJobPayment(code);
+                        break;
+                    case 'update' :
+                        getUpdate(code);
+                        break;
+                    case 'cashflow' :
+                        getAdvance(code);
+                        break;
+                    case 'finish' :
+                        getDocument(code)
+                        break;
+                }
+            }
 
+            setupDatePickers();
             $('#table-station tfoot tr').appendTo('#table-station thead');
 
-            $('.filterText').keyup(function () {
-                $('#table-station').dataTable()._fnAjaxUpdate();
+            $(document).on('click', '.js-job-action', function (event) {
+                event.preventDefault();
+
+                const action = $(this).data('action');
+                const code = $(this).attr('data-code');
+
+                runJobAction(action, code);
             });
 
-            $('.filterDropdown').change(function () {
-                $('#table-station').dataTable()._fnAjaxUpdate();
+            $('.filterText').on('keyup', function (event) {
+                clearTimeout(filterTimer);
+
+                if (event.keyCode === 13) {
+                    reloadTable(true);
+                    return;
+                }
+
+                filterTimer = setTimeout(function () {
+                    reloadTable(true);
+                }, 350);
             });
 
-            $('.dlListForm').change(function () {
-                $('#table-station').dataTable()._fnAjaxUpdate();
+            $('.filterDropdown, .dlListForm').on('change', function () {
+                reloadTable(true);
             });
 
-            $('#btnSearch').click(function () {
-                $('#table-station').dataTable()._fnAjaxUpdate();
+            $('#btnSearch').on('click', function () {
+                reloadTable(true);
             });
+
+            window.reloadRow = function () {
+                reloadTable(false);
+            };
         }(jQuery));
+        f
+        function openJobPopup(url, windowName, width, height) {
+            const setting = `width=${width},height=${height}`;
+            window.open(url, windowName, setting);
+        }
+
+        function showRequestError() {
+            jAlert('ผลการทำงาน', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาลองใหม่อีกครั้ง');
+        }
+
+        function setModalLoading(isLoading) {
+            $('#wrapper-action-modal').toggle(!isLoading);
+            $('#spin-item').toggle(isLoading);
+
+            if (isLoading) {
+                overLayDiv('.form-content');
+            } else {
+                killOverlayDiv();
+            }
+        }
+
+        function handleSaveResult(data) {
+            if (data.result === true) {
+                $.alert.open('info', data.resultMessage, function () {
+                    closeModal();
+                    reloadRow();
+                });
+            } else {
+                jAlert('ผลการทำงาน', data.resultMessage);
+            }
+        }
 
         function setDriver(code) {
-            var url = '/job/changedriver?code=' + code;
-            var setting = 'width=1150,height=648';
-
-            window.open(url, 'Edit Station', setting);
+            openJobPopup(
+                '/job/changedriver/' + encodeURIComponent(code),
+                'Change Driver',
+                1150,
+                648
+            );
         }
 
         function setRemove(code) {
-            $.alert.open('confirm', 'คุณต้องการปิดใช้งานข้อมูลดังกล่าวนี้ ใช่หรือไม่ ?', function (r) {
-                if (r) {
+            $.alert.open(
+                'confirm',
+                'คุณต้องการปิดใช้งานข้อมูลดังกล่าวนี้ ใช่หรือไม่ ?',
+                function (confirmed) {
+                    if (!confirmed) {
+                        return;
+                    }
+
                     overLayPage();
-                    $.post("/Job/RemoveJob", {
+
+                    $.post('/Job/RemoveJob', {
                         job_detail_code: code
-                    }, function (data) {
-                        killOverlayPage();
-                        if (data.result == true) {
-                            $.alert.open('info', data.resultMessage, function (r) {
-                                $('#table-station').dataTable()._fnAjaxUpdate();
+                    })
+                    .done(function (data) {
+                        if (data.result === true) {
+                            $.alert.open('info', data.resultMessage, function () {
+                                reloadRow();
                             });
                         } else {
                             jAlert('ผลการทำงาน', data.resultMessage);
                         }
+                    })
+                    .fail(showRequestError)
+                    .always(function () {
+                        killOverlayPage();
                     });
                 }
-            });
+            );
         }
 
         function getDocument(code) {
-            var url = '/job/finish?code=' + code;
-            var setting = 'width=1100,height=640';
-
-            window.open(url, 'Finished Job', setting);
+            openJobPopup(
+                '/job/finish/' + encodeURIComponent(code),
+                'Finished Job',
+                1100,
+                640
+            );
         }
 
         function setBalance() {
-            var url = '/budget/settrbalance';
-            var setting = 'width=1100,height=672';
-
-            window.open(url, 'Status Station', setting);
+            openJobPopup('/budget/settrbalance', 'Status Station', 1100, 672);
         }
 
-        function getAdvance(code) {
-            $.post("/job/updateadvance", {
-                code: code
-            }, function (result) {
-                $('#form-content').html(result)
-                $('#modal-form-content').modal();
-            });
+        function getAdvance(id) {
+            $.post('/job/updateadvance', { code: id})
+                .done(function (result) {
+                    $('#form-content').html(result);
+                    $('#modal-form-content').modal();
+                })
+                .fail(showRequestError);
         }
 
-        function setAdvance(code) {
-            $('#wrapper-action-modal').hide();
-            $('#spin-item').show();
-            overLayDiv('.form-content');
+        function setAdvance() {
+            setModalLoading(true);
 
-                $.post("/Job/UpdateAdvanceData", {
-                job_detail_code: $('#job_detail_code').val(),
+            $.post('/Job/UpdateAdvanceData', {
+                allowance_id: $('#allowance_id').val(),
                 cash_flow: $('#cash_flow').val()
-            }, function (data) {
-                killOverlayDiv();
-                $('#wrapper-action-modal').show();
-                $('#spin-item').hide();
-                if (data.result == true) {
-                    $.alert.open('info', data.resultMessage, function (r) {
-                        closeModal();
-                        reloadRow();
-                    });
-                } else {
-                    jAlert('ผลการทำงาน', data.resultMessage);
-                }
+            })
+            .done(handleSaveResult)
+            .fail(showRequestError)
+            .always(function () {
+                setModalLoading(false);
             });
         }
 
-        function getUpdate(code) {
-            $.post("/Job/Update", {
-                job_detail_code: code
-            }, function (result) {
-                $('#form-content').html(result)
+        function getUpdate(id) {
+            $.post('/Job/Update', {
+                code: id
+            })
+            .done(function (result) {
+                $('#form-content').html(result);
                 $('#modal-form-content').modal();
-            });
+            })
+            .fail(showRequestError);
         }
 
         function setUpdate() {
-            $('#wrapper-action-modal').hide();
-            $('#spin-item').show();
-            overLayDiv('.form-content');
+            setModalLoading(true);
 
-            var code = $('#job_detail_code').val();
-            var container_no = $('#container_no').val();
-            var trailer_license = $('#trailer_license').val();
-            var seal_no = $('#seal_no').val();
-            var tare_weight = $('#tare_weight').val();
-            var fuel_fillup = $('#fuel_fillup').val();
-            var finish_code = $('#finish_code').val();
-            var job_date = $('#job_date').val();
-            var container_size = $('#container_size').val();
-            var job_type = $('#job_type').val();
-            var supplyer_code = $('#supplyer_code').val();
-
-            $.post("/Job/UpdateData", {
-                job_date: job_date,
-                job_detail_code: code,
-                container_no: container_no,
-                seal_no: seal_no,
-                tare_weight: tare_weight,
-                fuel_fillup: fuel_fillup,
-                trailer_license: trailer_license,
-                finish_place_code: finish_code,
-                container_size_code: container_size,
-                job_type: job_type,
-                supplyer_code: supplyer_code
-            }, function (data) {
-                killOverlayDiv();
-                $('#wrapper-action-modal').show();
-                $('#spin-item').hide();
-                if (data.result == true) {
-                    $.alert.open('info', data.resultMessage, function (r) {
-                        closeModal();
-                        reloadRow();
-                    });
-                } else {
-                    jAlert('ผลการทำงาน', data.resultMessage);
-                }
+            $.post('/Job/UpdateData', {
+                job_date: $('#job_date').val(),
+                job_detail_code: $('#job_detail_code').val(),
+                container_no: $('#container_no').val(),
+                seal_no: $('#seal_no').val(),
+                tare_weight: $('#tare_weight').val(),
+                fuel_fillup: $('#fuel_fillup').val(),
+                trailer_license: $('#trailer_license').val(),
+                finish_place_code: $('#finish_code').val(),
+                container_size_code: $('#container_size').val(),
+                job_type: $('#job_type').val(),
+                supplyer_code: $('#supplyer_code').val()
+            })
+            .done(handleSaveResult)
+            .fail(showRequestError)
+            .always(function () {
+                setModalLoading(false);
             });
         }
 
         function getEdit(code) {
-            var url = '/job/edit?code=' + code;
-            var setting = 'width=1180,height=612';
-
-            window.open(url, 'Edit Station', setting);
-        }
-
-        function reloadRow() {
-            $("#table-station").DataTable().ajax.reload();
+            openJobPopup(
+                '/job/edit/' + encodeURIComponent(code),
+                'Edit Station',
+                1180,
+                612
+            );
         }
 
         function closeModal() {
             $.modal.close();
         }
 
-        function searchPlaceFunc(action) {
-            var url = '';
-            var setting = 'width=900,height=550';
-            var type = $('#job_type').val();
+        function printJobOrder(code) {
+            var url = "/doc/orderassignment/" + code;
+            window.open(url, 'Print Station');
+        }
 
-            if (type == "IMPORT" || type == "OCEAN") {
+        function printJobPayment(code) {
+            var url = "/doc/cashflow/" + code;
+            window.open(url, 'Print Station');
+        }
+
+        function searchPlaceFunc(type) {
+            if (type === 'IMPORT') {
                 url = '../search/yard';
-            } else if (type == "EXPORT") {
+            } else {
                 url = '../search/port';
             }
 
-            window.open(url, 'search place', setting);
+            if (!url) {
+                jAlert('ผลการทำงาน', 'กรุณาเลือกประเภทงานก่อน');
+                return;
+            }
+
+            openJobPopup(url, 'Search Place', 900, 550);
         }
 
         function setYardPortBox(code) {
-            $.post("../Job/GetYardPort", {
-                code: code
-            }, function (result) {
-                var code = result.place_code;
-                var name = result.place_name;
-                var address = result.place_address;
-                var type = result.place_type;
-
-                $('#finish_code').val(code);
-                $('#txtDisFinishName').val(name);
-            });
+            $.post('../Job/GetYardPort', { code: code })
+                .done(function (result) {
+                    $('#finish_code').val(result.place_code);
+                    $('#txtDisFinishName').val(result.place_name);
+                })
+                .fail(showRequestError);
         }
 
         function setCancel(code) {
-            var url = '/job/canceljob?code=' + code;
-            var setting = 'width=1000,height=648';
-
-            window.open(url, 'Cancel Station', setting);
+            openJobPopup(
+                '/job/canceljob/' + encodeURIComponent(code),
+                'Cancel Station',
+                1000,
+                648
+            );
         }
     </script>
 }

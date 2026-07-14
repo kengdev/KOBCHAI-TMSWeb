@@ -222,7 +222,6 @@ public class OrderController : Controller
         var start = await _orderService.GetYardPortDataByCode(jp.StartCode);
         var mission = await _orderService.GetPlaceByCode(jp.MissionCode);
         var finish = await _orderService.GetYardPortDataByCode(jp.FinishCode);
-        var job2Short = await _orderService.Get2Short(detail_code);
 
         var model = new TblJobDetail();
         model.JobDetailCode = detail_code;
@@ -231,7 +230,6 @@ public class OrderController : Controller
         model.MissionPlaceCode = mission.place_code;
         model.FinishPlaceCode = finish.place_code;
         model.CostValue = customer.cost_value;
-        model.Is2short = job2Short.Is2short;
 
         var placeJob = new OrderPlaceModel();
         placeJob.txtCustomerName = customer.customer_name_th;

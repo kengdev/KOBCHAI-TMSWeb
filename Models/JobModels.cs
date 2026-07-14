@@ -27,6 +27,7 @@ public class FinishJobModel
     public string supplier_invoice { get; set; }
     public bool is_save { get; set; }
     public decimal cash_flow { get; set; }
+    public int allowance_id { get; set; }
 }
 
 public class UpdateStatusModel
@@ -59,6 +60,7 @@ public class UpdateDataModel
 
 public class ChangeDriverModel
 {
+    public int job_allowance_id { get; set; }
     public string job_detail_code { get; set; }
     public string mission_code { get; set; }
     public string driver_code { get; set; }
@@ -82,5 +84,6 @@ public class CancelJobModel
     public string driver_code { get; set; }
     public decimal trip_cost { get; set; }
     public decimal driver_cost { get; set; }
+    public decimal supplier_cost { get; set; }
     public string create_by { get; set; }
 }

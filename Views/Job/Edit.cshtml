@@ -3,6 +3,7 @@
     ViewBag.Title = "ข้อมูลงาน";
     Layout = "~/Views/Shared/_PartialLayout.cshtml";
     var data = (TMSWeb.Models.Entities.LOG.ViewJobListActive)ViewBag.Data;
+    var allowanceData = (List<TMSWeb.Models.ViewModels.CashflowViewModel>)ViewBag.Allowance;
 }
 @section Styles {
     <link rel="stylesheet" type="text/css" href="~/css/profile/todo-2.min.css" />
@@ -33,6 +34,7 @@
         </div>
         @using (Html.BeginForm("EditOrderTruck", "Job", FormMethod.Post, new { id = "frmEdit", onsubmit = "return OnValidate()" }))
         {
+            @Html.Hidden("job_allowance_id", data.Id)
             @Html.HiddenFor(m => m.JobDetailCode)
             @Html.HiddenFor(m => m.DriverCode)
             @Html.HiddenFor(m => m.CostValue)
@@ -47,11 +49,9 @@
             @Html.HiddenFor(m => m.MissionPlaceCode)
             @Html.HiddenFor(m => m.FinishPlaceCode)
             @Html.HiddenFor(m => m.SupplierInvoice)
-            @Html.HiddenFor(m => m.AdvanceValue)
             @Html.HiddenFor(m => m.IsDocument)
             @Html.HiddenFor(m => m.IsBilling)
             @Html.HiddenFor(m => m.IsPayment)
-            @Html.HiddenFor(m => m.IsAdvancePaid)
             @Html.HiddenFor(m => m.IsEnabled)
             @Html.HiddenFor(m => m.CreateDate)
             @Html.HiddenFor(m => m.CreateBy)
@@ -63,40 +63,38 @@
                                 <table class="table table-light">
                                     <tr>
                                         <td class="topic">
-                                            <span class="font-green-sharp">ลูกค้า</span>
+                                            <span class="font-green-sharp">ชื่องาน</span>
                                         </td>
-                                        <td> @data.CustomerAcronym</td>
+                                        <td> @data.JobName</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <span class="font-green-jungle bold">@data.StartName </span>
+                                            <i class="fad fa-arrow-alt-right" style="margin-left:20px;margin-right:20px;"></i>
+                                            <span class="font-red-flamingo bold">@data.MissionName</span>
+                                            <i class="fad fa-arrow-alt-right" style="margin-left:20px;margin-right:20px;"></i>
+                                            <span class="font-green-jungle bold">@data.FinishName</span>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
                                             <span class="font-green-sharp">รับตู้</span>
                                         </td>
-                                        <td> @data.StartName </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">เปิดตู้/บรรจุ</span>
-                                        </td>
-                                        <td> @data.MissionName </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">คืนตู้</span>
-                                        </td>
-                                        <td> @data.FinishName</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">วันที่</span>
-                                        </td>
                                         <td> @data.JobDate.ToString("dd-MM-yyyy HH:mm") </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="topic">
+                                            <span class="font-green-sharp">เปิด/บรรจุ</span>
+                                        </td>
+                                        <td> @data.LoadingDate.ToString("dd-MM-yyyy HH:mm") </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
                                             <span class="font-green-sharp">ประเภทงาน/ขนาด</span>
                                         </td>
                                         <td>
-                                            @data.JobType / @data.ContainerSizeName
+                                            <div class="font-red-flamingo">@data.JobType / @data.ContainerAmount x @data.ContainerSizeName</div>
                                         </td>
                                     </tr>
 
@@ -119,10 +117,24 @@
                                         <td> @data.TruckTypegroupName</td>
                                     </tr>
                                     <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">จำนวน</span>
+                                        <td class="topic" style="vertical-align:top;">
+                                            <span class="font-green-sharp">ทะเบียน/คนขับ</span>
+
                                         </td>
-                                        <td> @data.ContainerAmount ตู้</td>
+                                        <td>
+                                            @foreach (var item in allowanceData)
+                                            {
+          
+                                                <div>
+                                                    <span> @item.job_date.ToString("yyyy-MM-dd")</span>
+                                                    <i class="fa fa-caret-right font-red-intense"></i>
+                                                    @item.license
+                                                    <i class="fad fa-dot-circle font-green-jungle"></i>
+                                                    @item.driver | 
+                                                    <span class="bold font-red-mint">@item.cashflow.ToString("#,##0.00")</span>
+                                                </div>
+                                            }
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
@@ -228,6 +240,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="form-actions">
                     <div class="row pull-right">
                         <div class="col-md-12">

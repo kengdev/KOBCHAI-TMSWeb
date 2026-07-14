@@ -232,7 +232,7 @@ public class CodeRepository
     {
         DateTime now = DateTime.Now;
         string prefixYear = DateText(now, "yy");
-        string prefix = customer_acronym + DateText(now, "yy/MM") + "-";
+        string prefix = customer_acronym + DateText(now, "yy-MM") + "-";
 
         string? lastCode = db.TblCodeGenerates
             .AsNoTracking()

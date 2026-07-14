@@ -27,9 +27,13 @@ public partial class TblTruck
 
     public virtual TblSupplier SupplierCodeNavigation { get; set; } = null!;
 
+    public virtual ICollection<TblJobAllowance> TblJobAllowances { get; set; } = new List<TblJobAllowance>();
+
     public virtual ICollection<TblJobDetail> TblJobDetails { get; set; } = new List<TblJobDetail>();
 
     public virtual ICollection<TblJobTruck> TblJobTrucks { get; set; } = new List<TblJobTruck>();
+
+    public virtual ICollection<TblJobcashflow> TblJobcashflows { get; set; } = new List<TblJobcashflow>();
 
     public virtual ICollection<TblTruckChecklist> TblTruckChecklists { get; set; } = new List<TblTruckChecklist>();
 

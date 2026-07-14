@@ -23,5 +23,7 @@ public partial class TblDriver
 
     public virtual ICollection<TblJobTruck> TblJobTrucks { get; set; } = new List<TblJobTruck>();
 
+    public virtual ICollection<TblJobcashflow> TblJobcashflows { get; set; } = new List<TblJobcashflow>();
+
     public virtual ICollection<TblTruckDriver> TblTruckDrivers { get; set; } = new List<TblTruckDriver>();
 }

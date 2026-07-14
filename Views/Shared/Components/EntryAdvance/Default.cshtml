@@ -1,0 +1,121 @@
+@model TMSWeb.Models.Entities.LOG.TblJobadvance
+@{
+    var list = (List<TMSWeb.Models.ViewModels.OtherJobViewModel>)ViewBag.Other;
+    var advanceLifton = Model.TblJobcashflowAdvances.Sum(s => s.AdvanceLifton);
+    var advanceLiftoff = Model.TblJobcashflowAdvances.Sum(s => s.AdvanceLiftoff);
+    var advanceYard = Model.TblJobcashflowAdvances.Sum(s => s.AdvanceYard);
+    var advancePort = Model.TblJobcashflowAdvances.Sum(s => s.AdvancePort);
+}
+<div class="row">
+    <div class="col-md-12">
+        <table data-toggle="table" data-height="200" data-width="100" class="data-bootstrap">
+            <thead>
+                <tr>
+                    <th data-align="center" data-width="39"></th>
+                    <th data-align="left" data-width="150">รายการเงินสำรองจ่าย</th>
+                    <th data-align="center">ยอดเงิน</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>ค่ายก (ตู้เปล่า)</td>
+                    <td>
+                        @if (advanceLifton > 0)
+                        {
+                            @Html.TextBox("AdvanceLifton", Model.AdvanceLifton, new { @Class = "form-control advance-val form-box form-box-val font-grey-silver", Disabled = "Disabled" })
+                        }
+                        else
+                        {
+                            @Html.TextBox("AdvanceLifton", Model.AdvanceLifton, new { @Class = "form-control advance-val form-box form-box-val" })
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>ค่ายก (ตู้หนัก)</td>
+                    <td>
+                        @if (advanceLiftoff > 0)
+                        {
+                            @Html.TextBox("AdvanceLiftoff", Model.AdvanceLiftoff, new { @Class = "form-control advance-val form-box form-box-val font-grey-silver", Disabled = "Disabled" })
+                        }
+                        else
+                        {
+                            @Html.TextBox("AdvanceLiftoff", Model.AdvanceLiftoff, new { @Class = "form-control advance-val form-box form-box-val" })
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>ค่าผ่านลาน</td>
+                    <td>
+                        @if (advanceYard > 0)
+                        {
+                            @Html.TextBox("AdvanceYard", Model.AdvanceYard, new { @Class = "form-control advance-val form-box form-box-val font-grey-silver", Disabled = "Disabled" })
+                        }
+                        else
+                        {
+                            @Html.TextBox("AdvanceYard", Model.AdvanceYard, new { @Class = "form-control advance-val form-box form-box-val" })
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>ค่าผ่านท่า</td>
+                    <td>
+                        @if (advancePort > 0)
+                        {
+                            @Html.TextBox("AdvancePort", Model.AdvancePort, new { @Class = "form-control advance-val form-box form-box-val font-grey-silver", Disabled = "Disabled" })
+                        }
+                        else
+                        {
+                            @Html.TextBox("AdvancePort", Model.AdvancePort, new { @Class = "form-control advance-val form-box form-box-val" })
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table data-toggle="table" data-height="135" data-width="100" class="data-bootstrap">
+            <thead>
+                <tr>
+                    <th data-align="center" data-width="39"></th>
+                    <th data-align="left" data-width="150">สำรองจ่ายอื่น ๆ</th>
+                    <th data-align="center">ยอดเงิน</th>
+                </tr>
+            </thead>
+            <tbody id="advance-table">
+                @foreach (var item in Model.TblJobadvanceOthers)
+                {
+                    <tr>
+                        <td style="text-align: center;">
+                            <div style="height:25px;text-align:center;padding-top:4px">
+                                &nbsp;
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control nameAdvance font-grey-silver" value="@item.AdvanceOther" disabled autocomplete="off">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-box form-box-val font-grey-silver" name="valAdvance[]" value="@item.AdvanceOtherValue" disabled autocomplete="off" />
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td style="text-align: center;">
+                        <div style="height:25px;text-align:center;padding-top:4px">
+                            <a href="javascript:;" onclick="addAdvance()"><span class="icon-plus"></span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control nameAdvance" value="" name="nameAdvance[]" autocomplete="off">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-box form-box-val" name="valAdvance[]" value="" autocomplete="off" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

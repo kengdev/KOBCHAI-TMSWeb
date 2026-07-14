@@ -52,53 +52,43 @@
             <div class="portlet-body form">
                 <div class="form-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-7">
                             <div class="table-scrollable table-scrollable-borderless">
                                 <table class="table table-light">
                                     <tr>
                                         <td class="topic">
-                                            <span class="font-green-sharp">ลูกค้า</span>
+                                            <span class="font-green-sharp">ชื่องาน</span>
                                         </td>
-                                        <td> @place.acronym</td>
+                                        <td> @data.CostCodeNavigation.JobName</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <span class="font-green-jungle bold">@place.StartName </span>
+                                            <i class="fad fa-arrow-alt-right" style="margin-left:20px;margin-right:20px;"></i>
+                                            <span class="font-red-flamingo bold">@place.MissionName</span>
+                                            <i class="fad fa-arrow-alt-right" style="margin-left:20px;margin-right:20px;"></i>
+                                            <span class="font-green-jungle bold">@place.FinishName</span>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
                                             <span class="font-green-sharp">รับตู้</span>
                                         </td>
-                                        <td> @place.StartName </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">เปิดตู้/บรรจุ</span>
-                                        </td>
-                                        <td> @place.MissionName </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">คืนตู้</span>
-                                        </td>
-                                        <td> @place.FinishName</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">วันที่</span>
-                                        </td>
                                         <td> @data.JobDate.ToString("dd-MM-yyyy HH:mm") </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
-                                            <span class="font-green-sharp">ประเภทงาน</span>
+                                            <span class="font-green-sharp">เปิด/บรรจุ</span>
                                         </td>
-                                        <td>
-                                            @data.TradeType
-                                        </td>
+                                        <td> @data.LoadingDate.ToString("dd-MM-yyyy HH:mm") </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
-                                            <span class="font-green-sharp">ขนาดตู้</span>
+                                            <span class="font-green-sharp">ประเภทงาน/ขนาด</span>
                                         </td>
                                         <td>
-                                            @data.ContainerSizeName
+                                            <div class="font-red-flamingo">@data.JobType / @data.ContainerAmount x @data.ContainerSizeName</div>
                                         </td>
                                     </tr>
 
@@ -116,15 +106,9 @@
                                     </tr>
                                     <tr>
                                         <td class="topic">
-                                            <span class="font-green-sharp">ประเภทรถ</span>
+                                            <span class="font-green-sharp">ประเภท</span>
                                         </td>
                                         <td> @data.TruckTypegroupCodeNavigation.TruckTypegroupName</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="topic">
-                                            <span class="font-green-sharp">จำนวน</span>
-                                        </td>
-                                        <td> @data.ContainerAmount คัน</td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
@@ -136,9 +120,9 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label>
                                             บริษัทผู้รับงาน<span class="required"> * </span>
@@ -156,7 +140,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label>
                                             ทะเบียนรถ<span class="required"> * </span>
@@ -175,7 +159,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label>
                                             พนักงานขับรถ<span class="required"> * </span>

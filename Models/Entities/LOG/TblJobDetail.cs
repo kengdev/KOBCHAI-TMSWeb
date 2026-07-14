@@ -35,11 +35,7 @@ public partial class TblJobDetail
 
     public string FinishPlaceCode { get; set; } = null!;
 
-    public decimal AdvanceValue { get; set; }
-
     public decimal CostValue { get; set; }
-
-    public bool Is2short { get; set; }
 
     public bool IsDocument { get; set; }
 
@@ -47,15 +43,9 @@ public partial class TblJobDetail
 
     public bool IsBilling { get; set; }
 
-    public bool IsSingleTrip { get; set; }
-
     public bool IsCanceled { get; set; }
 
     public bool IsPayment { get; set; }
-
-    public bool IsAdvancePaid { get; set; }
-
-    public bool IsAdvanceProve { get; set; }
 
     public bool IsEnabled { get; set; }
 
@@ -96,6 +86,8 @@ public partial class TblJobDetail
     public virtual TblJobadvancePayment? TblJobadvancePayment { get; set; }
 
     public virtual ICollection<TblJobadvance> TblJobadvances { get; set; } = new List<TblJobadvance>();
+
+    public virtual ICollection<TblJobcashflow> TblJobcashflows { get; set; } = new List<TblJobcashflow>();
 
     public virtual ICollection<TblJobcashing> TblJobcashings { get; set; } = new List<TblJobcashing>();
 

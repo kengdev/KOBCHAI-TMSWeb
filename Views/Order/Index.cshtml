@@ -255,7 +255,7 @@
 
         function setManage(code, detail_code) {
             var url = '/order/ordertruck?code=' + code + '&detail_code=' + detail_code;
-            var setting = 'width=1180,height=648';
+            var setting = 'width=1000,height=570';
 
             window.open(url, 'arrange job', setting);
         }
@@ -307,16 +307,6 @@
         function printJobOrder(code) {
             //var url = "http://localhost:82/report/invoice/joborder?code=" + code;
             var url = "/form/order?code=" + code;
-            window.open(url, 'Print Station');
-        }
-
-        function printBooking(code) {
-            var url = "/form/ceva?code=" + code;
-            window.open(url, 'Print Station');
-        }
-
-        function printTriumph(code) {
-            var url = "/form/triumph?code=" + code;
             window.open(url, 'Print Station');
         }
 

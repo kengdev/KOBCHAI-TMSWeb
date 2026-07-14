@@ -37,7 +37,7 @@ public partial class ViewOrderListActive
 
     public string ContainerSizeName { get; set; } = null!;
 
-    public string JobType { get; set; } = null!;
+    public string? JobType { get; set; }
 
     public string BookingNo { get; set; } = null!;
 
@@ -55,8 +55,6 @@ public partial class ViewOrderListActive
 
     public string JobRemark { get; set; } = null!;
 
-    public int FuelValue { get; set; }
-
     public decimal LiftonValue { get; set; }
 
     public decimal LiftoffValue { get; set; }
@@ -64,8 +62,6 @@ public partial class ViewOrderListActive
     public decimal YardValue { get; set; }
 
     public decimal PortValue { get; set; }
-
-    public decimal ExpresswayValue { get; set; }
 
     public bool Is2short { get; set; }
 

@@ -43,9 +43,9 @@ public partial class ViewJobListActive
 
     public string? TruckCode { get; set; }
 
-    public string? TruckNo { get; set; }
-
     public string? TruckLicense { get; set; }
+
+    public string? TruckNo { get; set; }
 
     public string? TrailerLicense { get; set; }
 
@@ -54,6 +54,8 @@ public partial class ViewJobListActive
     public string? SupplierName { get; set; }
 
     public string? FleetTypeCode { get; set; }
+
+    public string? DriverCode { get; set; }
 
     public string? DriverFullname { get; set; }
 
@@ -64,10 +66,6 @@ public partial class ViewJobListActive
     public string JobRemark { get; set; } = null!;
 
     public string? TrackingStatus { get; set; }
-
-    public string? DriverCode { get; set; }
-
-    public decimal? CashingTotal { get; set; }
 
     public string ClosingTime { get; set; } = null!;
 
@@ -82,8 +80,6 @@ public partial class ViewJobListActive
     public bool? IsBilling { get; set; }
 
     public bool? IsCanceled { get; set; }
-
-    public bool? IsSingleTrip { get; set; }
 
     public string? StartCode { get; set; }
 
@@ -107,13 +103,7 @@ public partial class ViewJobListActive
 
     public bool? IsWeeklypayment { get; set; }
 
-    public bool? IsAdvancePaid { get; set; }
-
-    public bool? IsAdvanceProve { get; set; }
-
     public string TruckTypegroupName { get; set; } = null!;
-
-    public decimal? AdvanceValue { get; set; }
 
     public string JobName { get; set; } = null!;
 
@@ -124,4 +114,8 @@ public partial class ViewJobListActive
     public string ReceiptTax { get; set; } = null!;
 
     public string AgentName { get; set; } = null!;
+
+    public long? Id { get; set; }
+
+    public decimal? CashFlow { get; set; }
 }
