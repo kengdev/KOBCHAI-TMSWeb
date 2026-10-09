@@ -117,36 +117,6 @@ public class CodeRepository
         return NextCodeByPrefix(lastCode, prefix, 3);
     }
 
-    public string GetQuotationCode()
-    {
-        DateTime now = DateTime.Now;
-        string prefix = "QT" + DateText(now, "yy") + "AVA";
-
-        string? lastCode = db.TblQuotations
-            .AsNoTracking()
-            .Where(w => w.QuotationCode != null && w.QuotationCode.StartsWith(prefix))
-            .Select(s => s.QuotationCode)
-            .OrderByDescending(code => code)
-            .FirstOrDefault();
-
-        return NextCodeByPrefix(lastCode, prefix, 4);
-    }
-
-    public string GetBudgetTransactionCode()
-    {
-        DateTime now = DateTime.Now;
-        string prefix = DateText(now, "yyMM");
-
-        string? lastCode = db.TblBudgetTransactions
-            .AsNoTracking()
-            .Where(w => w.TransactionCode != null && w.TransactionCode.StartsWith(prefix))
-            .Select(s => s.TransactionCode)
-            .OrderByDescending(code => code)
-            .FirstOrDefault();
-
-        return NextCodeByPrefix(lastCode, prefix, 4);
-    }
-
     /*
     public string GetRouteCode()
     {
@@ -181,51 +151,6 @@ public class CodeRepository
         string code = NextCodeByPrefix(lastCode, prefix, 5);
 
         return SaveCodeGenerate(code, "job_master");
-    }
-
-    public string GetDailyPaymentCode()
-    {
-        DateTime now = DateTime.Now;
-        string prefix = "AVA" + DateText(now, "yyMM") + "D";
-
-        string? lastCode = db.TblDailypayments
-            .AsNoTracking()
-            .Where(w => w.DailypaymentCode != null && w.DailypaymentCode.StartsWith(prefix))
-            .Select(s => s.DailypaymentCode)
-            .OrderByDescending(code => code)
-            .FirstOrDefault();
-
-        return NextCodeByPrefix(lastCode, prefix, 3);
-    }
-
-    public string GetMonthlyPaymentCode()
-    {
-        DateTime now = DateTime.Now;
-        string prefix = "AVA" + DateText(now, "yyMM") + "M";
-
-        string? lastCode = db.TblMonthlypayments
-            .AsNoTracking()
-            .Where(w => w.MonthlyPaymentCode != null && w.MonthlyPaymentCode.StartsWith(prefix))
-            .Select(s => s.MonthlyPaymentCode)
-            .OrderByDescending(code => code)
-            .FirstOrDefault();
-
-        return NextCodeByPrefix(lastCode, prefix, 3);
-    }
-
-    public string GetReceivePaymentCode()
-    {
-        DateTime now = DateTime.Now;
-        string prefix = "AVA" + DateText(now, "yyMM") + "I";
-
-        string? lastCode = db.TblReceivePayments
-            .AsNoTracking()
-            .Where(w => w.ReceivePaymentCode != null && w.ReceivePaymentCode.StartsWith(prefix))
-            .Select(s => s.ReceivePaymentCode)
-            .OrderByDescending(code => code)
-            .FirstOrDefault();
-
-        return NextCodeByPrefix(lastCode, prefix, 3);
     }
 
     public string GetJobDetailCode(string customer_acronym)
@@ -449,21 +374,6 @@ public class CodeRepository
         return NextCodeByPrefix(lastCode, prefix, 4);
     }
 
-    public string GetCoverSheetCode()
-    {
-        DateTime now = DateTime.Now;
-        string prefix = "AVA/Cov" + DateText(now, "yy") + "-";
-
-        string? lastCode = db.TblCoversheets
-            .AsNoTracking()
-            .Where(w => w.CoversheetCode != null && w.CoversheetCode.StartsWith(prefix))
-            .Select(s => s.CoversheetCode)
-            .OrderByDescending(code => code)
-            .FirstOrDefault();
-
-        return NextCodeByPrefix(lastCode, prefix, 5);
-    }
-
     public string GetReceiptCode()
     {
         DateTime now = DateTime.Now;
@@ -477,36 +387,6 @@ public class CodeRepository
             .FirstOrDefault();
 
         return NextCodeByPrefix(lastCode, prefix, 5);
-    }
-
-    public string GetOtherReceipt()
-    {
-        DateTime now = DateTime.Now;
-        string prefix = "R" + DateText(now, "yy/MM") + "-";
-
-        string? lastCode = db.TblReceiptOthers
-            .AsNoTracking()
-            .Where(w => w.ReceiptOtherCode != null && w.ReceiptOtherCode.StartsWith(prefix))
-            .Select(s => s.ReceiptOtherCode)
-            .OrderByDescending(code => code)
-            .FirstOrDefault();
-
-        return NextCodeByPrefix(lastCode, prefix, 3);
-    }
-
-    public string GetPayeeReceipt()
-    {
-        DateTime now = DateTime.Now;
-        string prefix = "A" + DateText(now, "yyMM") + "RE";
-
-        string? lastCode = db.TblReceivePaymentReceipts
-            .AsNoTracking()
-            .Where(w => w.ReceiptCode != null && w.ReceiptCode.StartsWith(prefix))
-            .Select(s => s.ReceiptCode)
-            .OrderByDescending(code => code)
-            .FirstOrDefault();
-
-        return NextCodeByPrefix(lastCode, prefix, 3);
     }
 
     public string GetAllownceCode()
@@ -609,35 +489,5 @@ public class CodeRepository
             .FirstOrDefault();
 
         return NextCodeByPrefix(lastCode, prefix, 2);
-    }
-
-    public string GetTaxPaymentCode()
-    {
-        DateTime now = DateTime.Now;
-        string prefix = "AVA" + DateText(now, "yy/MM") + "SP";
-
-        string? lastCode = db.TblWithholdingTaxes
-            .AsNoTracking()
-            .Where(w => w.WithholdingTaxCode != null && w.WithholdingTaxCode.StartsWith(prefix))
-            .Select(s => s.WithholdingTaxCode)
-            .OrderByDescending(code => code)
-            .FirstOrDefault();
-
-        return NextCodeByPrefix(lastCode, prefix, 4);
-    }
-
-    public string GetShippingPaymentCode()
-    {
-        DateTime now = DateTime.Now;
-        string prefix = DateText(now, "yyMM");
-
-        string? lastCode = db.TblShippingpayments
-            .AsNoTracking()
-            .Where(w => w.PaymentCode != null && w.PaymentCode.StartsWith(prefix))
-            .Select(s => s.PaymentCode)
-            .OrderByDescending(code => code)
-            .FirstOrDefault();
-
-        return NextCodeByPrefix(lastCode, prefix, 3);
     }
 }

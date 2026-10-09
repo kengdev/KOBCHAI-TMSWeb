@@ -15,7 +15,6 @@
 
         table.dataTable td,
         table.dataTable th {
-            font-size: 14px !important;
         }
 
         .form-control {
@@ -49,16 +48,27 @@
             }
 
         .license-driver-td {
-            width: 150px;
+            width: 130px;
             text-align: left;
         }
         .license-driver-td span{
-            font-size:13px!important;
+            font-size:12px!important;
         }
-
         .datetime-td {
-            width: 130px !important;
+            width: 110px !important;
             text-align: center;
+        }
+        .dropdown-td{
+            width:90px!important;
+        }
+        .payment-status-td{
+            width:45px!important;
+        }
+        .supplier-td{
+            width:80px!important;
+        }
+        .booking-td{
+            width:80px!important;
         }
     </style>
 }
@@ -148,7 +158,7 @@
                                 <th> ทะเบียน</th>
                                 <th>สังกัด</th>
                                 <th>สถานะ</th>
-                                <th>จ่ายเงิน</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -264,147 +274,169 @@
 
                 const id = data.job_allowance_id;
                 const jobDetailCode = data.job_detail_code;
+                var toolItem = `
+                                <div class="btn-group dropup">
+                                    <button type="button"
+                                            class="btn blue btn-xs dropdown-toggle"
+                                            data-toggle="dropdown"
+                                            aria-expanded="false">
+                                        เครื่องมือ
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu pull-left" role="menu">`;
 
-                return `
-                    <div class="btn-group dropup">
-                        <button type="button"
-                                class="btn blue btn-xs dropdown-toggle"
-                                data-toggle="dropdown"
-                                aria-expanded="false">
-                            เครื่องมือ
-                            <i class="fa fa-angle-down"></i>
-                        </button>
+                if(data.round_status == 'A'){
+                    toolItem += `<li>
+                                    <a href="#"
+                                        class="js-job-action"
+                                        data-action="edit"
+                                        data-code="${id}">
+                                        <i class="fad fa-user-friends"></i>
+                                        เปลี่ยนพนักงานขับรถ
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#"
+                                        class="js-job-action"
+                                        data-action="finish"
+                                        data-code="${id}">
+                                        <i class="fad fa-file-check"></i>
+                                        เคลียร์เงินและเอกสาร
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#"
+                                        class="js-job-action"
+                                        data-action="update"
+                                        data-code="${id}">
+                                        <i class="fad fa-sync"></i>
+                                        ปรับปรุงข้อมูล
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                        <li>
+                                        <a href="#"
+                                           class="js-job-action"
+                                           data-action="status"
+                                           data-code="${id}">
+                                            <i class="fad fa-map-signs"></i>
+                                            สถานะการส่งสินค้า
+                                        </a>
+                                </li>
+                                <li class="divider"></li>
 
-                        <ul class="dropdown-menu pull-left" role="menu">
-                            <li>
-                                <a href="#"
-                                   class="js-job-action"
-                                   data-action="edit"
-                                   data-code="${id}">
-                                    <i class="fad fa-pencil"></i>
-                                    แก้ไข
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                   class="js-job-action"
-                                   data-action="update"
-                                   data-code="${id}">
-                                    <i class="fad fa-sync"></i>
-                                    ปรับปรุงข้อมูล
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#"
-                                   class="js-job-action"
-                                   data-action="cashflow"
-                                   data-code="${id}">
-                                    <i class="fad fa-exchange-alt"></i>
-                                    จ่ายเงินสำรอง
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#"
-                                   class="js-job-action"
-                                   data-action="finish"
-                                   data-code="${id}">
-                                    <i class="fad fa-file-check"></i>
-                                    รับเอกสารคืน
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#"
-                                   class="js-job-action"
-                                   data-action="status"
-                                   data-code="${jobDetailCode}">
-                                    <i class="fad fa-map-signs"></i>
-                                    สถานะการส่งสินค้า
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#"
-                                   class="js-job-action"
-                                   data-action="detail"
-                                   data-code="${jobDetailCode}">
-                                    <i class="fad fa-clipboard-list"></i>
-                                    รายละเอียด
-                                </a>
-                            </li>
-
-                            <li class="divider"></li>
-
-                            <li class="dropdown-submenu">
-                                <a href="javascript:;">
-                                    <i class="fad fa-print"></i>
-                                    พิมพ์เอกสาร
+                                <li class="dropdown-submenu">
+                                        <a href="javascript:;">
+                                            <i class="fad fa-print"></i>
+                                            พิมพ์เอกสาร
                                 </a>
 
                                 <ul class="dropdown-menu">
+                                            <li>
+                                                <a href="#"
+                                                   class="js-job-action"
+                                                   data-action="truckDoc"
+                                                   data-code="${jobDetailCode}">
+                                                    <i class="fad fa-file-alt"></i>
+                                                    ใบสั่งปฏิบัติ
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#"
+                                                   class="js-job-action"
+                                                   data-action="paidDoc"
+                                                   data-code="${jobDetailCode}">
+                                                    <i class="fad fa-file-alt"></i>
+                                                    ใบจ่ายเงิน
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li class="divider"></li>
+
+                                    <li class="dropdown-submenu">
+                                        <a href="javascript:;">อื่น ๆ</a>
+
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a href="#"
+                                                   class="js-job-action"
+                                                   data-action="cancel"
+                                                   data-code="${id}">
+                                                    <i class="fa fa-times"></i>
+                                                    ยกเลิกงาน
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a href="#"
+                                                   class="js-job-action"
+                                                   data-action="remove"
+                                                   data-code="${jobDetailCode}">
+                                                    <i class="fad fa-trash"></i>
+                                                    ลบ
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            `;
+                }
+                else if(data.round_status == 'B'){
+                    toolItem += `
                                     <li>
                                         <a href="#"
-                                           class="js-job-action"
-                                           data-action="truckDoc"
-                                           data-code="${jobDetailCode}">
-                                            <i class="fad fa-file-alt"></i>
-                                            ใบสั่งปฏิบัติ
+                                            class="js-job-action"
+                                            data-action="cashflowclearing"
+                                            data-code="${id}">
+                                            <i class="fad fa-file-check"></i>
+                                            เคลียร์เงินและเอกสาร
                                         </a>
                                     </li>
+                                    <li class="divider"></li>
                                     <li>
                                         <a href="#"
-                                           class="js-job-action"
-                                           data-action="paidDoc"
-                                           data-code="${jobDetailCode}">
-                                            <i class="fad fa-file-alt"></i>
-                                            ใบจ่ายเงิน
+                                            class="js-job-action"
+                                            data-action="status"
+                                            data-code="${id}">
+                                            <i class="fad fa-map-signs"></i>
+                                            สถานะการส่งสินค้า
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
-
-                            <li class="divider"></li>
-
-                            <li class="dropdown-submenu">
-                                <a href="javascript:;">อื่น ๆ</a>
-
-                                <ul class="dropdown-menu">
+                            </div>
+                        `;
+                }
+                else if(data.round_status == 'C'){
+                    toolItem += `
                                     <li>
                                         <a href="#"
-                                           class="js-job-action"
-                                           data-action="driver"
-                                           data-code="${id}">
-                                            <i class="fad fa-users"></i>
-                                            เปลี่ยนพนักงานขับรถ
+                                            class="js-job-action"
+                                            data-action="edit"
+                                            data-code="${id}">
+                                            <i class="fad fa-user-friends"></i>
+                                            จัดรถใหม่
                                         </a>
                                     </li>
-
+                                    <li class="divider"></li>
                                     <li>
                                         <a href="#"
-                                           class="js-job-action"
-                                           data-action="cancel"
-                                           data-code="${id}">
-                                            <i class="fa fa-times"></i>
-                                            ยกเลิกงาน
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="#"
-                                           class="js-job-action"
-                                           data-action="remove"
-                                           data-code="${jobDetailCode}">
-                                            <i class="fad fa-trash"></i>
-                                            ลบ
+                                            class="js-job-action"
+                                            data-action="status"
+                                               data-code="${id}">
+                                                <i class="fad fa-map-signs"></i>
+                                                สถานะการส่งสินค้า
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
-                        </ul>
-                    </div>
-                `;
+                            </div>
+                        `;
+                }
+                    
+
+                return toolItem;
             }
 
             const jobTable = $(tableSelector).DataTable({
@@ -438,25 +470,37 @@
                 },
 
                 fnRowCallback: function (row, rowData) {
+                    var truckData = '';
                     const license = escapeHtml(rowData.truck_license || '-');
                     const driver = escapeHtml(rowData.driver_fullname || '-');
-                    const truckData = `<span class="font-blue bold">${license}</span>
+                    const status = getTrackingStatus(rowData);
+                    var paymentLabel = '';
+
+                    if(license != 'ไม่ระบุ')
+                    {
+                        truckData =  `<span class="font-blue bold">${license}</span>
                         <i class="fa fa-dot-circle font-green-jungle" style="font-size:9px"></i>
                         <span class="font-blue bold">${driver}</span>`;
+                    }
+                    else{
+                        truckData = `<span class="font-grey-cascade bold">รถร่วมนอกบริษัท</span>`;
+                    }
+
+                    if(rowData.round_status == 'A'){
+                        paymentLabel = '<span class="label label-sm label-success">ดำเนินงาน</span>'; 
+                    }
+                    else if(rowData.round_status == 'B'){
+                        paymentLabel = '<span class="label label-sm label-warning font-grey-cascade">รอเคลียร์เงิน</span>';
+                    }
+                    else if(rowData.round_status == 'C')
+                    {
+                        paymentLabel = '<span class="label label-sm label-danger">รอจัดรถ</span>';
+                        truckData = '';
+                        $('td', row).eq(7).html('');
+                    }
 
                     $('td', row).eq(6).html(truckData);
-
-                    const status = getTrackingStatus(rowData);
-                    $('td', row)
-                        .eq(8)
-                        .removeClass(statusClasses)
-                        .addClass(status.cssClass)
-                        .text(status.text);
-
-                    const paymentLabel = rowData.is_advance_paid
-                        ? '<span class="label label-sm label-danger">Paid</span>'
-                        : '<span class="label label-sm label-warning">Pending</span>';
-
+                    $('td', row).eq(8).removeClass(statusClasses).addClass(status.cssClass).text(status.text);
                     $('td', row).eq(9).html(paymentLabel);
                 },
 
@@ -506,15 +550,20 @@
                     },
                     {
                         className: 'license-driver-td',
-                        targets: 6
+                        targets: 6,
+                    },
+                    {
+                        className: 'supplier-td',
+                        targets: 7,
                     },
                     {
                         className: 'status-td',
-                        targets: 7
+                        targets: 8,
+                        orderable: false
                     },
                     {
-                        className: 'status-td',
-                        targets: [8, 9],
+                        className: 'payment-status-td',
+                        targets: 9,
                         orderable: false
                     }
                 ],
@@ -551,6 +600,18 @@
                 jobTable.ajax.reload(null, resetPaging === true);
             }
 
+            window.reloadRow = function () {
+                reloadTable(false);
+            };
+
+            const jobChannel = new BroadcastChannel("job-update");
+
+            jobChannel.onmessage = function (event) {
+                if (event.data === "reloadRow") {
+                    reloadTable(false);
+                }
+            };
+
             function setupDatePickers() {
                 $('#filterDateRangeStart').datetimepicker({
                     format: 'Y/m/d',
@@ -586,6 +647,9 @@
                         break;
                     case 'document':
                         getDocument(code);
+                        break;
+                    case 'cashflowclearing':
+                        getCashflowClearing(code);
                         break;
                     case 'driver':
                         setDriver(code);
@@ -695,7 +759,7 @@
         function setRemove(code) {
             $.alert.open(
                 'confirm',
-                'คุณต้องการปิดใช้งานข้อมูลดังกล่าวนี้ ใช่หรือไม่ ?',
+                'คุณต้องการลบข้อมูลดังกล่าวนี้ ใช่หรือไม่ ?',
                 function (confirmed) {
                     if (!confirmed) {
                         return;
@@ -704,7 +768,7 @@
                     overLayPage();
 
                     $.post('/Job/RemoveJob', {
-                        job_detail_code: code
+                        code: code
                     })
                     .done(function (data) {
                         if (data.result === true) {
@@ -728,35 +792,33 @@
                 '/job/finish/' + encodeURIComponent(code),
                 'Finished Job',
                 1100,
+                660
+            );
+        }
+
+        function getCashflowClearing(code) {
+            openJobPopup(
+                '/job/cashflowclearing/' + encodeURIComponent(code),
+                'CashflowClearing Job',
+                1100,
                 640
             );
         }
 
         function setBalance() {
-            openJobPopup('/budget/settrbalance', 'Status Station', 1100, 672);
+            openJobPopup('/budget/balance', 'Status Station', 1100, 672);
         }
 
-        function getAdvance(id) {
-            $.post('/job/updateadvance', { code: id})
-                .done(function (result) {
-                    $('#form-content').html(result);
-                    $('#modal-form-content').modal();
-                })
-                .fail(showRequestError);
-        }
+        function getStatus(code) {
+            var url = '/job/statusupdate/' + code;
+            var width = 1100;
+            var height = 665;
 
-        function setAdvance() {
-            setModalLoading(true);
-
-            $.post('/Job/UpdateAdvanceData', {
-                allowance_id: $('#allowance_id').val(),
-                cash_flow: $('#cash_flow').val()
-            })
-            .done(handleSaveResult)
-            .fail(showRequestError)
-            .always(function () {
-                setModalLoading(false);
-            });
+            var left = (window.screen.width / 2) - (width / 2);
+            var top = (window.screen.height / 2) - (height / 2);
+            var setting = `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`;
+        
+            window.open(url, 'AddAgent', setting);
         }
 
         function getUpdate(id) {

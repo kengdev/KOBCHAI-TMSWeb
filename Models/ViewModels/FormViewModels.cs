@@ -2,38 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using TMSWeb.Models.Entities.LOG;
 
 namespace TMSWeb.Models.ViewModels;
-
-public class QuotationFormViewModel
-{
-    public string quotation_code { get; set; }
-    public decimal start_rate { get; set; }
-    public DateTime quotation_date { get; set; }
-    public DateTime quotation_expire { get; set; }
-    public string customer_name { get; set; }
-    public string contact { get; set; }
-    public string contact_line { get; set; }
-    public DateOnly start { get; set; }
-    public DateOnly expire { get; set; }
-    public string route { get; set; }
-    public string scope { get; set; }
-    public string commodity { get; set; }
-    public string container1 { get; set; }
-    public string container2 { get; set; }
-    public string container3 { get; set; }
-    public string condition_hour { get; set; }
-    public string condition_charged { get; set; }
-    public decimal minimum_rate { get; set; }
-    public decimal price_increase { get; set; }
-    public decimal price_length { get; set; }
-    public decimal charge_cutchassis { get; set; }
-    public decimal insurance_rate { get; set; }
-    public string remark { get; set; }
-    public List<TblQuotationDetail> detail { get; set; }
-    public List<TblQuotationCondition> condition { get; set; }
-}
 
 public class OrderFormViewModel
 {

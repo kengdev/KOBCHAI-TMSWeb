@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using TMSWeb.Models.Entities.LOG;
 
 namespace TMSWeb.Models;
 
@@ -76,6 +77,10 @@ public class ChangeDriverModel
     public decimal new_driver_allowance { get; set; }
     public decimal new_supplier_allowance { get; set; }
     public decimal fuel { get; set; }
+    public decimal cashflow { get; set; }
+    public string create_by { get; set; }
+    public string change_condition { get; set; }
+    public string round_trip { get; set; }
 }
 
 public class CancelJobModel
@@ -85,5 +90,23 @@ public class CancelJobModel
     public decimal trip_cost { get; set; }
     public decimal driver_cost { get; set; }
     public decimal supplier_cost { get; set; }
+    public string create_by { get; set; }
+}
+
+public class CashflowClearingModel
+{
+    public string job_detail_code { get; set; }
+    public long allowance_id { get; set; }
+    public decimal AdvanceLifton { get; set; }
+    public decimal AdvanceLiftoff { get; set; }
+    public decimal AdvanceYard{ get; set; }
+    public decimal AdvancePort{ get; set; }
+    public string[] nameAdvance { get; set; }
+    public decimal[] valAdvance { get; set; }
+    public string container_no { get; set; }
+    public string seal_no { get; set; }
+    public int tare_weight { get; set; }
+    public string[] nameCashing { get; set; }
+    public decimal[] valCashing { get; set; }
     public string create_by { get; set; }
 }

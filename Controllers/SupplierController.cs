@@ -35,16 +35,15 @@ public class SupplierController : Controller
     public async Task<IActionResult> Edit(string code)
     {
         var model = await _supplierService.GetSupplierData(code);
-        var fleet = await _supplierService.GetInternalFleetByCode(code);
-        var supplier = await _supplierService.GetExternalFleetByCode(code);
+        //var fleet = await _supplierService.GetInternalFleetByCode(code);
+        /*var supplier = await _supplierService.GetExternalFleetByCode(code);
 
         if (supplier != null)
-            model.TblFleetExternals.Add(supplier);
+            model.TblFleetExternals.Add(supplier);*/
 
-        if (fleet != null)
-            model.TblFleetInternals.Add(fleet);
+        //if (fleet != null)
+            //model.TblFleetInternals.Add(fleet);
 
-        ViewData["SupplierTypeCode"] = from a in await _dropListService.GetSupplierType() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == model.SupplierTypeCode };
         ViewData["BankName"] = from a in await _dropListService.GetBank() select new SelectListItem { Value = a.label.ToString(), Text = a.label, Selected = a.label == model.BankName };
         return View(model);
     }

@@ -167,18 +167,20 @@
                     </div>
                 </div>
             </div>
+            @if (data.RoundTrip == "A")
+            {
+                <div class="form-actions">
+                    @if (Model.status != "BO")
+                    {
+                        <button type="button" onclick="getUpdate('@data.Id')" class="btn blue">อัพเดทสถานะ</button>
+                    }
 
-            <div class="form-actions">
-                @if (Model.status != "BO")
-                {
-                    <button type="button" onclick="getUpdate('@data.HashCode')" class="btn blue">อัพเดทสถานะ</button>
-                }
-
-                <button type="button" onclick="reverseStatus('@data.HashCode', '@Model.status')"
-                        class="btn red">
-                    ย้อนกลับสถานะ
-                </button>
-            </div>
+                    <button type="button" onclick="reverseStatus('@data.Id', '@Model.status')"
+                            class="btn red">
+                        ย้อนกลับสถานะ
+                    </button>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -236,7 +238,7 @@
         }
 
         function getUpdate(code) {
-            var url = "/status/importinvoice?code=" + code;
+            var url = "/status/importinvoice/" + code;
             window.location.replace(url);
         }
     </script>

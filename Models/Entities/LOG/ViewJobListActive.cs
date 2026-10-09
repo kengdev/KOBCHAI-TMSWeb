@@ -11,6 +11,8 @@ public partial class ViewJobListActive
 
     public string? JobType { get; set; }
 
+    public string TradeType { get; set; } = null!;
+
     public string CustomerCode { get; set; } = null!;
 
     public string CustomerNameTh { get; set; } = null!;
@@ -118,4 +120,10 @@ public partial class ViewJobListActive
     public long? Id { get; set; }
 
     public decimal? CashFlow { get; set; }
+
+    public string? RoundTrip { get; set; }
+
+    public decimal? DriverAllowance { get; set; }
+
+    public decimal? SupplierAllowance { get; set; }
 }

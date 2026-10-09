@@ -34,7 +34,6 @@ public class TruckController : Controller
         ViewData["fuel_type_code"] = from a in await _dropListService.GetFuelType() select new SelectListItem { Value = a.key.ToString(), Text = a.label };
         ViewData["truck_type_code"] = from a in await _dropListService.GetTruckType() select new SelectListItem { Value = a.key.ToString(), Text = a.label };
         ViewData["truck_year"] = from a in _dropListService.GetTruckYear() select new SelectListItem { Value = a.key.ToString(), Text = a.label };
-        ViewData["supplier_code"] = from a in await _dropListService.GetSupplierFleet() select new SelectListItem { Value = a.key.ToString(), Text = a.label };
 
         return PartialView();
     }
@@ -185,14 +184,14 @@ public class TruckController : Controller
         (iFilter.filterNameTH == null || w.truck_no.ToUpper().Contains(iFilter.filterNameTH.ToUpper())) &&
         (iFilter.filterTruckGroup == null || w.truck_type_name.Contains(iFilter.filterTruckGroup)) &&
         (iFilter.filterBrand == null || w.brand_name.Contains(iFilter.filterBrand)) &&
-        (iFilter.filterSupplier == null || w.fleet_code.Contains(iFilter.filterSupplier)) &&
+        (iFilter.filterSupplier == null || w.fleet_supplier_type_code.Contains(iFilter.filterSupplier)) &&
         (iFilter.filterNameEN == null || w.truck_chassis_number.ToUpper().Contains(iFilter.filterNameEN.ToUpper())));
 
         Func<TruckViewModel, string> orderingFunction = (c => param.iSortCol_0 == 1 ? c.truck_no :
         param.iSortCol_0 == 2 ? c.truck_license :
         param.iSortCol_0 == 3 ? c.truck_type_name :
         param.iSortCol_0 == 4 ? c.brand_name :
-        param.iSortCol_0 == 5 ? c.supplier_name : c.truck_no);
+        param.iSortCol_0 == 5 ? c.fleet_supplier_type_name : c.truck_no);
 
         IEnumerable<TruckViewModel> listQuery;
         if (param.sSortDir_0 == "asc")

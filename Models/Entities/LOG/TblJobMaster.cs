@@ -11,7 +11,7 @@ public partial class TblJobMaster
 
     public string TradeType { get; set; } = null!;
 
-    public string TruckTypegroupCode { get; set; } = null!;
+    public string TruckTypeCode { get; set; } = null!;
 
     public string CustomerCode { get; set; } = null!;
 
@@ -71,5 +71,5 @@ public partial class TblJobMaster
 
     public virtual ICollection<TblJobPlace> TblJobPlaces { get; set; } = new List<TblJobPlace>();
 
-    public virtual TblTruckTypegroup TruckTypegroupCodeNavigation { get; set; } = null!;
+    public virtual TblTruckType TruckTypeCodeNavigation { get; set; } = null!;
 }

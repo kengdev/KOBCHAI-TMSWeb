@@ -97,10 +97,7 @@ public class CustomerController : Controller
     {
         var data = _customerService.GetCustomerDataByCode(code);
 
-        return Json(new
-        {
-            data
-        });
+        return Json(data);
     }
 
     public async Task<IActionResult> GetCustomerDataList(jQueryDataTableParamModel param, iDataTableParamModel iFilter)

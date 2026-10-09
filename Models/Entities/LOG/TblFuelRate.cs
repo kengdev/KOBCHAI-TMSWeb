@@ -15,7 +15,5 @@ public partial class TblFuelRate
 
     public string UpdateBy { get; set; } = null!;
 
-    public virtual TblTruckTypegroup TruckTypegroupCodeNavigation { get; set; } = null!;
-
     public virtual TblZone ZoneCodeNavigation { get; set; } = null!;
 }

@@ -9,10 +9,6 @@ public partial class TblTruck
 
     public string TruckLicense { get; set; } = null!;
 
-    public string SupplierCode { get; set; } = null!;
-
-    public string FleetType { get; set; } = null!;
-
     public bool IsActived { get; set; }
 
     public bool IsEnabled { get; set; }
@@ -21,29 +17,25 @@ public partial class TblTruck
 
     public string CreateBy { get; set; } = null!;
 
-    public DateTime UpdateDate { get; set; }
-
-    public string UpdateBy { get; set; } = null!;
-
-    public virtual TblSupplier SupplierCodeNavigation { get; set; } = null!;
-
     public virtual ICollection<TblJobAllowance> TblJobAllowances { get; set; } = new List<TblJobAllowance>();
 
     public virtual ICollection<TblJobDetail> TblJobDetails { get; set; } = new List<TblJobDetail>();
 
+    public virtual ICollection<TblJobTracking> TblJobTrackings { get; set; } = new List<TblJobTracking>();
+
     public virtual ICollection<TblJobTruck> TblJobTrucks { get; set; } = new List<TblJobTruck>();
 
-    public virtual ICollection<TblJobcashflow> TblJobcashflows { get; set; } = new List<TblJobcashflow>();
+    public virtual ICollection<TblJobcashflowAdvance> TblJobcashflowAdvances { get; set; } = new List<TblJobcashflowAdvance>();
 
-    public virtual ICollection<TblTruckChecklist> TblTruckChecklists { get; set; } = new List<TblTruckChecklist>();
+    public virtual ICollection<TblJobcashflowCashing> TblJobcashflowCashings { get; set; } = new List<TblJobcashflowCashing>();
+
+    public virtual ICollection<TblJobcashflow> TblJobcashflows { get; set; } = new List<TblJobcashflow>();
 
     public virtual TblTruckDetail? TblTruckDetail { get; set; }
 
     public virtual ICollection<TblTruckDriver> TblTruckDrivers { get; set; } = new List<TblTruckDriver>();
 
     public virtual ICollection<TblTruckTrailer> TblTruckTrailers { get; set; } = new List<TblTruckTrailer>();
-
-    public virtual ICollection<TblVatinvoice> TblVatinvoices { get; set; } = new List<TblVatinvoice>();
 
     public virtual ICollection<TblFleetpayment> FleetpaymentCodes { get; set; } = new List<TblFleetpayment>();
 }

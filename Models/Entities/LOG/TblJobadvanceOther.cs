@@ -18,6 +18,4 @@ public partial class TblJobadvanceOther
     public bool IsBilling { get; set; }
 
     public virtual TblJobadvance AdvanceCodeNavigation { get; set; } = null!;
-
-    public virtual ICollection<TblBillingOther> TblBillingOthers { get; set; } = new List<TblBillingOther>();
 }

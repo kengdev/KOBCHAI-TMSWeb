@@ -39,9 +39,5 @@ public partial class TblJobadvance
 
     public virtual TblJobDetail JobDetailCodeNavigation { get; set; } = null!;
 
-    public virtual ICollection<TblBillingOther> TblBillingOthers { get; set; } = new List<TblBillingOther>();
-
     public virtual ICollection<TblJobadvanceOther> TblJobadvanceOthers { get; set; } = new List<TblJobadvanceOther>();
-
-    public virtual ICollection<TblJobcashflowAdvance> TblJobcashflowAdvances { get; set; } = new List<TblJobcashflowAdvance>();
 }

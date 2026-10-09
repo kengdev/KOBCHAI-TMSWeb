@@ -1,9 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NPOI.SS.Formula;
 using NPOI.SS.Formula.Functions;
+using System.ComponentModel;
+using System.Transactions;
 using TMSWeb.Models;
 using TMSWeb.Models.Entities.LOG;
 using TMSWeb.Models.ViewModels;
 using TMSWeb.Repositories;
+using TMSWeb.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TMSWeb.Repositories;
@@ -11,12 +15,16 @@ namespace TMSWeb.Repositories;
 public class JobRepository
 {
     private readonly DbTMSContext db;
-    private readonly BudgetRepository _budgetService;
+    private readonly IConfiguration _configuration;
+    private readonly AdvanceFundRepository _fundService;
+    private readonly TripAllowanceService _allowanceService;
 
-    public JobRepository(DbTMSContext context, BudgetRepository budgetService)
+    public JobRepository(DbTMSContext context, IConfiguration configuration, AdvanceFundRepository funcService, TripAllowanceService allowanceService)
     {
         db = context;
-        _budgetService = budgetService;
+        _configuration = configuration;
+        _fundService = funcService;
+        _allowanceService = allowanceService;
     }
 
     public async Task<ViewJobListActive?> GetOrderByCode(int id)
@@ -26,132 +34,7 @@ public class JobRepository
             .FirstOrDefaultAsync(w => w.Id == id);
     }
 
-    public async Task<ResponseViewModel> RemoveJob(string code, string username)
-    {
-        await using var tr = await db.Database.BeginTransactionAsync();
-
-        try
-        {
-            var log = new LogRepository(db);
-            DateTime now = DateTime.Now;
-
-            var detail = await db.TblJobDetails.Where(w => w.JobDetailCode == code).AsNoTracking().FirstOrDefaultAsync();
-            if (detail == null)
-            {
-                await tr.RollbackAsync();
-                return NotFound("ไม่พบข้อมูลงาน");
-            }
-
-            var jobCode = detail.JobCode;
-            var job = await db.TblJobMasters.FindAsync(jobCode);
-            if (job != null)
-            {
-                job.LiftedAmount = job.LiftedAmount - 1;
-            }
-
-            var advance = await db.TblJobadvances
-                .FirstOrDefaultAsync(w => w.JobDetailCode == code);
-
-            if (advance != null)
-            {
-                await db.TblJobadvanceOthers
-                    .Where(w => w.AdvanceCode == advance.AdvanceCode)
-                    .ExecuteDeleteAsync();
-
-                await db.TblJobadvances
-                    .Where(w => w.AdvanceCode == advance.AdvanceCode)
-                    .ExecuteDeleteAsync();
-            }
-
-            await db.TblJobImgs
-                .Where(w => w.JobDetailCode == code)
-                .ExecuteDeleteAsync();
-
-            var supplierCost = await db.TblSupplierAllowances
-                .FirstOrDefaultAsync(w => w.JobDetailCode == code);
-
-            if (supplierCost != null)
-            {
-                db.TblSupplierAllowances.Remove(supplierCost);
-            }
-
-            var transactionCodes = await db.LogBudgetTransactions
-                .AsNoTracking()
-                .Where(w => w.JobDetailCode == code)
-                .Select(s => s.TransactionCode)
-                .Distinct()
-                .ToListAsync();
-
-            decimal amount = 0;
-            foreach (var transactionCode in transactionCodes)
-            {
-                var budgetTransaction = await db.TblBudgetTransactions
-                    .FirstOrDefaultAsync(w => w.TransactionCode == transactionCode);
-
-                if (budgetTransaction == null)
-                {
-                    continue;
-                }
-
-                if (budgetTransaction.PaymentType == "MIN")
-                {
-                    amount += budgetTransaction.Amount;
-                }
-                else
-                {
-                    if (budgetTransaction.Amount < 0)
-                    {
-                        amount = budgetTransaction.Amount + Math.Abs(amount);
-                    }
-                    else
-                    {
-                        amount = budgetTransaction.Amount - Math.Abs(amount);
-                    }
-                }
-
-                budgetTransaction.IsEnabled = false;
-                budgetTransaction.UpdateDate = now;
-                budgetTransaction.UpdateBy = username;
-            }
-
-            var budget = await db.TblBudgets
-                .FirstOrDefaultAsync(w => w.BudgetType == "A");
-
-            if (budget != null)
-            {
-                budget.Balance += amount;
-            }
-
-            var i_binding = await db.TblBindingGenerates.FindAsync(job.JobCode, code);
-            i_binding.IsEnabled = false;
-
-            await db.TblJobAllowances
-                .Where(w => w.JobDetailCode == code)
-                .ExecuteDeleteAsync();
-
-            await db.TblJobTrackings
-                .Where(w => w.JobDetailCode == code)
-                .ExecuteDeleteAsync();
-
-            await db.TblJobDetails
-                .Where(w => w.JobDetailCode == code)
-                .ExecuteDeleteAsync();
-
-            log.AddSystemLog(code, "Remove job.", username);
-
-            await db.SaveChangesAsync();
-            await tr.CommitAsync();
-
-            return Success();
-        }
-        catch (Exception ex)
-        {
-            await tr.RollbackAsync();
-            return Error(ex);
-        }
-    }
-
-    public async Task<ResponseViewModel> EditJob(TblJobDetail jobToEdit, int job_allowance_id)
+    public async Task<ResponseViewModel> EditJob(TblJobDetail jobToEdit, ChangeDriverModel model)
     {
         await using var tr = await db.Database.BeginTransactionAsync();
 
@@ -164,6 +47,8 @@ public class JobRepository
             var jobDetail = await db.TblJobDetails
                 .FirstOrDefaultAsync(w => w.JobDetailCode == jobToEdit.JobDetailCode);
 
+            var supplierData = await db.TblSuppliers.Where(w => w.SupplierCode == model.new_supplier_code).FirstOrDefaultAsync();
+
             if (jobDetail == null)
             {
                 await tr.RollbackAsync();
@@ -172,15 +57,18 @@ public class JobRepository
 
             var change = new ChangeDriverModel
             {
-                job_allowance_id = job_allowance_id,
+                cashflow = model.cashflow,
+                job_allowance_id = model.job_allowance_id,
                 job_detail_code = jobDetail.JobDetailCode,
                 mission_code = jobDetail.MissionPlaceCode,
                 supplier_code = jobDetail.SupplierCode,
                 driver_code = jobDetail.DriverCode,
                 truck_code = jobDetail.TruckCode,
-                new_supplier_code = jobToEdit.SupplierCode,
-                new_driver_code = jobToEdit.DriverCode,
-                new_truck_code = jobToEdit.TruckCode
+                new_supplier_code = model.new_supplier_code,
+                new_driver_code = supplierData.FleetTypeCode == "F1" ? model.new_driver_code : "26000000",
+                new_truck_code = supplierData.FleetTypeCode == "F1" ? model.new_truck_code : "T000000",
+                round_trip = model.round_trip,
+                create_by = model.create_by
             };
 
             var truck = await db.TblTruckDetails
@@ -194,8 +82,7 @@ public class JobRepository
 
             await EditDriverDataAsync(change);
 
-
-            jobToEdit.DriverCode = jobToEdit.DriverCode == null ? "DV000000" : jobToEdit.DriverCode;
+            jobToEdit.DriverCode = jobToEdit.DriverCode == null ? "26000000" : jobToEdit.DriverCode;
             jobToEdit.TruckCode = jobToEdit.TruckCode == null ? "T000000" : jobToEdit.TruckCode;
             jobToEdit.UpdateDate = now;
 
@@ -224,44 +111,28 @@ public class JobRepository
     public async Task<List<CashflowViewModel>> GetJobAllowanceListAsync(string job_detail_code)
     {
         var query = await (
-                        from allowance in db.TblJobAllowances
+                         from cashflow in db.TblJobcashflows
+                         join truck in db.TblTrucks
+                             on cashflow.TruckCode equals truck.TruckCode
 
-                        join cashflowData in db.TblJobcashflows
-                            on new
-                            {
-                                allowance.JobDetailCode,
-                                allowance.TruckCode,
-                                allowance.DriverCode
-                            }
-                            equals new
-                            {
-                                cashflowData.JobDetailCode,
-                                cashflowData.TruckCode,
-                                cashflowData.DriverCode
-                            }
-                            into cashflowGroup
+                         join allowance in db.TblJobAllowances
+                             on truck.TruckCode equals allowance.TruckCode
 
-                        from cashflow in cashflowGroup.DefaultIfEmpty()
+                         join driver in db.TblDrivers
+                             on allowance.DriverCode equals driver.DriverCode
 
-                        join truck in db.TblTrucks
-                            on allowance.TruckCode equals truck.TruckCode
-
-                        join driver in db.TblDrivers
-                            on allowance.DriverCode equals driver.DriverCode
-
-                        where allowance.JobDetailCode == job_detail_code
-
-                        select new CashflowViewModel
-                        {
-                            job_detail_code = allowance.JobDetailCode,
-                            job_date = allowance.JobDate,
-                            driver = driver.DriverFullname,
-                            license = truck.TruckLicense,
-
-                            cashflow = cashflow != null
-                                ? cashflow.CashFlow
-                                : 0
-                        })
+                         where allowance.JobDetailCode == job_detail_code &&
+                                cashflow.JobDetailCode == job_detail_code &&
+                                allowance.RoundTrip != "C" &&
+                                allowance.DriverCode == driver.DriverCode
+                         select new CashflowViewModel
+                         {
+                             job_detail_code = allowance.JobDetailCode,
+                             job_date = allowance.JobDate,
+                             driver = driver.DriverFullname,
+                             license = truck.TruckLicense,
+                             cashflow = cashflow.CashFlow
+                         })
                         .AsNoTracking()
                         .ToListAsync();
 
@@ -272,8 +143,23 @@ public class JobRepository
     {
         return await db.TblJobDetails
             .Include(i => i.TblJobcashflows)
+            .Include(i => i.SupplierCodeNavigation)
             .AsNoTracking()
             .FirstOrDefaultAsync(w => w.JobDetailCode == code);
+    }
+
+    public async Task<List<DriverViewModel>> GetDriver(string driver_code)
+    {
+        return await db.TblDrivers
+            .Where(w => w.IsEnabled == true && w.DriverCode != driver_code)
+            .AsNoTracking()
+            .OrderBy(o => o.DriverFullname)
+            .Select(s => new DriverViewModel
+            {
+                driver_code = s.DriverCode,
+                fullname = s.DriverFullname
+            })
+            .ToListAsync();
     }
 
     public async Task<List<JobViewModel>> GetJobDataList(DateTime start, DateTime end)
@@ -294,20 +180,6 @@ public class JobRepository
                 on g.DriverCode equals h.DriverCode
             join f in db.TblSuppliers.AsNoTracking()
                 on g.SupplierCode equals f.SupplierCode
-            join i in db.TblJobcashflows.AsNoTracking()
-                on new
-                {
-                    g.JobDetailCode,
-                    g.TruckCode,
-                    g.DriverCode
-                }
-                equals new
-                {
-                    i.JobDetailCode,
-                    i.TruckCode,
-                    i.DriverCode
-                }
-                into cashflowGroup
             where g.IsComplete == false &&
                   b.IsCanceled == false &&
                   b.JobDetailCode != null &&
@@ -333,20 +205,19 @@ public class JobRepository
                 driver_fullname = h.DriverFullname,
                 is_document = b.IsDocument,
                 is_billing = b.IsBilling,
-                tracking_status = b.TrackingStatus,
                 is_weeklypayment = g != null ? g.IsWeeklypayment : false,
-                is_advance_paid = cashflowGroup.Any(x => x.CashFlow > 0)
+                tracking_status = b.TrackingStatus,
+                round_status = g.RoundTrip
             })
             .ToListAsync();
     }
 
-    public async Task<TblJobadvance?> GetAdvanceByJob(string code)
+    public async Task<TblJobcashflowAdvance?> GetAdvanceByJob(string code)
     {
-        return await db.TblJobadvances
-            .Include(i => i.TblJobcashflowAdvances)
-            .Include(i => i.TblJobadvanceOthers)
+        return await db.TblJobcashflowAdvances
+            .Where(w => w.JobDetailCode == code)
             .AsNoTracking()
-            .FirstOrDefaultAsync(w => w.JobDetailCode == code && w.IsEnabled == true);
+            .FirstOrDefaultAsync();
     }
 
     public async Task<bool> IsPayment(string job_detail_code, string driver_code)
@@ -361,217 +232,116 @@ public class JobRepository
         return isWeeklyPayment.HasValue && isWeeklyPayment.Value == false;
     }
 
-    public async Task<List<OtherJobViewModel>> GetAdvanceOtherByJob(string code)
+    public async Task<List<OtherJobViewModel>> GetAdvanceOtherByJob(long code)
     {
-        return await db.TblJobadvanceOthers
+        return await db.TblJobcashflowAdvanceOthers
             .AsNoTracking()
-            .Where(w => w.AdvanceCode == code)
+            .Where(w => w.CashflowAdvanceId == code)
             .Select(s => new OtherJobViewModel
             {
                 name = s.AdvanceOther,
                 value = s.AdvanceOtherValue,
-                supplier_value = s.SupplierOtherValue
             })
             .ToListAsync();
     }
 
-    public async Task<List<TblJobcashing>> GetCashingByJob(string code)
+    public async Task<List<TblJobcashflowCashing>> GetCashingByJob(string code)
     {
-        return await db.TblJobcashings
+        return await db.TblJobcashflowCashings
             .Where(w => w.JobDetailCode == code)
+
             .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<ResponseViewModel> FinishJob(FinishJobModel jobToFinish, TblJobadvance jobAdvance, TblJobcashing jobCashing)
+    public async Task<ResponseViewModel> FinishJob(CashflowClearingModel model)
     {
-        await using var tr = await db.Database.BeginTransactionAsync();
-
+        var log = new LogRepository(db);
+        var response = new ResponseViewModel();
         try
         {
-            var log = new LogRepository(db);
-            DateTime now = DateTime.Now;
+            decimal total = 0;
+            decimal refund = 0;
+            var allowanceData = await db.TblJobAllowances.FirstOrDefaultAsync(w => w.Id == model.allowance_id);
+            allowanceData.IsComplete = true;
 
-            var allowance = await db.TblJobAllowances
-                .FirstOrDefaultAsync(w => w.Id == jobToFinish.allowance_id);
+            TblJobcashflowAdvance advance = new TblJobcashflowAdvance();
+            advance.JobDetailCode = model.job_detail_code;
+            advance.TruckCode = allowanceData.TruckCode;
+            advance.DriverCode = allowanceData.DriverCode;
+            advance.SupplierCode = allowanceData.SupplierCode;
+            advance.AdvanceLifton = model.AdvanceLifton;
+            advance.AdvanceLiftoff = model.AdvanceLiftoff;
+            advance.AdvanceYard = model.AdvanceYard;
+            advance.AdvancePort = model.AdvancePort;
+            advance.AdvanceTotal = advance.AdvanceLifton + advance.AdvanceLiftoff + advance.AdvanceYard + advance.AdvancePort;
 
-            if (allowance == null)
+            List<TblJobcashflowAdvanceOther> listAdvance = new List<TblJobcashflowAdvanceOther>();
+            for (int i = 0; i < model.valAdvance.Count(); i++)
             {
-                await tr.RollbackAsync();
-                return NotFound("ไม่พบข้อมูลเงินสด");
-            }
-            allowance.IsComplete = true;
-
-            decimal totalOtherCashing = 0;
-            if (jobToFinish.valCashing != null)
-            {
-                await db.TblJobcashings
-                    .Where(w => w.JobDetailCode == jobToFinish.job_detail_code)
-                    .ExecuteDeleteAsync();
-
-                await db.TblJobcashflowCashings
-                    .Where(w => w.JobDetailCode == jobToFinish.job_detail_code &&
-                            w.TruckCode == allowance.TruckCode &&
-                            w.DriverCode == allowance.DriverCode)
-                    .ExecuteDeleteAsync();
-
-
-                for (int i = 0; i < jobToFinish.valCashing.Count(); i++)
+                if (model.valAdvance[i] > 0)
                 {
-                    if (jobToFinish.nameCashing[i] != "" && jobToFinish.valCashing[i] != 0)
+                    listAdvance.Add(new TblJobcashflowAdvanceOther
                     {
-                        totalOtherCashing += jobToFinish.valCashing[i];
-                        db.TblJobcashings.Add(new TblJobcashing
-                        {
-                            Cashing = jobToFinish.nameCashing[i],
-                            CashingValue = jobToFinish.valCashing[i],
-                            JobDetailCode = jobToFinish.job_detail_code
-                        });
+                        AdvanceOther = model.nameAdvance[i],
+                        AdvanceOtherValue = model.valAdvance[i],
+                    });
 
-                        db.TblJobcashflowCashings.Add(new TblJobcashflowCashing
-                        {
-                            Cashing = jobToFinish.nameCashing[i],
-                            CashingValue = jobToFinish.valCashing[i],
-                            JobDetailCode = jobToFinish.job_detail_code,
-                            TruckCode = allowance.TruckCode,
-                            DriverCode = allowance.DriverCode
-                        });
-                    }
+                    total = total + model.valAdvance[i];
                 }
             }
 
-            var advance = await db.TblJobadvances
-                .FirstOrDefaultAsync(w => w.JobDetailCode == jobToFinish.job_detail_code);
-
-            if (advance == null)
+            for (int i = 0; i < model.valCashing.Count(); i++)
             {
-                await tr.RollbackAsync();
-                return NotFound("ไม่พบข้อมูลเงินสำรอง");
-            }
-
-            advance.AdvanceLiftoff = jobAdvance.AdvanceLiftoff;
-            advance.AdvanceLifton = jobAdvance.AdvanceLifton;
-            advance.AdvancePort = jobAdvance.AdvancePort;
-            advance.AdvanceYard = jobAdvance.AdvanceYard;
-            advance.AdvanceTotal = jobAdvance.AdvanceLiftoff + jobAdvance.AdvanceLifton + jobAdvance.AdvancePort + jobAdvance.AdvanceYard;
-
-            var cashflowAdvance = await db.TblJobcashflowAdvances.FirstOrDefaultAsync(w => w.AdvanceCode == advance.AdvanceCode);
-            if (cashflowAdvance == null)
-            {
-                db.TblJobcashflowAdvances.Add(new TblJobcashflowAdvance
+                if (model.valCashing[i] > 0)
                 {
-                    JobDetailCode = jobToFinish.job_detail_code,
-                    TruckCode = allowance.TruckCode,
-                    DriverCode = allowance.DriverCode,
-                    AdvanceLifton = advance.AdvanceLifton,
-                    AdvanceLiftoff = advance.AdvanceLiftoff,
-                    AdvanceYard = advance.AdvanceYard,
-                    AdvancePort = advance.AdvancePort,
-                    AdvanceTotal = advance.AdvanceTotal,
-                    AdvanceCode = advance.AdvanceCode
-                });
-            }
-            else
-            {
-                cashflowAdvance.AdvanceLifton = advance.AdvanceLifton;
-                cashflowAdvance.AdvanceLiftoff = advance.AdvanceLiftoff;
-                cashflowAdvance.AdvanceYard = advance.AdvanceYard;
-                cashflowAdvance.AdvancePort = advance.AdvancePort;
-                cashflowAdvance.AdvanceTotal = advance.AdvanceTotal;
-                cashflowAdvance.AdvanceCode = advance.AdvanceCode;
-            }
-
-            decimal totalOtherAdvance = 0;
-            if (jobToFinish.valAdvance != null)
-            {
-                await db.TblJobadvanceOthers
-                    .Where(w => w.AdvanceCode == advance.AdvanceCode)
-                    .ExecuteDeleteAsync();
-
-                await db.TblJobcashflowAdvanceOthers
-                    .Where(w => w.AdvanceCode == advance.AdvanceCode)
-                    .ExecuteDeleteAsync();
-
-                for (int i = 0; i < jobToFinish.valAdvance.Count(); i++)
-                {
-                    if (jobToFinish.nameAdvance[i] != "" && jobToFinish.valAdvance[i] != 0)
+                    db.TblJobcashflowCashings.Add(new TblJobcashflowCashing
                     {
-                        totalOtherAdvance += jobToFinish.valAdvance[i];
-                        db.TblJobadvanceOthers.Add(new TblJobadvanceOther
-                        {
-                            AdvanceOther = jobToFinish.nameAdvance[i],
-                            AdvanceOtherValue = jobToFinish.valAdvance[i],
-                            SupplierOtherValue = 0,
-                            AdvanceCode = advance.AdvanceCode
-                        });
+                        Cashing = model.nameCashing[i],
+                        CashingValue = model.valCashing[i],
+                        JobDetailCode = model.job_detail_code,
+                        TruckCode = advance.TruckCode,
+                        DriverCode = advance.DriverCode,
+                        SupplierCode = advance.SupplierCode
+                    });
 
-                        db.TblJobcashflowAdvanceOthers.Add(new TblJobcashflowAdvanceOther
-                        {
-                            AdvanceOther = jobToFinish.nameAdvance[i],
-                            AdvanceOtherValue = jobToFinish.valAdvance[i],
-                            JobDetailCode = jobToFinish.job_detail_code,
-                            TruckCode = allowance.TruckCode,
-                            DriverCode = allowance.DriverCode,
-                            AdvanceCode = advance.AdvanceCode
-                        });
-                    }
+                    total = total + model.valCashing[i];
                 }
             }
 
-            var itemDetail = await db.TblJobDetails.FindAsync(jobToFinish.job_detail_code);
-            if (itemDetail == null)
+            var supplierData = await db.TblSuppliers.Where(w => w.SupplierCode == allowanceData.SupplierCode).AsNoTracking().FirstOrDefaultAsync();
+            if (supplierData.FleetTypeCode == "F1")
             {
-                await tr.RollbackAsync();
-                return NotFound("ไม่พบข้อมูลงาน");
+                var cashflowData = await db.TblJobcashflows.FirstOrDefaultAsync(w => w.JobDetailCode == allowanceData.JobDetailCode &&
+                                                                                    w.TruckCode == allowanceData.TruckCode && w.DriverCode == allowanceData.DriverCode);
+                cashflowData.IsClearing = true;
+                cashflowData.ClearingDate = DateTime.Now;
+
+                refund = cashflowData.CashFlow - total;
+                AdvanceFundResult fundResult = await _fundService.ReturnAsync(model.job_detail_code, cashflowData.Id, refund, model.create_by, cashflowData.DriverCode, null, false);
             }
 
-            itemDetail.TrackingStatus = "BO";
-            itemDetail.ContainerNo = jobToFinish.container_no.ToUpper();
-            itemDetail.SealNo = jobToFinish.seal_no.ToUpper();
-            itemDetail.TareWeight = jobToFinish.tare_weight;
-            itemDetail.SupplierInvoice = itemDetail.SupplierCode != "SP26001" ? jobToFinish.supplier_invoice : "-";
-            itemDetail.UpdateDate = now;
-            itemDetail.UpdateBy = jobToFinish.username;
+            advance.AdvanceTotal = advance.AdvanceTotal + listAdvance.Sum(s => s.AdvanceOtherValue);
+            advance.TblJobcashflowAdvanceOthers = listAdvance;
 
-            if (itemDetail.SupplierCode == "SP26001")
-            {
-                var driver = await db.TblJobAllowances
-                    .FirstOrDefaultAsync(w => w.JobDetailCode == jobToFinish.job_detail_code);
+            db.TblJobcashflowAdvances.Add(advance);
 
-                if (driver == null)
-                {
-                    var master = await db.TblJobMasters
-                        .FirstOrDefaultAsync(w => w.JobCode == itemDetail.JobCode);
+            var jobDetail = await db.TblJobDetails.FirstOrDefaultAsync(w => w.JobDetailCode == model.job_detail_code);
+            jobDetail.TrackingStatus = "BO";
+            jobDetail.ContainerNo = model.container_no.ToUpper();
+            jobDetail.SealNo = model.seal_no.ToUpper();
+            jobDetail.TareWeight = model.tare_weight;
+            jobDetail.IsDocument = true;
+            jobDetail.UpdateDate = DateTime.Now;
+            jobDetail.UpdateBy = model.create_by;
 
-                    if (master != null)
-                    {
-                        int fuel = await GetFuelRateAsync(itemDetail.MissionPlaceCode, master.TruckTypegroupCode);
-                        var jobPlace = await db.TblJobPlaces
-                            .FirstOrDefaultAsync(w => w.JobCode == master.JobCode);
-                    }
-                }
-            }
-
-            db.TblJobTrackings.Add(new TblJobTracking
-            {
-                JobDetailCode = jobToFinish.job_detail_code,
-                TrackingStatus = "BO",
-                TrackingDate = now,
-                Lattitude = "-",
-                Longitude = "-",
-                Speed = "0"
-            });
-
-            log.AddSystemLog(jobToFinish.job_detail_code, "Finished job.", jobToFinish.username);
-
+            log.AddSystemLog(model.job_detail_code, "Cashflow clearing.", model.create_by);
             await db.SaveChangesAsync();
-            await tr.CommitAsync();
 
             return Success();
         }
         catch (Exception ex)
         {
-            await tr.RollbackAsync();
             return Error(ex);
         }
     }
@@ -674,11 +444,11 @@ public class JobRepository
         }
     }
 
-    public async Task<List<TrackingViewModel>> GetListTrackingByJob(string code)
+    public async Task<List<TrackingViewModel>> GetListTrackingByJob(string code, string truck_code, string driver_code, string supplier_code)
     {
         return await db.TblJobTrackings
             .AsNoTracking()
-            .Where(w => w.JobDetailCode == code)
+            .Where(w => w.JobDetailCode == code && w.TruckCode == truck_code && w.DriverCode == driver_code && w.SupplierCode == supplier_code)
             .Select(s => new TrackingViewModel
             {
                 job_detail_code = s.JobDetailCode,
@@ -686,162 +456,6 @@ public class JobRepository
                 tracking_date = s.TrackingDate
             })
             .ToListAsync();
-    }
-
-    public async Task<ResponseViewModel> UpdateAdvanceData(FinishJobModel model, TblJobadvance jobAdvance, TblJobcashing jobCashing)
-    {
-        await using var tr = await db.Database.BeginTransactionAsync();
-
-        try
-        {
-            var response = new ResponseViewModel();
-            decimal total = 0;
-            decimal totalOtherCashing = 0;
-            var log = new LogRepository(db);
-            var codeService = new CodeRepository(db);
-            var transactionCode = codeService.GetBudgetTransactionCode();
-            DateTime now = DateTime.Now;
-
-            var order = await db.ViewJobListActives
-                .AsNoTracking()
-                .FirstOrDefaultAsync(w => w.Id == model.allowance_id);
-
-            if (order == null)
-            {
-                await tr.RollbackAsync();
-                return NotFound("ไม่พบข้อมูลงาน");
-            }
-
-            var jobBudget = await (
-                from a in db.TblBudgetTransactions.AsNoTracking()
-                join b in db.TblJobBudgetTransactions.AsNoTracking()
-                    on a.TransactionCode equals b.TransactionCode
-                where b.JobDetailCode == model.job_detail_code
-                orderby a.TransactionDate descending
-                select a)
-                .FirstOrDefaultAsync();
-
-            var budget = await db.TblBudgets
-                .FirstOrDefaultAsync(w => w.BudgetCode == "01");
-
-            if (budget == null)
-            {
-                await tr.RollbackAsync();
-                return NotFound("ไม่พบข้อมูลงบประมาณ");
-            }
-
-            if (jobBudget == null)
-            {
-                db.TblBudgetTransactions.Add(new TblBudgetTransaction
-                {
-                    TransactionCode = transactionCode,
-                    TransactionType = "JOB",
-                    BudgetCode = "01",
-                    TransactionDate = now,
-                    Balance = budget.Balance,
-                    Amount = model.cash_flow,
-                    AmountDiff = 0,
-                    PaymentType = "MIN",
-                    IsEnabled = true,
-                    CreateDate = now,
-                    CreateBy = model.username,
-                    UpdateDate = now,
-                    UpdateBy = model.username
-                });
-
-                budget.Balance -= model.cash_flow;
-
-                db.TblJobBudgetTransactions.Add(new TblJobBudgetTransaction
-                {
-                    JobDetailCode = order.JobDetailCode,
-                    TransactionCode = transactionCode
-                });
-
-                string missionName = order.MissionName.Replace("&", " ");
-                response.notifMessage = "จ่ายเงินสำรองจำนวน : " + model.cash_flow.ToString("#,##0.00") + " บ." + "\n";
-                response.notifMessage += "งานเลขที่ : " + model.job_detail_code + "\n";
-                response.notifMessage += "ลูกค้า : " + order.CustomerAcronym + "\n";
-                response.notifMessage += "สถานที่ : " + order.StartName + " - " + missionName + "\n";
-                response.notifMessage += "ยอดคงเหลือ : " + budget.Balance.ToString("#,##0.00") + " บ.";
-            }
-            else
-            {
-                var diff = jobBudget.Amount - model.cash_flow;
-
-                db.TblBudgetTransactions.Add(new TblBudgetTransaction
-                {
-                    TransactionCode = transactionCode,
-                    TransactionType = "JOB",
-                    BudgetCode = "01",
-                    TransactionDate = now,
-                    Balance = budget.Balance,
-                    Amount = model.cash_flow,
-                    AmountDiff = diff,
-                    PaymentType = "UPDATE",
-                    IsEnabled = true,
-                    CreateDate = now,
-                    CreateBy = model.username,
-                    UpdateDate = now,
-                    UpdateBy = model.username
-                });
-
-                budget.Balance += diff;
-
-                db.TblJobBudgetTransactions.Add(new TblJobBudgetTransaction
-                {
-                    JobDetailCode = order.JobDetailCode,
-                    TransactionCode = transactionCode
-                });
-
-                string missionName = order.MissionName.Replace("&", " ");
-                response.notifMessage = "แก้ไขการจ่ายเงินสำรองของงานเลขที่ " + model.job_detail_code + "\n";
-                response.notifMessage += "ลูกค้า : " + order.CustomerAcronym + "\n";
-                response.notifMessage += "สถานที่ : " + order.StartName + " - " + missionName + "\n";
-                response.notifMessage += "จากเดิมจ่าย : " + jobBudget.Amount.ToString("#,##0.00") + " บ." + "\n";
-                response.notifMessage += "ยอดจ่ายใหม่ : " + model.cash_flow.ToString("#,##0.00") + " บ." + "\n";
-                response.notifMessage += "ยอดคงเหลือ : " + budget.Balance.ToString("#,##0.00") + " บ.";
-            }
-
-            var jobAllowance = await db.TblJobAllowances.Where(w => w.Id == model.allowance_id).FirstOrDefaultAsync();
-            var jobCashflow = await db.TblJobcashflows.FirstOrDefaultAsync(w => w.JobDetailCode == jobAllowance.JobDetailCode &&
-                                                                w.TruckCode == jobAllowance.TruckCode &&
-                                                                w.DriverCode == jobAllowance.DriverCode);
-
-            if (jobCashflow != null)
-            {
-                jobCashflow.CashFlow = model.cash_flow;
-            }
-            else
-            {
-                db.TblJobcashflows.Add(new TblJobcashflow
-                {
-                    JobDetailCode = jobAllowance.JobDetailCode,
-                    TruckCode = jobAllowance.TruckCode,
-                    DriverCode = jobAllowance.DriverCode,
-                    CashFlow = model.cash_flow,
-                    AdvanceLifton = 0,
-                    AdvanceLiftoff = 0,
-                    AdvanceYard = 0,
-                    AdvancePort = 0,
-                    AdvanceTotal = 0,
-                    AdvanceRemark = "-"
-                });
-            }
-
-            log.AddSystemLog(order.JobDetailCode, "Update advance payment data.", model.username + " (paid)");
-
-            await db.SaveChangesAsync();
-            await tr.CommitAsync();
-
-            response.result = true;
-            response.resultMessage = "บันทึกข้อมูลเรียบร้อยแล้ว";
-            return response;
-        }
-        catch (Exception ex)
-        {
-            await tr.RollbackAsync();
-            return Error(ex);
-        }
     }
 
     public async Task<ResponseViewModel> UpdateData(UpdateDataModel dataToUpdate, string username)
@@ -915,53 +529,38 @@ public class JobRepository
         }
     }
 
-    public async Task<ResponseViewModel> ChangeDriver(ChangeDriverModel model, string username)
+    public async Task<ResponseViewModel> WaitingDriver(ChangeDriverModel model, string username)
     {
         await using var tr = await db.Database.BeginTransactionAsync();
 
         try
         {
             var log = new LogRepository(db);
-            DateTime now = DateTime.Now;
+            var jobData = await db.TblJobDetails.FirstOrDefaultAsync(w => w.JobDetailCode == model.job_detail_code);
+            var oldJobData = jobData;
 
-            var jobDetail = await db.TblJobDetails
-                .FirstOrDefaultAsync(w => w.JobDetailCode == model.job_detail_code);
+            jobData.TruckCode = "T000000";
+            jobData.DriverCode = "26000000";
 
-            if (jobDetail == null)
+            var allowanceData = await db.TblJobAllowances.FirstOrDefaultAsync(w => w.Id == model.job_allowance_id);
+            allowanceData.RoundTrip = "B";
+
+            db.TblJobAllowances.Add(new TblJobAllowance
             {
-                await tr.RollbackAsync();
-                return NotFound("ไม่พบข้อมูลงาน");
-            }
+                RoundTrip = "C",
+                JobDetailCode = model.job_detail_code,
+                JobDate = allowanceData.JobDate,
+                TruckCode = "T000000",
+                DriverCode = "26000000",
+                DriverAllowance = 0,
+                SupplierCode = jobData.SupplierCode,
+                SupplierAllowance = 0,
+                IsComplete = false,
+                IsWeeklypayment = false,
+                IsMonthlypayment = false,
+            });
 
-            var truck = await (
-                from a in db.TblTrucks.AsNoTracking()
-                join b in db.TblTruckDetails.AsNoTracking()
-                    on a.TruckCode equals b.TruckCode
-                where a.TruckCode == model.truck_code
-                select new
-                {
-                    a.SupplierCode,
-                    b.TruckTypegroupCode
-                })
-                .FirstOrDefaultAsync();
-
-            string supplierCode = jobDetail.SupplierCode;
-            string driverCode = jobDetail.DriverCode;
-
-            await ChangeDriverDataAsync(model);
-
-            var job = await db.TblJobDetails.FindAsync(model.job_detail_code);
-            if (job != null)
-            {
-                job.SupplierCode = model.new_supplier_code;
-                job.DriverCode = model.new_driver_code;
-                job.TruckCode = model.new_truck_code;
-                job.TrailerLicense = model.trailer_license != null ? model.trailer_license : "-";
-                job.UpdateBy = username;
-                job.UpdateDate = now;
-            }
-
-            log.AddSystemLog(model.job_detail_code, "Change driver from " + driverCode + " to " + model.new_driver_code + ".", username);
+            log.AddSystemLog(model.job_detail_code, "Waiting driver from " + oldJobData.DriverCode + " to new driver.", username);
 
             await db.SaveChangesAsync();
             await tr.CommitAsync();
@@ -1025,6 +624,90 @@ public class JobRepository
         catch (Exception ex)
         {
             await tr.RollbackAsync();
+            return Error(ex);
+        }
+    }
+
+    public async Task<ResponseViewModel> CashflowClearing(CashflowClearingModel model)
+    {
+        var log = new LogRepository(db);
+        var response = new ResponseViewModel();
+        try
+        {
+            decimal total = 0;
+            decimal refund = 0;
+            var allowanceData = await db.TblJobAllowances.FirstOrDefaultAsync(w => w.Id == model.allowance_id);
+            allowanceData.IsComplete = true;
+
+            TblJobcashflowAdvance advance = new TblJobcashflowAdvance();
+            advance.JobDetailCode = model.job_detail_code;
+            advance.TruckCode = allowanceData.TruckCode;
+            advance.DriverCode = allowanceData.DriverCode;
+            advance.SupplierCode = allowanceData.SupplierCode;
+            advance.AdvanceLifton = model.AdvanceLifton;
+            advance.AdvanceLiftoff = model.AdvanceLiftoff;
+            advance.AdvanceYard = model.AdvanceYard;
+            advance.AdvancePort = model.AdvancePort;
+            advance.AdvanceTotal = advance.AdvanceLifton + advance.AdvanceLiftoff + advance.AdvanceYard + advance.AdvancePort;
+
+            List<TblJobcashflowAdvanceOther> listAdvance = new List<TblJobcashflowAdvanceOther>();
+            for (int i = 0; i < model.valAdvance.Count(); i++)
+            {
+                if (model.valAdvance[i] > 0)
+                {
+                    listAdvance.Add(new TblJobcashflowAdvanceOther
+                    {
+                        AdvanceOther = model.nameAdvance[i],
+                        AdvanceOtherValue = model.valAdvance[i],
+                    });
+
+                    total = total + model.valAdvance[i];
+                }
+            }
+
+            for (int i = 0; i < model.valCashing.Count(); i++)
+            {
+                if (model.valCashing[i] > 0)
+                {
+                    db.TblJobcashflowCashings.Add(new TblJobcashflowCashing
+                    {
+                        Cashing = model.nameCashing[i],
+                        CashingValue = model.valCashing[i],
+                        JobDetailCode = model.job_detail_code,
+                        TruckCode = advance.TruckCode,
+                        DriverCode = advance.DriverCode,
+                        SupplierCode = advance.SupplierCode
+                    });
+
+                    total = total + model.valCashing[i];
+                }
+            }
+
+            var supplierData = await db.TblSuppliers.Where(w => w.SupplierCode == allowanceData.SupplierCode).AsNoTracking().FirstOrDefaultAsync();
+            if (supplierData.FleetTypeCode == "F1")
+            {
+                var cashflowData = await db.TblJobcashflows.FirstOrDefaultAsync(w => w.JobDetailCode == allowanceData.JobDetailCode &&
+                                                                                    w.TruckCode == allowanceData.TruckCode && 
+                                                                                    w.DriverCode == allowanceData.DriverCode);
+                cashflowData.IsClearing = true;
+                cashflowData.ClearingDate = DateTime.Now;
+
+                refund = cashflowData.CashFlow - (total + advance.AdvanceTotal);
+                AdvanceFundResult fundResult = await _fundService.ReturnAsync(model.job_detail_code, cashflowData.Id, refund, model.create_by, cashflowData.DriverCode, null, false);
+            }
+
+            advance.AdvanceTotal = advance.AdvanceTotal + listAdvance.Sum(s => s.AdvanceOtherValue);
+            advance.TblJobcashflowAdvanceOthers = listAdvance;
+
+            db.TblJobcashflowAdvances.Add(advance);
+
+            log.AddSystemLog(model.job_detail_code, "Cashflow clearing.", model.create_by);
+            await db.SaveChangesAsync();
+
+            return Success();
+        }
+        catch (Exception ex)
+        {
             return Error(ex);
         }
     }
@@ -1097,17 +780,79 @@ public class JobRepository
             .FirstOrDefaultAsync(w => w.TruckCode == code);
     }
 
-    public async Task<BudgetViewModel> GetTrBudget()
-    {
-        var budgetData = await _budgetService.GetTrBudget();
-        return budgetData;
-    }
-
     public async Task<TblSupplier> GetTblSupplier(string supplierCode)
     {
         var data = await db.TblSuppliers.Where(w => w.SupplierCode == supplierCode).AsNoTracking().FirstOrDefaultAsync();
         return data;
     }
+
+    public async Task<ResponseViewModel> RemoveJob(string code, string username)
+    {
+        await using var tr = await db.Database.BeginTransactionAsync();
+        ResponseViewModel response = new ResponseViewModel();
+
+        try
+        {
+            var log = new LogRepository(db);
+            var detail = await db.TblJobDetails.FirstOrDefaultAsync(w => w.JobDetailCode == code);
+            var job_code = detail.JobCode;
+            detail.IsEnabled = false;
+
+            var job = await db.TblJobMasters.FirstOrDefaultAsync(w => w.JobCode == job_code);
+            job.LiftedAmount = job.LiftedAmount - 1;
+
+            var cashflowData = await db.TblJobcashflows.Where(w => w.JobDetailCode == code).FirstOrDefaultAsync();
+            var cashflowAdvance = await db.TblJobcashflowAdvances.Where(w => w.JobDetailCode == code).FirstOrDefaultAsync();
+            var cashflowCashing = await db.TblJobcashflowCashings.Where(w => w.JobDetailCode == code).ToListAsync();
+
+            if (cashflowAdvance != null)
+            {
+                var cashflowAdvanceOther = await db.TblJobcashflowAdvanceOthers.Where(w => w.CashflowAdvanceId == cashflowAdvance.Id).ToListAsync();
+                if (cashflowAdvanceOther != null)
+                    db.TblJobcashflowAdvances.Remove(cashflowAdvance);
+
+                db.TblJobcashflowAdvanceOthers.RemoveRange(cashflowAdvanceOther);
+            }
+
+            if (cashflowCashing != null)
+                db.TblJobcashflowCashings.RemoveRange(cashflowCashing);
+
+            var images = await db.TblJobImgs.Where(w => w.JobDetailCode == code).ToListAsync();
+            db.TblJobImgs.RemoveRange(images);
+
+            var allowanceData = await db.TblJobAllowances.FirstOrDefaultAsync(w => w.JobDetailCode == code);
+            db.TblJobAllowances.Remove(allowanceData);
+
+            if (cashflowData != null)
+            {
+                AdvanceFundResult fundResult = await _fundService.ReturnAsync(code, cashflowData.Id, cashflowData.CashFlow, username, cashflowData.DriverCode, null, false);
+                db.TblJobcashflows.Remove(cashflowData);
+            }
+
+            var i_binding = db.TblBindingGenerates.Find(job.JobCode, code);
+            i_binding.IsEnabled = false;
+
+            var tracking = db.TblJobTrackings.Where(w => w.JobDetailCode == code).ToList();
+            db.TblJobTrackings.RemoveRange(tracking);
+
+            log.AddSystemLog(code, "Remove job.", username);
+            await db.SaveChangesAsync();
+            await tr.CommitAsync();
+            response.result = true;
+            response.resultMessage = "บันทึกข้อมูลเรียบร้อยแล้ว";
+        }
+        catch (Exception ex)
+        {
+            await tr.DisposeAsync();
+            await db.DisposeAsync();
+            response.result = false;
+            response.resultMessage = "<div>เกิดข้อผิดพลาดระหว่างการทำงาน</div><div style='margin-top:-30px'> กรุณาลองใหม่อีกครั้ง หรือติดต่อผู้ดูแลระบบ</div>";
+            response.errorException = ex;
+        }
+
+        return response;
+    }
+
 
     private async Task<decimal> GetDriverCostAsync(string placeCode)
     {
@@ -1152,251 +897,192 @@ public class JobRepository
 
     private async Task EditDriverDataAsync(ChangeDriverModel model)
     {
+        var deductDriver = _configuration.GetValue<decimal>("Deduction:driver");
+        var deductSupplier = _configuration.GetValue<decimal>("Deduction:supplier");
+        var driverContainer = _configuration.GetValue<decimal>("Allowance:driver_container_pickup");
+        var supplierContainer = _configuration.GetValue<decimal>("Allowance:supplier_container_pickup");
+
         var jobDetail = await db.TblJobDetails.FirstOrDefaultAsync(w => w.JobDetailCode == model.job_detail_code);
-        var jobAllowance = await db.TblJobAllowances.FirstOrDefaultAsync(w => w.Id == model.job_allowance_id);
         var jobMaster = await db.TblJobMasters.Where(w => w.JobCode == jobDetail.JobCode).AsNoTracking().FirstOrDefaultAsync();
+
+        var oldJobAllowance = await db.TblJobAllowances.FirstOrDefaultAsync(w => w.Id == model.job_allowance_id);
 
         var newSupplier = await db.TblSuppliers.Where(w => w.SupplierCode == model.new_supplier_code).FirstOrDefaultAsync();
         var oldSupplier = await db.TblSuppliers.Where(w => w.SupplierCode == model.supplier_code).FirstOrDefaultAsync();
 
-        if (oldSupplier.FleetTypeCode == "F1" && newSupplier.FleetTypeCode == "F1")
+        var oldCashflow = await db.TblJobcashflows.FirstOrDefaultAsync(w => w.JobDetailCode == model.job_detail_code && w.DriverCode == oldJobAllowance.DriverCode);
+
+        var newTruck = await db.TblTruckDetails.Where(w => w.TruckCode == model.new_truck_code).AsNoTracking().FirstOrDefaultAsync();
+        var oldTruck = await db.TblTruckDetails.Where(w => w.TruckCode == jobDetail.TruckCode).AsNoTracking().FirstOrDefaultAsync();
+
+        var driverAllowance = await _allowanceService.GetDriverCostAsync(oldSupplier, newSupplier, jobDetail.MissionPlaceCode);
+        var truckAllowance = await _allowanceService.GetTruckCostAsync(oldSupplier, newSupplier, newTruck, jobDetail.MissionPlaceCode);
+
+        if (jobDetail.TrackingStatus != "PN")
         {
-            decimal driverAllowance = await GetDriverCostAsync(model.mission_code);
-            decimal supplierAllowance = await GetSupplierCostAsync(newSupplier.SupplierCode, jobMaster.TruckTypegroupCode, model.mission_code);
-            if (jobAllowance != null)
+            //จัดรถใหม่หลังจากมีการทอยตู้เสร็จ
+            if (model.round_trip == "C")
             {
-                jobAllowance.TruckCode = model.new_truck_code;
-                jobAllowance.DriverAllowance = driverAllowance;
-                jobAllowance.DriverCode = model.new_driver_code;
-                jobAllowance.SupplierCode = model.new_supplier_code;
-                jobAllowance.SupplierAllowance = supplierAllowance;
+                jobDetail.TruckCode = model.new_truck_code;
+                jobDetail.DriverCode = model.new_driver_code;
+                jobDetail.SupplierCode = model.new_supplier_code;
+
+                oldJobAllowance.TruckCode = model.new_truck_code;
+                oldJobAllowance.DriverCode = model.new_driver_code;
+                oldJobAllowance.SupplierCode = model.new_supplier_code;
+                oldJobAllowance.DriverAllowance = driverAllowance.oldDriver;
+                oldJobAllowance.SupplierAllowance = driverAllowance.oldTruck;
+                oldJobAllowance.RoundTrip = "A";
+
+                if (newSupplier.FleetTypeCode == "F1")
+                {
+                    var jobCashflow = new TblJobcashflow
+                    {
+                        JobDetailCode = model.job_detail_code,
+                        TruckCode = model.new_truck_code,
+                        DriverCode = model.new_driver_code,
+                        CashFlow = model.cashflow,
+                        AdvanceRemark = "มีการเปลี่ยนแปลงพนักงานขับรถ",
+                        IsClearing = false
+                    };
+
+                    db.TblJobcashflows.Add(jobCashflow);
+
+                    await db.SaveChangesAsync();
+
+                    AdvanceFundResult fundResult = await _fundService.PayAsync(model.job_detail_code, jobCashflow.Id, 2, model.cashflow, model.new_driver_code, model.create_by);
+                }
             }
             else
             {
-                db.TblJobAllowances.Add(new TblJobAllowance
+                if (newSupplier.FleetTypeCode == "F1")
                 {
-                    JobDetailCode = model.job_detail_code,
-                    TruckCode = model.new_truck_code,
-                    DriverCode = model.new_driver_code,
-                    DriverAllowance = driverAllowance,
-                    SupplierCode = model.new_supplier_code,
-                    SupplierAllowance = supplierAllowance,
-                    IsComplete = false,
-                    IsWeeklypayment = false
-                });
-            }
-        }
-        else if (oldSupplier.FleetTypeCode != "F1" && newSupplier.FleetTypeCode == "F1")
-        {
-            decimal driverAllowance = await GetDriverCostAsync(model.mission_code);
-            decimal supplierAllowance = await GetSupplierCostAsync(model.new_supplier_code, jobMaster.TruckTypegroupCode, model.mission_code);
-            if (jobAllowance != null)
-            {
-                jobAllowance.TruckCode = model.new_truck_code;
-                jobAllowance.DriverAllowance = driverAllowance;
-                jobAllowance.DriverCode = model.new_driver_code;
-                jobAllowance.SupplierCode = model.new_supplier_code;
-                jobAllowance.SupplierAllowance = supplierAllowance;
-            }
-            else
-            {
-                db.TblJobAllowances.Add(new TblJobAllowance
+                    //จ่ายค่าทอยตู้ให้คนเก่า
+                    if (oldSupplier.FleetTypeCode == "F1")
+                    {
+                        oldJobAllowance.RoundTrip = "B";
+                        oldJobAllowance.DriverAllowance = driverAllowance.oldDriver;
+                        oldJobAllowance.SupplierAllowance = truckAllowance.oldTruck;
+                    }
+
+                    //จ่ายค่าเที่ยวให้คนใหม่
+                    db.TblJobAllowances.Add(new TblJobAllowance
+                    {
+                        RoundTrip = "A",
+                        JobDate = DateOnly.FromDateTime(jobMaster.JobDate),
+                        JobDetailCode = model.job_detail_code,
+                        TruckCode = model.new_truck_code,
+                        DriverCode = model.new_driver_code,
+                        DriverAllowance = driverAllowance.newDriver,
+                        SupplierCode = model.new_supplier_code,
+                        SupplierAllowance = truckAllowance.newTruck,
+                        IsComplete = false,
+                        IsWeeklypayment = false,
+                        IsMonthlypayment = false,
+                    });
+
+                    var jobCashflow = new TblJobcashflow
+                    {
+                        JobDetailCode = model.job_detail_code,
+                        TruckCode = model.new_truck_code,
+                        DriverCode = model.new_driver_code,
+                        CashFlow = model.cashflow,
+                        AdvanceRemark = "มีการเปลี่ยนแปลงพนักงานขับรถ",
+                        IsClearing = false
+                    };
+
+                    db.TblJobcashflows.Add(jobCashflow);
+
+                    await db.SaveChangesAsync();
+
+                    AdvanceFundResult fundResult = await _fundService.PayAsync(model.job_detail_code, jobCashflow.Id, 2, model.cashflow, model.new_driver_code, model.create_by);
+                }
+                else
                 {
-                    JobDetailCode = model.job_detail_code,
-                    TruckCode = model.new_truck_code,
-                    DriverCode = model.new_driver_code,
-                    DriverAllowance = driverAllowance,
-                    SupplierCode = model.new_supplier_code,
-                    SupplierAllowance = supplierAllowance,
-                    IsComplete = false,
-                    IsWeeklypayment = false
-                });
+                    if (oldSupplier.FleetTypeCode == "F1")
+                    {
+                        oldJobAllowance.RoundTrip = "B";
+                        oldJobAllowance.DriverAllowance = driverAllowance.oldDriver;
+                        oldJobAllowance.SupplierAllowance = truckAllowance.oldTruck;
+                    }
+
+                    db.TblJobAllowances.Add(new TblJobAllowance
+                    {
+                        RoundTrip = "A",
+                        JobDate = DateOnly.FromDateTime(jobMaster.JobDate),
+                        JobDetailCode = model.job_detail_code,
+                        TruckCode = "T000000",
+                        DriverCode = "26000000",
+                        DriverAllowance = 0,
+                        SupplierCode = model.new_supplier_code,
+                        SupplierAllowance = truckAllowance.newTruck,
+                        IsComplete = false,
+                        IsWeeklypayment = false,
+                        IsMonthlypayment = false
+                    });
+                }
             }
         }
         else
         {
-            var supplierJobAllowance = await db.TblSupplierAllowances
-                                    .Where(w => w.SupplierCode == model.supplier_code &&
-                                            w.JobDetailCode == model.job_detail_code)
-                                    .FirstOrDefaultAsync();
+            oldJobAllowance.DriverCode = model.new_driver_code;
+            oldJobAllowance.TruckCode = model.new_truck_code;
+            oldJobAllowance.SupplierCode = model.new_supplier_code;
 
-            decimal driverAllowance = await GetDriverCostAsync(model.mission_code);
-            decimal supplierAllowance = await GetSupplierCostAsync(model.new_supplier_code, jobMaster.TruckTypegroupCode, model.mission_code);
-            if (supplierJobAllowance != null)
+            long cashflowId;
+            if (newSupplier.FleetTypeCode == "F1")
             {
-                jobAllowance.TruckCode = "T000000";
-                jobAllowance.DriverAllowance = 0;
-                jobAllowance.DriverCode = "26000000";
-                supplierJobAllowance.SupplierCode = model.new_supplier_code;
-                supplierJobAllowance.SupplierAllowance = supplierAllowance;
+                if (oldSupplier.FleetTypeCode == "F1")
+                {
+                    cashflowId = oldCashflow.Id;
+                    oldCashflow.TruckCode = model.new_truck_code;
+                    oldCashflow.DriverCode = model.new_driver_code;
+                    oldCashflow.CashFlow = model.cashflow;
+                    oldCashflow.AdvanceRemark = "มีการเปลี่ยนแปลงพนักงานขับรถ";
+
+                    AdvanceFundResult returnFundResult = await _fundService.ReturnAsync(model.job_detail_code, oldCashflow.Id, oldCashflow.CashFlow, model.driver_code, model.create_by);
+                }
+                else
+                {
+                    //เปลี่ยนจากรถนอกเป็นรถภายใน
+                    oldJobAllowance.DriverAllowance = driverAllowance.driverValue;
+                    oldJobAllowance.SupplierAllowance = truckAllowance.truckValue;
+
+                    var jobCashflow = new TblJobcashflow
+                    {
+                        JobDetailCode = model.job_detail_code,
+                        TruckCode = model.new_truck_code,
+                        DriverCode = model.new_driver_code,
+                        CashFlow = model.cashflow,
+                        AdvanceRemark = "มีการเปลี่ยนแปลงพนักงานขับรถ",
+                        IsClearing = false
+                    };
+
+                    db.TblJobcashflows.Add(jobCashflow);
+                    await db.SaveChangesAsync();
+
+                    cashflowId = jobCashflow.Id;
+                }
+
+                AdvanceFundResult payFundResult = await _fundService.PayAsync(model.job_detail_code, cashflowId, 2, model.cashflow, model.new_driver_code, model.create_by);
             }
             else
             {
-                db.TblJobAllowances.Add(new TblJobAllowance
+                oldJobAllowance.DriverAllowance = 0;
+                oldJobAllowance.SupplierAllowance = truckAllowance.oldTruck;
+
+                //เปลี่ยนจากรถภายในเป็นภายนอก
+                if (oldSupplier.FleetTypeCode == "F1")
                 {
-                    JobDetailCode = model.job_detail_code,
-                    JobDate = DateOnly.FromDateTime(DateTime.Now),
-                    TruckCode = "T000000",
-                    DriverCode = "26000000",
-                    DriverAllowance = 0,
-                    SupplierCode = model.new_supplier_code,
-                    SupplierAllowance = await GetSupplierCostAsync(model.new_supplier_code, jobMaster.TruckTypegroupCode, jobDetail.MissionPlaceCode),
-                    IsComplete = false,
-                    IsWeeklypayment = false
-                });
+                    if (oldCashflow != null)
+                    {
+                        AdvanceFundResult fundResult = await _fundService.ReturnAsync(model.job_detail_code, oldCashflow.Id, oldCashflow.CashFlow, model.create_by, oldCashflow.DriverCode, null, false);
+                        oldCashflow.IsClearing = true;
+                        oldCashflow.ClearingDate = DateTime.Now;
+                    }
+                }
             }
         }
-    }
-
-    private async Task ChangeDriverDataAsync(ChangeDriverModel model)
-    {
-        var oldSupplier = await db.TblSuppliers
-            .AsNoTracking()
-            .FirstOrDefaultAsync(w => w.SupplierCode == model.supplier_code);
-        var newSupplier = await db.TblSuppliers
-            .AsNoTracking()
-            .FirstOrDefaultAsync(w => w.SupplierCode == model.new_supplier_code);
-
-        var jobAllowance = await db.TblJobAllowances
-            .Where(w => w.JobDetailCode == model.job_detail_code)
-            .OrderByDescending(o => o.Id).FirstOrDefaultAsync();
-
-        if (oldSupplier.FleetTypeCode == "F1" && newSupplier.FleetTypeCode == "F1")
-        {
-            if (jobAllowance != null)
-            {
-                jobAllowance.DriverAllowance = model.driver_allowance;
-                jobAllowance.SupplierAllowance = model.supplier_allowance;
-            }
-
-            db.TblJobAllowances.Add(new TblJobAllowance
-            {
-                JobDetailCode = model.job_detail_code,
-                JobDate = DateOnly.FromDateTime(DateTime.Now),
-                TruckCode = model.new_truck_code,
-                DriverCode = model.new_driver_code,
-                DriverAllowance = model.new_supplier_allowance,
-                SupplierCode = model.new_supplier_code,
-                SupplierAllowance = model.new_supplier_allowance,
-                IsComplete = false,
-                IsWeeklypayment = false
-            });
-        }
-        else if (oldSupplier.FleetTypeCode != "F1" && newSupplier.FleetTypeCode == "F1")
-        {
-            decimal driverAllowance = await GetDriverCostAsync(model.mission_code);
-            decimal supplierAllowance = await GetSupplierCostAsync(model.new_supplier_code, model.new_truck_code, model.mission_code);
-
-            db.TblJobAllowances.Add(new TblJobAllowance
-            {
-                JobDetailCode = model.job_detail_code,
-                JobDate = DateOnly.FromDateTime(DateTime.Now),
-                TruckCode = model.new_truck_code,
-                DriverCode = model.new_driver_code,
-                DriverAllowance = model.new_supplier_allowance,
-                SupplierCode = model.new_supplier_code,
-                SupplierAllowance = model.new_supplier_allowance,
-                IsComplete = false,
-                IsWeeklypayment = false
-            });
-        }
-        else
-        {
-            decimal driverAllowance = await GetDriverCostAsync(model.mission_code);
-            decimal supplierAllowance = await GetSupplierCostAsync(model.new_supplier_code, model.new_truck_code, model.mission_code);
-            if (jobAllowance != null)
-            {
-                jobAllowance.DriverAllowance = model.driver_allowance;
-                jobAllowance.SupplierAllowance = model.supplier_allowance;
-            }
-            else
-            {
-                db.TblJobAllowances.Add(new TblJobAllowance
-                {
-                    JobDetailCode = model.job_detail_code,
-                    JobDate = DateOnly.FromDateTime(DateTime.Now),
-                    TruckCode = "T000000",
-                    DriverCode = "26000000",
-                    DriverAllowance = 0,
-                    SupplierCode = model.new_supplier_code,
-                    SupplierAllowance = model.new_supplier_allowance,
-                    IsComplete = false,
-                    IsWeeklypayment = false
-                });
-            }
-        }
-    }
-
-    private async Task<int> GetFuelRateAsync(string placeCode, string? truckType)
-    {
-        if (string.IsNullOrEmpty(truckType))
-        {
-            return 0;
-        }
-
-        bool hasPlace = await db.TblIndustries
-            .AsNoTracking()
-            .AnyAsync(w => w.IndustryCode == placeCode);
-
-        if (!hasPlace)
-        {
-            return 0;
-        }
-
-        return await db.TblFuelRates
-            .AsNoTracking()
-            .Where(w => w.TruckTypegroupCode == truckType)
-            .Select(s => (int?)s.FuelRateValue)
-            .FirstOrDefaultAsync() ?? 0;
-    }
-
-    private async Task<decimal> GetSupplierCostAsync(string? supplierCode, string? truckType, string placeCode)
-    {
-        if (string.IsNullOrEmpty(supplierCode))
-        {
-            return 0;
-        }
-
-        var supplier = await db.TblSuppliers
-            .AsNoTracking()
-            .FirstOrDefaultAsync(w => w.SupplierCode == supplierCode);
-
-        if (supplier == null)
-        {
-            return 0;
-        }
-
-        if (supplier.FleetTypeCode == "F1")
-        {
-            var fleet = await (
-                from a in db.TblFleetInternals.AsNoTracking()
-                join b in db.TblFleetRates.AsNoTracking()
-                    on a.FleetCode equals b.FleetCode
-                where a.SupplierCode == supplierCode &&
-                      b.PlaceCode == placeCode
-                select b)
-                .FirstOrDefaultAsync();
-
-            if (fleet == null)
-            {
-                return 0;
-            }
-
-            return truckType switch
-            {
-                "01" => fleet.Truck4w,
-                "02" => fleet.Truck6w,
-                "03" => fleet.Truck10w,
-                _ => 0
-            };
-        }
-
-        return await db.TblSupplierRates
-            .AsNoTracking()
-            .Where(w => w.SupplierCode == supplierCode &&
-                        w.PlaceCode == placeCode)
-            .Select(s => (decimal?)s.CostRate)
-            .FirstOrDefaultAsync() ?? 0;
     }
 
     private static ResponseViewModel Success()

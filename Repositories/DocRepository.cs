@@ -62,6 +62,7 @@ public class DocRepository
                               agent_code = a.AgentCode,
                               container_no = a.ContainerNo,
                               seal_no = a.SealNo,
+                              cash_flow = a.CashFlow.Value,
                               job_remark = a.JobRemark
                           }).AsNoTracking().FirstOrDefaultAsync();
         return data;
@@ -73,16 +74,14 @@ public class DocRepository
                           join b in db.TblJobDetails on a.TruckCode equals b.TruckCode
                           join c in db.TblDrivers on b.DriverCode equals c.DriverCode
                           join d in db.TblTruckDetails on a.TruckCode equals d.TruckCode
-                          join e in db.TblSuppliers on a.SupplierCode equals e.SupplierCode
-                          join f in db.TblTruckTypegroups on d.TruckTypegroupCode equals f.TruckTypegroupCode
+                          join f in db.TblTruckTypes on d.TruckTypeCode equals f.TruckTypeCode
                           where b.JobDetailCode == code
                           select new DriverViewModel
                           {
                               truck_license = b.TruckCode != "T000000" ? a.TruckLicense : "",
                               fullname = b.DriverCode != "DV000000" ? c.DriverFullname : "",
-                              truck_typegroup_code = d.TruckTypegroupCode,
+                              truck_type_code = d.TruckTypeCode
                               //truck_typegroup_name = f.TruckTypegroupName,
-                              fleet_type = e.FleetTypeCode
                           }).AsNoTracking().FirstOrDefaultAsync();
         if (data != null)
         {

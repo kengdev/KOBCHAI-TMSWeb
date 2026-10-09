@@ -1,4 +1,3 @@
-using TMSWeb.Models.Entities.LOG;
 
 namespace TMSWeb.Models.ViewModels;
 public class OrderPlaceViewModel
@@ -41,5 +40,4 @@ public class JobLoadPlaceModel
     public decimal advance_cost { get; set; }
     public string job_invoice { get; set; }
     public bool is_billing { get; set; }
-    public List<TblJobadvanceOther> other_list { get; set; }
 }

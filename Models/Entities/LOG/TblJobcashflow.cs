@@ -5,6 +5,8 @@ namespace TMSWeb.Models.Entities.LOG;
 
 public partial class TblJobcashflow
 {
+    public long Id { get; set; }
+
     public string JobDetailCode { get; set; } = null!;
 
     public string TruckCode { get; set; } = null!;
@@ -13,25 +15,15 @@ public partial class TblJobcashflow
 
     public decimal CashFlow { get; set; }
 
-    public decimal AdvanceLifton { get; set; }
-
-    public decimal AdvanceLiftoff { get; set; }
-
-    public decimal AdvanceYard { get; set; }
-
-    public decimal AdvancePort { get; set; }
-
-    public decimal AdvanceTotal { get; set; }
-
     public string AdvanceRemark { get; set; } = null!;
+
+    public bool IsClearing { get; set; }
+
+    public DateTime? ClearingDate { get; set; }
 
     public virtual TblDriver DriverCodeNavigation { get; set; } = null!;
 
     public virtual TblJobDetail JobDetailCodeNavigation { get; set; } = null!;
-
-    public virtual TblJobcashflowAdvance? TblJobcashflowAdvance { get; set; }
-
-    public virtual ICollection<TblJobcashflowCashing> TblJobcashflowCashings { get; set; } = new List<TblJobcashflowCashing>();
 
     public virtual TblTruck TruckCodeNavigation { get; set; } = null!;
 }

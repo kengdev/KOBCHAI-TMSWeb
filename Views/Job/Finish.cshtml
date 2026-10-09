@@ -80,13 +80,24 @@
                     <div class="form-body">
                         <div class="row">
                             <div class="col-md-3">
+                                <span class="bold font-blue">@Model.SupplierName</span><br/>
                                 <span class="bold font-blue">@Model.TruckLicense | @Model.DriverFullname</span>
                             </div>
-                            <div class="col-md-3">
-                                <label class="bold">ยอดใช้จ่าย : </label>
-                                <span class="font-green-jungle bold">@Model.CashFlow.Value.ToString("#,##0.00")</span> /
-                                <span class="font-red bold" id="totalNet">@Model.CashFlow.Value.ToString("#,##0.00")</span>
-                            </div>
+                            @if (Model.FleetTypeCode == "F1")
+                            {
+                                <div class="col-md-3">
+                                    <label class="bold">ยอดใช้จ่าย : </label>
+                                    <span class="font-red bold" id="totalNet">@Model.CashFlow.Value.ToString("#,##0.00")</span> /
+                                    <span class="font-green-jungle bold">@Model.CashFlow.Value.ToString("#,##0.00")</span> 
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-3">
+                                    <label class="bold">ยอดใช้จ่าย : </label>
+                                    <span class="font-red bold" id="totalNet">0.00</span>
+                                </div>
+                            }
                         </div>
                         <br />
                         <div class="row">
@@ -95,43 +106,60 @@
                             </div>
                             <div class="col-md-6">
                                 @await Component.InvokeAsync("EntryCashing", new { code = Model.JobDetailCode })
-                            </div>
-                        </div>
-
-                        <div class="row" style="margin-top: 10px;">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="font-sm">เบอร์ตู้</label>
-                                    @Html.TextBox("container_no", Model.ContainerNo, new { @Class = "form-control input-sm", autocomplete = "off" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="font-sm">เบอร์ซีล</label>
-                                    @Html.TextBox("seal_no", Model.SealNo, new { @Class = "form-control input-sm", autocomplete = "off" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="font-sm">Tare weight</label>
-                                    @Html.TextBox("tare_weight", Model.TareWeight, new { @Class = "form-control input-sm", autocomplete = "off" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group" style="margin:0;">
-                                    <label class="font-sm">ค่าใช้จ่ายอื่น ๆ</label>
-                                    @Html.TextBox("shipping_advance", null, new { @Class = "form-control input-sm", autocomplete = "off" })
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                @if (Model.SupplierCode != "SP26001")
-                                {
-                                    <div class="form-group" style="margin:0;">
-                                        <label>Supplier Invoice</label>
-                                        @Html.TextBox("supplier_invoice", Model.SupplierInvoice, new { @Class = "form-control input-sm", autocomplete = "off" })
+                            
+                                <br/>
+                                <div class="row">
+                                   <div class="col-sm-3 col-md-3 col-lg-3">
+                                       <label class="font-sm">เบอร์ตู้</label>
                                     </div>
-                                }
+                                    <div class="col-sm-9 col-md-9 col-lg-9">
+                                        <div class="form-group">
+                                            @Html.TextBox("container_no", Model.ContainerNo, new { @Class = "form-control input-sm", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                   <div class="col-sm-3 col-md-3 col-lg-3">
+                                       <label class="font-sm">เบอร์ซีล</label>
+                                    </div>
+                                    <div class="col-sm-9 col-md-9 col-lg-9">
+                                        <div class="form-group">
+                                            @Html.TextBox("seal_no", Model.ContainerNo, new { @Class = "form-control input-sm", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                   <div class="col-sm-3 col-md-3 col-lg-3">
+                                       <label class="font-sm">Tare weight</label>
+                                    </div>
+                                    <div class="col-sm-9 col-md-9 col-lg-9">
+                                        <div class="form-group">
+                                            @Html.TextBox("tare_weight", Model.TareWeight, new { @Class = "form-control input-sm", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="row">
+                                    @if (Model.FleetTypeCode == "F1")
+                                    {
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <div class="form-group">
+                                            <label>ค่าแรงพนักงานขับรถ</label>
+                                             <div class="form-group">
+                                                @Html.TextBox("driver_trip", Model.DriverAllowance, new { @Class = "form-control input-sm", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    }
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        <div class="form-group">
+                                            <label>ค่าเที่ยว</label>
+                                             <div class="form-group">
+                                                @Html.TextBox("supplier_trip", Model.SupplierAllowance, new { @Class = "form-control input-sm", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -182,7 +210,7 @@
                 if (cost > 0) {
                     $(this).val(cost);
                 }
-                TotalCashingSum()
+                TotalSum()
             });
 
             $(document.body).delegate('.advance-val', 'change', function () {
@@ -198,24 +226,17 @@
                 if (cost > 0) {
                     $(this).val(cost);
                 }
-                TotalAdvanceSum()
+                TotalSum()
             });
 
             $(document).on('keyup', '.form-box', function () {
-                let total = 0;
-                $('.form-box:not(:disabled)').each(function () {
-                    let value = $(this).val();
-                    total += parseFloat(value) || 0;
-                });
-
-                $('#totalNet').text(total.toFixed(2));
+                TotalSum();
             });
         }(jQuery));
 
         function addCashing() {
             var row = '<tr><td style="text-align:center;vertical-align:middle;"><a href="#" class="closed" onclick=removeCashingItem(this)><i class="icon icon-close"></a></td>'
-            row += '<td><input type="text" class="form-control form-box" name="nameCashing[] autocomplete="Off"></td>';
-            row += '<td><input type="text" class="form-control cashing-val form-box" name="valWithdrawCashing[]" value="0" autocomplete="Off"/></td>'
+            row += '<td><input type="text" class="form-control nameCashing" name="nameCashing[]" autocomplete="Off"></td>';
             row += '<td><input type="text" class="form-control cashing-val form-box" name="valCashing[]" value="0" autocomplete="Off"/></td></tr>'
             $('#cashing-table').append(row);
         }
@@ -226,8 +247,7 @@
                 $('#advance-table tr').remove();
             }
             var row = '<tr><td style="text-align:center;vertical-align:middle;"><a href="#" class="closed" onclick=removeAdvanceItem(this)><i class="icon icon-close"></a></td>'
-            row += '<td><input type="text" class="form-control form-box" name="nameAdvance[]" autocomplete="Off"></td>';
-            row += '<td><input type="text" class="form-control other-val form-box" name="valWithdrawAdvance[]" value="0" autocomplete="Off"/></td>'
+            row += '<td><input type="text" class="form-control nameAdvance" name="nameAdvance[]" autocomplete="Off"></td>';
             row += '<td><input type="text" class="form-control other-val form-box" name="valAdvance[]" value="0" autocomplete="Off"/></td></tr>'
             $('#advance-table').append(row)
         }
@@ -235,33 +255,23 @@
         function removeCashingItem(e) {
             //var val = $(e).closest("td").next().next().find("input").val();
             $(e).parent().parent().remove()
-            TotalCashingSum();
+            TotalSum();
         }
 
         function removeAdvanceItem(e) {
             //var val = $(e).closest("td").next().next().find("input").val();
             $(e).parent().parent().remove()
-            TotalAdvanceSum();
+            TotalSum();
         }
 
-        function TotalCashingSum() {
-            var sum = 0;
-            $(".cashing-val").each(function () {
-                sum += parseFloat(this.value) || 0;
+        function TotalSum() {
+            let total = 0;
+            $('.form-box:not(:disabled)').each(function () {
+                let value = $(this).val();
+                total += parseFloat(value) || 0;
             });
 
-            $('#total-cashing').html(number_format(sum));
-            $('#hidden-total-cashing').val(sum);
-        }
-
-        function TotalAdvanceSum() {
-            var sum = 0;
-            $(".advance-val").each(function () {
-                sum += parseFloat(this.value) || 0;
-            });
-
-            $('#total-advance').html(number_format(sum));
-            $('#hidden-total-advance').val(sum);
+            $('#totalNet').text(number_format(total));
         }
 
         function OnValidate() {

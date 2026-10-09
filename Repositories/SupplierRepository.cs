@@ -48,20 +48,6 @@ public class SupplierRepository
             .ToListAsync();
     }
 
-    public async Task<TblFleetExternal?> GetExternalFleetByCode(string code)
-    {
-        return await db.TblFleetExternals
-            .AsNoTracking()
-            .FirstOrDefaultAsync(w => w.SupplierCode == code);
-    }
-
-    public async Task<TblFleetInternal?> GetInternalFleetByCode(string code)
-    {
-        return await db.TblFleetInternals
-            .AsNoTracking()
-            .FirstOrDefaultAsync(w => w.SupplierCode == code);
-    }
-
     public async Task<ResponseViewModel> Add(TblSupplier model)
     {
         using var tr = await db.Database.BeginTransactionAsync();
@@ -104,31 +90,19 @@ public class SupplierRepository
             string supplierCode = model.SupplierCode;
 
             // ลบ fleet เดิมแบบไม่ต้องดึงข้อมูลขึ้น memory
-            await db.TblFleetInternals
+            /*await db.TblFleetInternals
                 .Where(w => w.SupplierCode == supplierCode)
-                .ExecuteDeleteAsync();
-
-            await db.TblFleetExternals
-                .Where(w => w.SupplierCode == supplierCode)
-                .ExecuteDeleteAsync();
+                .ExecuteDeleteAsync();*/
 
             // เพิ่ม fleet ใหม่ตามประเภท
             if (model.FleetTypeCode == InternalFleetTypeCode)
             {
-                await db.TblFleetInternals.AddAsync(new TblFleetInternal
+                /*await db.TblFleetInternals.AddAsync(new TblFleetInternal
                 {
                     SupplierCode = supplierCode,
                     FleetCode = DefaultFleetCode,
                     FleetTypeCode = DefaultInternalFleetTypeCode
-                });
-            }
-            else if (model.FleetTypeCode == ExternalFleetTypeCode)
-            {
-                await db.TblFleetExternals.AddAsync(new TblFleetExternal
-                {
-                    SupplierCode = supplierCode,
-                    FleetTypeCode = ExternalFleetTypeCode
-                });
+                });*/
             }
 
             if (model.FleetTypeCode == ExternalFleetTypeCode)
@@ -202,21 +176,21 @@ public class SupplierRepository
     {
         if (fleetTypeCode == InternalFleetTypeCode)
         {
-            model.TblFleetInternals.Add(new TblFleetInternal
+            /*model.TblFleetInternals.Add(new TblFleetInternal
             {
                 SupplierCode = supplierCode,
                 FleetCode = DefaultFleetCode,
                 FleetTypeCode = DefaultInternalFleetTypeCode
-            });
+            });*/
         }
-        else if (fleetTypeCode == ExternalFleetTypeCode)
+        /*else if (fleetTypeCode == ExternalFleetTypeCode)
         {
             model.TblFleetExternals.Add(new TblFleetExternal
             {
                 SupplierCode = supplierCode,
                 FleetTypeCode = ExternalFleetTypeCode
             });
-        }
+        }*/
     }
 
     private async Task<List<TblSupplierRate>> BuildDefaultSupplierRatesAsync(string supplierCode)

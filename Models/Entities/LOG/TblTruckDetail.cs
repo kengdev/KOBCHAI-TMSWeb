@@ -7,6 +7,8 @@ public partial class TblTruckDetail
 {
     public string TruckCode { get; set; } = null!;
 
+    public string FleetSupplierCode { get; set; } = null!;
+
     public string TruckNo { get; set; } = null!;
 
     public string TruckChassisNumber { get; set; } = null!;
@@ -24,6 +26,8 @@ public partial class TblTruckDetail
     public string TruckImage { get; set; } = null!;
 
     public virtual TblBrand BrandCodeNavigation { get; set; } = null!;
+
+    public virtual TblFleetSupplier FleetSupplierCodeNavigation { get; set; } = null!;
 
     public virtual TblFuelType FuelTypeCodeNavigation { get; set; } = null!;
 

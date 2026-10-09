@@ -22,8 +22,8 @@ public class EntryCashing : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync(string code)
     {
-        var cashing = await _jobService.GetCashingByJob(code);
+        var cashflow = await _jobService.GetCashingByJob(code);
 
-        return View(cashing);
+        return View(cashflow);
     }
 }

@@ -1,36 +1,19 @@
-@model List<TMSWeb.Models.Entities.LOG.TblJobcashing>
+@model List<TMSWeb.Models.Entities.LOG.TblJobcashflowCashing>
+@{
+
+}
 <div>
     <div class="row">
         <div class="col-md-12">
-            <table data-toggle="table" data-height="200" data-width="100" class="data-bootstrap">
+            <table data-toggle="table" data-height="162" data-width="100" class="data-bootstrap">
                 <thead>
                     <tr>
                         <th data-align="center" data-width="39"></th>
-                        <th data-align="left" data-width="150">รายการค่าใช้จ่าย</th>
-                        <th data-align="center">ยอดเงิน</th>
+                        <th data-align="left">รายการค่าใช้จ่าย</th>
+                        <th data-align="center" data-width="150">ยอดเงิน</th>
                     </tr>
                 </thead>
                 <tbody id="cashing-table">
-                    
-                    @if (Model != null)
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td style="text-align: center;">
-                                    <div style="height:25px;text-align:center;padding-top:4px">
-                                      
-                                    </div>
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control form-box font-grey-silver" value="@item.Cashing" name="nameCashing[]" disabled="disabled" autocomplete="off">
-                                </td>
-                                <td>
-                                    <input type="text" class="form-control cashing-val form-box form-box-val font-grey-silver" name="valCashing[]" disabled="disabled" value="@item.CashingValue" autocomplete="off" />
-                                </td>
-                            </tr>
-                        }
-                    }
                     <tr>
                         <td style="text-align: center;">
                             <div style="height:25px;text-align:center;padding-top:4px">

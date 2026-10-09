@@ -13,12 +13,6 @@ public partial class ViewDriverListActive
 
     public string? TruckNo { get; set; }
 
-    public string? SupplierCode { get; set; }
-
-    public string? SupplierName { get; set; }
-
-    public string? SupplierFullname { get; set; }
-
     public string? TruckTypegroupCode { get; set; }
 
     public string? TruckTypegroupName { get; set; }
@@ -30,4 +24,8 @@ public partial class ViewDriverListActive
     public string DriverPhone { get; set; } = null!;
 
     public bool IsEnabled { get; set; }
+
+    public string? FleetSupplierTypeName { get; set; }
+
+    public string? FleetSupplierTypeCode { get; set; }
 }

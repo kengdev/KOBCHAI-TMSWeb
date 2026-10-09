@@ -8,19 +8,18 @@ using TMSWeb.Models.ViewModels;
 using TMSWeb.Repositories;
 
 namespace TMSWeb.Controllers;
+
 [Authorize]
 public class JobController : Controller
 {
     private readonly JobRepository _jobService;
     private readonly DropListRepository _dropListService;
-    private readonly BillingRepository _billingService;
     private string LoggedInUser => User.Identity.Name;
 
-    public JobController(JobRepository jobService, DropListRepository dropListService, BillingRepository billingService)
+    public JobController(JobRepository jobService, DropListRepository dropListService)
     {
         _jobService = jobService;
         _dropListService = dropListService;
-        _billingService = billingService;
     }
 
     public async Task<IActionResult> Index()
@@ -43,26 +42,37 @@ public class JobController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Finish(FinishJobModel model, TblJobadvance jobAdvance, TblJobcashing jobCashing)
+    public async Task<IActionResult> Finish(CashflowClearingModel model)
     {
         string username = LoggedInUser;
-        model.username = username;
+        model.create_by = username;
 
-        ResponseViewModel result = await _jobService.FinishJob(model, jobAdvance, jobCashing);
+        ResponseViewModel result = await _jobService.FinishJob(model);
         return Json(result);
     }
 
-    [Authorize(Roles = "Administrator, Transport, Super")]
-    public async Task<IActionResult> UpdateAdvance(int code)
+    [Authorize(Roles = "Administrator, Accounting, Super")]
+    public async Task<IActionResult> CashflowClearing(int code)
     {
-        var data = await _jobService.GetTblJobByIdAsync(code);
-        var transaction = await _jobService.GetTrBudget();
-
-        ViewBag.Transaction = transaction;
+        var data = await _jobService.GetOrderByCode(code);
         return View(data);
     }
 
-    public async Task<IActionResult> UpdateAdvanceData(FinishJobModel model, TblJobadvance jobAdvance, TblJobcashing jobCashing)
+    public async Task<IActionResult> ClearingData(CashflowClearingModel model)
+    {
+        model.create_by = this.LoggedInUser;
+        var response = await _jobService.CashflowClearing(model);
+        return Json(response);
+    }
+
+    public async Task<IActionResult> GetSupplierByCode(string code)
+    {
+        var data = await _jobService.GetTblSupplier(code);
+
+        return Json(data);
+    }
+
+    /*public async Task<IActionResult> UpdateAdvanceData(FinishJobModel model, TblJobadvance jobAdvance, TblJobcashing jobCashing)
     {
         var _notif = new LineNotifRepository();
         model.username = this.LoggedInUser;
@@ -72,7 +82,7 @@ public class JobController : Controller
             await _notif.NotifGroup(response.notifMessage);
 
         return Json(response);
-    }
+    }*/
 
     public async Task<IActionResult> GetJobDataList(jQueryDataTableParamModel param, iDataTableParamModel iFilter)
     {
@@ -137,7 +147,7 @@ public class JobController : Controller
     {
         var model = new UpdateStatusModel();
         var data = await _jobService.GetOrderByCode(code);
-        var tracking = this.GetTracking(data.JobDetailCode, data.JobType);
+        var tracking = await this.GetTracking(data.JobDetailCode, data.TruckCode, data.DriverCode, data.SupplierCode, data.JobType);
         model.job_detail_code = data.JobDetailCode;
         model.status = this.NextStatus(data.TrackingStatus);
         model.status_stamp = DateTime.Now;
@@ -182,7 +192,7 @@ public class JobController : Controller
     {
         var data = await _jobService.GetOrderByCode(code);
         var image = await _jobService.GetOrderImagesByCode(data.JobDetailCode);
-        var tracking = this.GetTracking(data.JobDetailCode, data.JobType);
+        var tracking = this.GetTracking(data.JobDetailCode, data.TruckCode, data.DriverCode, data.SupplierCode, data.JobType);
 
         ViewBag.Data = data;
         ViewBag.Image = image;
@@ -227,14 +237,10 @@ public class JobController : Controller
         return View(model);
     }
 
-    public async Task<IActionResult> ChangeDriverData(ChangeDriverModel model)
+    public async Task<IActionResult> WaitingDriver(ChangeDriverModel model)
     {
         string username = LoggedInUser;
-        var supplierData = await _jobService.GetTblSupplier(model.new_supplier_code);
-
-        model.new_driver_code = supplierData.FleetTypeCode != "F1" ? "DV000000" : model.new_driver_code;
-        model.new_truck_code = supplierData.FleetTypeCode != "F1" ? "T000000" : model.new_truck_code;
-        ResponseViewModel result = await _jobService.ChangeDriver(model, username);
+        ResponseViewModel result = await _jobService.WaitingDriver(model, username);
         return Json(result);
     }
 
@@ -268,32 +274,49 @@ public class JobController : Controller
         var allowance = await _jobService.GetJobAllowanceListAsync(data.JobDetailCode);
 
         ViewData["new_supplier_code"] = from a in await _dropListService.GetSupplierTransport() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.SupplierCode };
-        ViewData["new_truck_code"] = from a in await _dropListService.GetTruck() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.TruckCode };
-        ViewData["new_driver_code"] = from a in await _dropListService.GetDriver() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.DriverCode };
+        ViewData["new_truck_code"] = from a in await _dropListService.GetChangeTruck(detail.TruckCode) select new SelectListItem { Value = a.key.ToString(), Text = a.label };
+        ViewData["new_driver_code"] = from a in await _dropListService.GetChangeDriver(detail.DriverCode) select new SelectListItem { Value = a.key.ToString(), Text = a.label };
         ViewBag.Data = data;
         ViewBag.Allowance = allowance;
         return View(detail);
     }
 
-    public async Task<IActionResult> EditOrderTruck(TblJobDetail jobToEdit, ChangeDriverModel model)
+    public async Task<IActionResult> RemoveJob(string code)
     {
         string username = LoggedInUser;
-        jobToEdit.SupplierCode = model.new_supplier_code;
-        jobToEdit.TruckCode = model.new_truck_code;
-        jobToEdit.DriverCode = model.new_driver_code;
-        jobToEdit.UpdateDate = DateTime.Now;
-        jobToEdit.UpdateBy = username;
-
-        ResponseViewModel result = await _jobService.EditJob(jobToEdit, model.job_allowance_id);
+        ResponseViewModel result = await _jobService.RemoveJob(code, username);
         return Json(result);
     }
 
-    [Authorize(Roles = "Administrator, Transport, Super")]
-    public async Task<IActionResult> RemoveJob(string job_detail_code)
+    public async Task<IActionResult> GetDriverData(string driver_code)
+    {
+        var result = await _jobService.GetDriver(driver_code);
+
+        return Json(new
+        {
+            result
+        });
+    }
+
+    public async Task<IActionResult> EditOrderTruck(TblJobDetail jobToEdit, ChangeDriverModel model)
     {
         string username = LoggedInUser;
-
-        ResponseViewModel result = await _jobService.RemoveJob(job_detail_code, username);
+        ResponseViewModel result;
+        if (model.change_condition != "W")
+        {
+            jobToEdit.SupplierCode = model.new_supplier_code;
+            jobToEdit.TruckCode = model.new_truck_code;
+            jobToEdit.DriverCode = model.new_driver_code;
+            jobToEdit.UpdateDate = DateTime.Now;
+            jobToEdit.UpdateBy = username;
+            model.create_by = username;
+            result = await _jobService.EditJob(jobToEdit, model);
+        }
+        else
+        {
+            model.job_detail_code = jobToEdit.JobDetailCode;
+            result = await _jobService.WaitingDriver(model, username);
+        }
         return Json(result);
     }
 
@@ -319,15 +342,6 @@ public class JobController : Controller
         });
     }
 
-    public async Task<IActionResult> SearchDetail(string code)
-    {
-        var data = await _jobService.GetOrderBySearchDetail(code);
-        var billing = await _billingService.GetBillingDetailByJobDetailCode(data.JobDetailCode);
-
-        ViewBag.Billing = billing;
-        return View(data);
-    }
-
     public async Task<IActionResult> GetYardPort(string code)
     {
         var data = await _jobService.GetYardPortDataByCode(code);
@@ -335,10 +349,10 @@ public class JobController : Controller
         return Json(data);
     }
 
-    private async Task<List<StepViewModel>> GetTracking(string code, string type)
+    private async Task<List<StepViewModel>> GetTracking(string code, string truck_code, string driver_code, string supplier_code, string type)
     {
         var list = new List<StepViewModel>();
-        var tracking = await _jobService.GetListTrackingByJob(code);
+        var tracking = await _jobService.GetListTrackingByJob(code, truck_code, driver_code, supplier_code);
         var count_tracking = tracking.Count;
         if (type != "FLOOR")
         {
@@ -351,8 +365,8 @@ public class JobController : Controller
                     case 0:
                         i_track = tracking.Where(w => w.tracking_status == "PN").FirstOrDefault();
                         item.action = "งานเข้าระบบ";
-                        item.action_time = "";
-                        item.active = "done";
+                        item.action_time = (i_track != null ? i_track.tracking_date.ToString("dd-MMM-yyyy HH:mm") : "");
+                        item.active = (i_track != null ? "done" : "");
                         item.index = "first";
                         item.icon = "fad fa-desktop";
                         item.column = 2;

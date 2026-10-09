@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TMSWeb.Models.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace TMSWeb.Models.ViewModels;
@@ -47,6 +46,7 @@ public class JobViewModel
     public int fuel_litre { get; set; }
     public decimal fuel_value { get; set; }
     public decimal payment_value { get; set; }
+    public string round_status { get; set; }
     public string hash_code { get; set; }
 }
 
@@ -56,6 +56,7 @@ public class OrderStatusViewModel
     public string customer_name { get; set; }
     public string customer_address { get; set; }
     public string customer_tax { get; set; }
+    public string truck_code { get; set; }
     public string truck_license { get; set; }
     public string trailer_license { get; set; }
     public string truck_typegroup_code { get; set; }
@@ -98,6 +99,7 @@ public class OrderStatusViewModel
     public bool is2short { get; set; }
     public string supplier_code { get; set; }
     public string tracking_status { get; set; }
+    public string trade_type { get; set; }
 }
 
 public class TarryJobViewModel

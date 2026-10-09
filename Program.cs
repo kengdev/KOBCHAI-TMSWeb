@@ -33,7 +33,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<DbTMSContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("servLOG"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("localLOG"));
 });
 
 builder.Services.AddAuthorization(options =>
@@ -83,6 +83,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.AccessDeniedPath = "/Authentication/AccessDenied";
     options.SlidingExpiration = true;
 });
+
+builder.Services.AddScoped<TripAllowanceService>();
 
 /*builder.Services.AddSingleton(sp =>
     new AllowanceService(

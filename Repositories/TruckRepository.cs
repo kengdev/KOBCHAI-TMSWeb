@@ -114,7 +114,7 @@ public class TruckRepository
             string? truckTypeGroupCode = await db.TblTruckTypes
                 .AsNoTracking()
                 .Where(w => w.TruckTypeCode == truckToAdd.truck_type_code)
-                .Select(s => s.TruckTypegroupCode)
+                .Select(s => s.TruckTypeCode)
                 .FirstOrDefaultAsync();
 
             if (string.IsNullOrWhiteSpace(truckTypeGroupCode))
@@ -133,17 +133,14 @@ public class TruckRepository
             {
                 TruckCode = await _codeService.GetTruckCode(),
                 TruckLicense = truckToAdd.truck_license,
-                SupplierCode = truckToAdd.supplier_code,
-                FleetType = "F",
                 IsActived = true,
                 IsEnabled = true,
                 CreateDate = now,
                 CreateBy = username,
-                UpdateDate = now,
-                UpdateBy = username,
                 TblTruckDetail = new TblTruckDetail
                 {
                     TruckCode = truckToAdd.truck_code,
+                    //FleetSupplierCode = truckToAdd.supplier_code,
                     TruckNo = truckToAdd.truck_no?.ToUpper(),
                     TruckChassisNumber = truckToAdd.truck_chassis_number?.ToUpper(),
                     TruckYear = truckToAdd.truck_year,
@@ -173,12 +170,13 @@ public class TruckRepository
     {
         return await db.ViewTruckListActives
             .AsNoTracking()
-            .Where(w => w.TruckCode != "T000000")
-            .OrderBy(o => o.FleetCode)
+            .OrderBy(o => o.FleetSupplierTypeCode)
             .Select(s => new TruckViewModel
             {
-                fleet_code = s.FleetCode,
-                fleet_name = s.FleetName,
+                fleet_supplier_code = s.FleetSupplierCode,
+                fleet_supplier_name = s.FleetSupplierName,
+                fleet_supplier_type_code = s.FleetSupplierTypeCode,
+                fleet_supplier_type_name = s.FleetSupplierTypeName,
                 truck_code = s.TruckCode,
                 truck_license = s.TruckLicense,
                 truck_chassis_number = s.TruckChassisNumber,
@@ -186,8 +184,6 @@ public class TruckRepository
                 truck_type_name = s.TruckTypeName,
                 brand_name = s.BrandName,
                 fuel_type_name = s.FuelTypeName,
-                supplier_code = s.SupplierCode,
-                supplier_name = s.SupplierName,
                 driver_code = s.DriverCode,
                 driver_name = s.DriverFullname,
                 driver_phone = s.DriverPhone,
@@ -232,7 +228,7 @@ public class TruckRepository
             string? truckTypeGroupCode = await db.TblTruckTypes
                 .AsNoTracking()
                 .Where(w => w.TruckTypeCode == truckToEdit.truck_type_code)
-                .Select(s => s.TruckTypegroupCode)
+                .Select(s => s.TruckTypeCode)
                 .FirstOrDefaultAsync();
 
             if (string.IsNullOrWhiteSpace(truckTypeGroupCode))
@@ -250,9 +246,7 @@ public class TruckRepository
             int truckRows = await db.TblTrucks
                 .Where(w => w.TruckCode == truckToEdit.truck_code)
                 .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(s => s.TruckLicense, truckToEdit.truck_license)
-                    .SetProperty(s => s.UpdateDate, now)
-                    .SetProperty(s => s.UpdateBy, username));
+                    .SetProperty(s => s.TruckLicense, truckToEdit.truck_license));
 
             if (truckRows == 0)
             {
@@ -323,9 +317,7 @@ public class TruckRepository
                 .Where(w => w.TruckCode == code)
                 .ExecuteUpdateAsync(setters => setters
                     .SetProperty(s => s.IsActived, false)
-                    .SetProperty(s => s.IsEnabled, false)
-                    .SetProperty(s => s.UpdateDate, now)
-                    .SetProperty(s => s.UpdateBy, update_by));
+                    .SetProperty(s => s.IsEnabled, false));
 
             if (affectedRows == 0)
             {
@@ -388,18 +380,14 @@ public class TruckRepository
                     .Where(w => w.TruckCode == code)
                     .ExecuteUpdateAsync(setters => setters
                         .SetProperty(s => s.IsActived, isActived)
-                        .SetProperty(s => s.IsEnabled, isEnabled.Value)
-                        .SetProperty(s => s.UpdateDate, now)
-                        .SetProperty(s => s.UpdateBy, updateBy));
+                        .SetProperty(s => s.IsEnabled, isEnabled.Value));
             }
             else
             {
                 affectedRows = await db.TblTrucks
                     .Where(w => w.TruckCode == code)
                     .ExecuteUpdateAsync(setters => setters
-                        .SetProperty(s => s.IsActived, isActived)
-                        .SetProperty(s => s.UpdateDate, now)
-                        .SetProperty(s => s.UpdateBy, updateBy));
+                        .SetProperty(s => s.IsActived, isActived));
             }
 
             if (affectedRows == 0)

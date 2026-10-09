@@ -56,6 +56,4 @@ public partial class TblReceipt
     public string UpdateBy { get; set; } = null!;
 
     public virtual TblCustomer CustomerCodeNavigation { get; set; } = null!;
-
-    public virtual ICollection<TblReceiptDetail> TblReceiptDetails { get; set; } = new List<TblReceiptDetail>();
 }

@@ -21,6 +21,8 @@ public partial class TblJobAllowance
 
     public decimal SupplierAllowance { get; set; }
 
+    public string RoundTrip { get; set; } = null!;
+
     public bool IsComplete { get; set; }
 
     public bool IsWeeklypayment { get; set; }

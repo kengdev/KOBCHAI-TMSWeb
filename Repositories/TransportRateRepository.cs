@@ -74,10 +74,9 @@ public class TransportRateRepository
                 }
             }
 
-            var fleetCodes = await db.TblFleets
+            var fleetCodes = await db.TblFleetSupplierTypes
                 .AsNoTracking()
-                .Where(w => w.IsEnabled == true)
-                .Select(s => s.FleetCode)
+                .Select(s => s.FleetSupplierTypeCode)
                 .ToListAsync();
 
             if (fleetCodes.Count > 0)
@@ -85,7 +84,7 @@ public class TransportRateRepository
                 var existingFleetCodes = await db.TblFleetRates
                     .AsNoTracking()
                     .Where(w => w.PlaceCode == missionCode)
-                    .Select(s => s.FleetCode)
+                    .Select(s => s.FleetSupplierTypeCode)
                     .ToListAsync();
 
                 var existingFleetSet = existingFleetCodes.ToHashSet();
@@ -94,11 +93,15 @@ public class TransportRateRepository
                     .Where(fleetCode => !existingFleetSet.Contains(fleetCode))
                     .Select(fleetCode => new TblFleetRate
                     {
-                        FleetCode = fleetCode,
+                        FleetSupplierTypeCode = fleetCode,
                         PlaceCode = missionCode,
                         Truck4w = fleet_cost,
                         Truck6w = fleet_cost,
-                        Truck10w = fleet_cost
+                        Truck10w = fleet_cost,
+                        Trailer6w = fleet_cost,
+                        Trailer10w = fleet_cost,
+                        Trailer18w = fleet_cost,
+                        TrailerExtra = fleet_cost
                     })
                     .ToList();
 

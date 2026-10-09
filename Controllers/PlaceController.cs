@@ -74,10 +74,7 @@ public class PlaceController : Controller
     public async Task<IActionResult> GetPlaceDataByCode(string code)
     {
         var data = _placeService.GetPlaceDataByCode(code);
-        return Json(new
-        {
-            data
-        });
+        return Json(data);
     }
 
     public async Task<IActionResult> GetPlaceDataList(jQueryDataTableParamModel param, iDataTableParamModel iFilter)

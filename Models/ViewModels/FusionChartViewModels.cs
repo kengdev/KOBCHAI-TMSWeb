@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using TMSWeb.Models;
-using TMSWeb.Models.Entities;
 
 namespace TMSWeb.Models.ViewModels;
 public class FusionBarChart

@@ -37,25 +37,13 @@ public class DropListRepository
         return query;
     }
 
-    public List<DropDownViewModel> GetPaymentType()
-    {
-        var query = from a in db.TblPaymentTypes
-                    select new DropDownViewModel
-                    {
-                        key = a.PaymentTypeCode,
-                        label = a.PaymentTypeName
-                    };
-        return query.ToList();
-    }
-
     public async Task<List<DropDownViewModel>> GetFleet()
     {
-        var query = await (from a in db.TblFleets
-                    where a.IsEnabled == true
+        var query = await (from a in db.TblFleetSupplierTypes
                     select new DropDownViewModel
                     {
-                        key = a.FleetCode,
-                        label = a.FleetName
+                        key = a.FleetSupplierTypeCode,
+                        label = a.FleetSupplierTypeName
                     }).AsNoTracking().ToListAsync();
 
         return query;
@@ -78,20 +66,6 @@ public class DropListRepository
         var query = await (from a in db.TblSuppliers
                     where (a.IsActived == true && a.FleetTypeCode == "F2") || a.SupplierCode == "SP26001"
                     orderby a.SupplierName ascending
-                    select new DropDownViewModel
-                    {
-                        key = a.SupplierCode,
-                        label = a.SupplierName
-                    }).AsNoTracking().ToListAsync();
-
-        return query;
-    }
-
-    public async Task<List<DropDownViewModel>> GetSupplierFleet()
-    {
-        var query = await (from a in db.TblSuppliers
-                    join b in db.TblFleetInternals on a.SupplierCode equals b.SupplierCode
-                    where a.IsActived == true
                     select new DropDownViewModel
                     {
                         key = a.SupplierCode,
@@ -234,7 +208,7 @@ public class DropListRepository
                     {
                         key = a.DriverCode,
                         label = a.DriverFullname
-                    }).AsNoTracking().ToListAsync();
+                    }).AsNoTracking().OrderBy(o => o.label).ToListAsync();
 
         return query;
     }
@@ -251,6 +225,35 @@ public class DropListRepository
                          key = a.TruckCode,
                          label = a.TruckLicense + " [" + c.TruckTypeName + "]"
                      }).AsNoTracking().ToListAsync();
+
+        return query;
+    }
+
+    public async Task<List<DropDownViewModel>> GetChangeDriver(string driver_code)
+    {
+        var query = await (from a in db.TblDrivers
+                           where a.IsEnabled == true && a.DriverCode != driver_code
+                           select new DropDownViewModel
+                           {
+                               key = a.DriverCode,
+                               label = a.DriverFullname
+                           }).AsNoTracking().OrderBy(o => o.label).ToListAsync();
+
+        return query;
+    }
+
+    public async Task<List<DropDownViewModel>> GetChangeTruck(string truck_code)
+    {
+        var query = await (from a in db.TblTrucks
+                           join b in db.TblTruckDetails on a.TruckCode equals b.TruckCode
+                           join c in db.TblTruckTypes on b.TruckTypeCode equals c.TruckTypeCode
+                           where a.IsActived == true && a.TruckCode != truck_code
+                           orderby b.TruckNo
+                           select new DropDownViewModel
+                           {
+                               key = a.TruckCode,
+                               label = a.TruckLicense + " [" + c.TruckTypeName + "]"
+                           }).AsNoTracking().ToListAsync();
 
         return query;
     }
@@ -498,18 +501,6 @@ public class DropListRepository
         return list;
     }
 
-    public async Task<List<DropDownViewModel>> GetTruckGroup()
-    {
-        var query = await (from a in db.TblTruckTypegroups
-                    select new DropDownViewModel
-                    {
-                        key = a.TruckTypegroupCode,
-                        label = a.TruckTypegroupName
-                    }).AsNoTracking().ToListAsync();
-
-        return query;
-    }
-
     public List<DropDownViewModel> GetMaintenanceStatus()
     {
         List<DropDownViewModel> list = new List<DropDownViewModel>();
@@ -537,18 +528,6 @@ public class DropListRepository
         return query.ToList();
     }*/
 
-    public async Task<List<DropDownViewModel>> GetConsignee()
-    {
-        var query = await (from a in db.TblConsignees
-                    select new DropDownViewModel
-                    {
-                        key = a.ConsigneeName,
-                        label = a.ConsigneeName
-                    }).AsNoTracking().ToListAsync();
-
-        return query;
-    }
-
     public async Task<List<DropDownViewModel>> GetShipper()
     {
         var query = await (from a in db.TblShippers
@@ -569,19 +548,6 @@ public class DropListRepository
                         key = a.RequestName,
                         label = a.RequestName
                     }).AsNoTracking().ToListAsync();
-
-        return query;
-    }
-
-
-    public async Task<List<DropDownViewModel>> GetShippingContact()
-    {
-        var query = await (from a in db.TblShippingContacts
-                    select new DropDownViewModel
-                    {
-                        key = a.ShippingContactName,
-                        label = a.ShippingContactName
-                    }).ToListAsync();
 
         return query;
     }

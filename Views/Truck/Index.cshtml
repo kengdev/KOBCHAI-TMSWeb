@@ -3,7 +3,7 @@
     ViewBag.MidActive = "trucklist";
     ViewBag.Title = "ข้อมูลรถ";
 }
-@section Styles{
+@section Styles {
     <style>
         table.dataTable td, table.dataTable th {
             font-size: 13px !important;
@@ -20,7 +20,7 @@
             width: 80px;
         }
 
-        a.linked:hover{
+        a.linked:hover {
             text-decoration: none;
             opacity: 0.7;
         }
@@ -47,13 +47,11 @@
                     <span class="bold small"> รายการรถหัวลาก</span>
                 </div>
                 <div class="actions">
-
                 </div>
             </div>
             <div class="portlet-body">
                 <div class="row">
                     <div class="col-md-6">
-
                     </div>
 
                     <div class="col-md-6">
@@ -80,10 +78,10 @@
                             <th class="filter"></th>
                             <th class="filter"><input type="text" class="form-control filterText" id="filterLicense" /></th>
                             <th class="filter">
-                                @Html.DropDownList("truck_type_code", null, "-----เลือก-----", new { @Class ="form-control filterDropdown" })
+                                @Html.DropDownList("truck_type_code", null, "-----เลือก-----", new { @Class = "form-control filterDropdown" })
                             </th>
                             <th class="filter">
-                                @Html.DropDownList("brand_code", null, "-----เลือก-----", new { @Class ="form-control filterDropdown" })
+                                @Html.DropDownList("brand_code", null, "-----เลือก-----", new { @Class = "form-control filterDropdown" })
                             </th>
                             <th class="filter"></th>
                             <th class="filter">
@@ -174,10 +172,10 @@
                         { "data": "truck_type_name" },
                         { "data": "brand_name" },
                         { "data": "truck_chassis_number", "orderable": false },
-                        { "data": "fleet_name" },
+                        { "data": "fleet_supplier_type_name" },
                         {
                             "data": "driver_name", "orderable": false, "render": function (data, type, row) {
-                                
+
                                 if(row.is_actived){
                                     var dv = '<a href="javascript:;" data-title="จัดการพนักงานขับรถ"  data-toggle="tooltip" data-trigger="hover" class="font-yellow linked" onclick=editDriver("' + row.truck_code + '")><i class="fas fa-pencil"></i> &nbsp;</a><span class="font-blue bold">'+ data +'</span>'
 

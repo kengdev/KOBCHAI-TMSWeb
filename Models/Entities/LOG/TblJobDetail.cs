@@ -57,13 +57,13 @@ public partial class TblJobDetail
 
     public string UpdateBy { get; set; } = null!;
 
+    public virtual ICollection<AdvanceRequest> AdvanceRequests { get; set; } = new List<AdvanceRequest>();
+
     public virtual TblDriver DriverCodeNavigation { get; set; } = null!;
 
     public virtual TblPlace FinishPlaceCodeNavigation { get; set; } = null!;
 
     public virtual TblJobMaster JobCodeNavigation { get; set; } = null!;
-
-    public virtual ICollection<LogBudgetTransaction> LogBudgetTransactions { get; set; } = new List<LogBudgetTransaction>();
 
     public virtual TblPlace MissionPlaceCodeNavigation { get; set; } = null!;
 
@@ -71,7 +71,7 @@ public partial class TblJobDetail
 
     public virtual TblSupplier SupplierCodeNavigation { get; set; } = null!;
 
-    public virtual ICollection<TblBillingDetail> TblBillingDetails { get; set; } = new List<TblBillingDetail>();
+    public virtual ICollection<TblDriverCost> TblDriverCosts { get; set; } = new List<TblDriverCost>();
 
     public virtual ICollection<TblFleetpaymentDetail> TblFleetpaymentDetails { get; set; } = new List<TblFleetpaymentDetail>();
 
@@ -87,11 +87,13 @@ public partial class TblJobDetail
 
     public virtual ICollection<TblJobadvance> TblJobadvances { get; set; } = new List<TblJobadvance>();
 
+    public virtual ICollection<TblJobcashflowAdvance> TblJobcashflowAdvances { get; set; } = new List<TblJobcashflowAdvance>();
+
+    public virtual ICollection<TblJobcashflowCashing> TblJobcashflowCashings { get; set; } = new List<TblJobcashflowCashing>();
+
     public virtual ICollection<TblJobcashflow> TblJobcashflows { get; set; } = new List<TblJobcashflow>();
 
     public virtual ICollection<TblJobcashing> TblJobcashings { get; set; } = new List<TblJobcashing>();
-
-    public virtual TblShippingadvance? TblShippingadvance { get; set; }
 
     public virtual ICollection<TblSupplierAllowance> TblSupplierAllowances { get; set; } = new List<TblSupplierAllowance>();
 

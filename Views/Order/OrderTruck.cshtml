@@ -108,7 +108,7 @@
                                         <td class="topic">
                                             <span class="font-green-sharp">ประเภท</span>
                                         </td>
-                                        <td> @data.TruckTypegroupCodeNavigation.TruckTypegroupName</td>
+                                        <td> @data.TruckTypeCodeNavigation.TruckTypeName</td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
@@ -131,7 +131,7 @@
                                         @Html.DropDownList("SupplierCode", null, new
                                         {
                                             @Class = "form-control",
-                                            id = "supplyer_code",
+                                            id = "supplier_code",
                                             autocomplete = "off"
                                         })
                                         <span class="help-block help-filter"></span>
@@ -177,6 +177,24 @@
                                 </div>
                             </div>
 
+                            <hr/>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>
+                                            เงินสำรองจ่าย<span class="required"> * </span>
+                                        </label>
+                                        <br />
+                                        @Html.TextBox("cashflow", null, new
+                                        {
+                                            @Class = "form-control",
+                                            id = "cashflow",
+                                            autocomplete = "off"
+                                        })
+                                        <span class="help-block help-filter"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -199,11 +217,11 @@
 @section scripts
 {
     <script type="text/javascript">
-        (function ($) {
-            $("#frmEdit").ajaxForm(function (data) {
+        (function($) {
+            $("#frmEdit").ajaxForm(function(data) {
                 killOverlayForm();
                 if (data.result === true) {
-                    $.alert.open('info', data.resultMessage, function (r) {
+                    $.alert.open('info', data.resultMessage, function(r) {
                         window.opener.reloadRow();
                         window.close();
                     });
@@ -212,54 +230,68 @@
                 }
             });
 
-            $('#supplyer_code').change(function () {
-                var supplyer = $(this).val();
-                if (supplyer == 'SP18001') {
-                    $('#truck_code').prop('disabled', false);
-                    $('#driver_code').prop('disabled', false);
-                    setDriverDropDown();
-                } else {
-                    $('#truck_code').val('');
-                    $('#driver_code').val('');
-                    $('#truck_code').prop('disabled', true);
-                    $('#driver_code').prop('disabled', true);
-                }
+            $("#supplier_code").change(function () {
+                var supplier = $(this).val();
+                $.post(
+                    "/Job/GetSupplierByCode",
+                    {
+                        code: supplier
+                    },
+                    function (result) {
+                        if(result.fleetTypeCode == 'F1'){
+                            $("#truck_code").prop("disabled", false);
+                            $("#driver_code").prop("disabled", false);
+                            $('#cashflow').prop("disabled", false);
+                            setDriverDropDown(supplier);
+                        }
+                        else{
+                            $("#truck_code").val("");
+                            $("#driver_code").val("");
+                            $('#cashflow').val("");
+
+                            $("#truck_code").prop("disabled", true);
+                            $("#driver_code").prop("disabled", true);
+                    
+                            $('#cashflow').prop("disabled", true);
+                        }
+                    }
+                );
             });
 
-            $('#truck_code').change(function () {
+            $('#truck_code').change(function() {
                 var truck = $(this).val();
                 setSelectDriver(truck);
             });
         }(jQuery));
 
-        function setTruckDropDown(supplyer) {
+        function setTruckDropDown(supplier) {
             $("#truck_code option").remove();
             $.post("/AutoComplete/GetTruckBySupplyer", {
-                code: supplyer
-            }, function (data) {
+                code: supplier
+            }, function(data) {
                 $('#truck_code').append("<option>-----เลือก-----</option>");
-                $.each(data.result, function (i, item) {
+                $.each(data.result, function(i, item) {
                     var option = "<option value='" + item.truck_code + "'>" + item.truck_license +
                         "</option>"
                     $('#truck_code').append(option)
                 });
-                if (suplyer != 'SP18001') {
+                if (supplier != 'SP18001') {
                     $('#truck_code').append("<option value='T000000'>ไม่ระบุ</option>");
                 }
             });
         }
 
-        function setDriverDropDown() {
+        function setDriverDropDown(supplier) {
             $("#driver_code option").remove();
             $.post("/Order/GetDriverData", {
 
-            }, function (data) {
+            }, function(data) {
                 $('#driver_code').append("<option>-----เลือก-----</option>");
-                $.each(data.result, function (i, item) {
+                $.each(data.result, function(i, item) {
                     var option = "<option value='" + item.driver_code + "'>" + item.fullname + "</option>"
                     $('#driver_code').append(option)
                 });
-                if (supplyer != 'SP18001') {
+                if (supplier != 'SP18001') {
                     $('#driver_code').append("<option value='DV000000'>ไม่ระบุ</option>");
                 }
             });
@@ -268,14 +300,14 @@
         function setSelectDriver(truck) {
             $.post("/Order/GetTruckDriverByTruckCode", {
                 code: truck
-            }, function (result) {
+            }, function(result) {
                 $('#driver_code').val(result.driver_code);
             });
         }
 
         function OnValidate() {
             var result = 0;
-            var supplier = $('#supplyer_code').val();
+            var supplier = $('#supplyier_code').val();
             var truck = $('#truck_code').val();
             var driver = $('#driver_code').val();
 

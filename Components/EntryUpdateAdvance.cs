@@ -20,10 +20,10 @@ public class EntryUpdateAdvance : ViewComponent
         _jobService = jobService;
     }
 
-    public async Task<IViewComponentResult> InvokeAsync(string code, bool lift_cash)
+    public async Task<IViewComponentResult> InvokeAsync(string code)
     {
         var advance = await _jobService.GetAdvanceByJob(code);
-        var advance_other = await _jobService.GetAdvanceOtherByJob(advance.AdvanceCode);
+        var advance_other = await _jobService.GetAdvanceOtherByJob(advance.Id);
 
         ViewBag.Other = advance_other;
         return View(advance);

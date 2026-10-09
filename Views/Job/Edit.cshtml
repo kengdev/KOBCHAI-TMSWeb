@@ -35,6 +35,7 @@
         @using (Html.BeginForm("EditOrderTruck", "Job", FormMethod.Post, new { id = "frmEdit", onsubmit = "return OnValidate()" }))
         {
             @Html.Hidden("job_allowance_id", data.Id)
+            @Html.Hidden("round_trip", data.RoundTrip)
             @Html.HiddenFor(m => m.JobDetailCode)
             @Html.HiddenFor(m => m.DriverCode)
             @Html.HiddenFor(m => m.CostValue)
@@ -58,7 +59,7 @@
             <div class="portlet-body form">
                 <div class="form-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-7">
                             <div class="table-scrollable table-scrollable-borderless">
                                 <table class="table table-light">
                                     <tr>
@@ -124,13 +125,13 @@
                                         <td>
                                             @foreach (var item in allowanceData)
                                             {
-          
+
                                                 <div>
                                                     <span> @item.job_date.ToString("yyyy-MM-dd")</span>
                                                     <i class="fa fa-caret-right font-red-intense"></i>
                                                     @item.license
                                                     <i class="fad fa-dot-circle font-green-jungle"></i>
-                                                    @item.driver | 
+                                                    @item.driver |
                                                     <span class="bold font-red-mint">@item.cashflow.ToString("#,##0.00")</span>
                                                 </div>
                                             }
@@ -146,7 +147,25 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-5">
+                            @if (data.RoundTrip != "C")
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mt-radio-inline">
+                                            <label class="mt-radio">
+                                                <input type="radio" name="change_condition" class="change_condition" value="C" checked> เปลี่ยนพนักงานขับรถ
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="change_condition" class="change_condition" value="W" > รอการจัดรถใหม่
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -156,19 +175,18 @@
                                         <br />
                                         @Html.DropDownList("new_supplier_code", null, new
                                         {
-                                            id = "supplyer_code",
-                                            @Class =
-                                        "form-control"
+                                            id = "supplier_code",
+                                            @Class = "form-control"
                                         })
                                         <span class="help-block help-filter"></span>
                                     </div>
                                 </div>
                             </div>
 
-                            @if (Model.SupplierCode != "SP26001")
+                            @if (Model.SupplierCodeNavigation.FleetTypeCode != "F1")
                             {
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-5">
                                         <div class="form-group">
                                             <label>
                                                 ทะเบียนรถ
@@ -183,9 +201,8 @@
                                             <span class="help-block help-filter"></span>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
+
+                                    <div class="col-md-7">
                                         <div class="form-group">
                                             <label>
                                                 พนักงานขับรถ
@@ -195,6 +212,24 @@
                                             {
                                                 id = "driver_code",
                                                 @Class = "form-control",
+                                                disabled = "Disabled"
+                                            })
+                                            <span class="help-block help-filter"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>
+                                                เงินสำรองจ่าย<span class="required"> * </span>
+                                            </label>
+                                            <br />
+                                            @Html.TextBox("cashflow", null, new
+                                            {
+                                                @Class = "form-control",
+                                                autocomplete = "off",
                                                 disabled = "Disabled"
                                             })
                                             <span class="help-block help-filter"></span>
@@ -205,7 +240,7 @@
                             else
                             {
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-5">
                                         <div class="form-group">
                                             <label>
                                                 ทะเบียนรถ
@@ -219,9 +254,8 @@
                                             <span class="help-block help-filter"></span>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
+
+                                    <div class="col-md-7">
                                         <div class="form-group">
                                             <label>
                                                 พนักงานขับรถ
@@ -231,6 +265,23 @@
                                             {
                                                 id = "driver_code",
                                                 @Class = "form-control"
+                                            })
+                                            <span class="help-block help-filter"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>
+                                                เงินสำรองจ่าย<span class="required"> * </span>
+                                            </label>
+                                            <br />
+                                            @Html.TextBox("cashflow", null, new
+                                            {
+                                                @Class = "form-control",
+                                                autocomplete = "off"
                                             })
                                             <span class="help-block help-filter"></span>
                                         </div>
@@ -260,123 +311,197 @@
     <script src="~/js/autocomplete/bootstrap3-typeahead.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         (function ($) {
-        $("#frmEdit").ajaxForm(function (data) {
-        killOverlayForm();
-        if (data.result === true) {
-        $.alert.open('info', data.resultMessage, function (r) {
-        window.opener.reloadRow();
-        window.close();
-        });
-        } else {
-        $.alert.open('error', data.resultMessage);
-        }
-        });
+            $("#frmEdit").ajaxForm(function (data) {
+                killOverlayForm();
 
-        $('#supplyer_code').change(function () {
-        var supplyer = $(this).val();
-        if (supplyer == 'SP26001') {
-        $('#truck_code').prop('disabled', false);
-        $('#driver_code').prop('disabled', false);
-        setDriverDropDown(supplyer);
-        } else {
-        $('#truck_code').val('');
-        $('#driver_code').val('');
-        $('#truck_code').prop('disabled', true);
-        $('#driver_code').prop('disabled', true);
-        }
-        });
+                if (data.result === true) {
+                    $.alert.open("info", data.resultMessage, function (r) {
+                        window.opener.reloadRow();
+                        window.close();
+                    });
+                } else {
+                    $.alert.open("error", data.resultMessage);
+                }
+            });
 
-        $('#truck_code').change(function () {
-        var truck = $(this).val();
-        setSelectDriver(truck);
-        });
+            $("#supplier_code").change(function () {
+                var supplier = $(this).val();
+                $.post(
+                    "/Job/GetSupplierByCode",
+                    {
+                        code: supplier
+                    },
+                    function (result) {
+                        if(result.fleetTypeCode == 'F1'){
+                            $("#truck_code").prop("disabled", false);
+                            $("#driver_code").prop("disabled", false);
+                            $('#cashflow').prop("disabled", false);
+                            setDriverDropDown(supplyer);
+                        }
+                        else{
+                            $("#truck_code").val("");
+                            $("#driver_code").val("");
+                            $('#cashflow').val("");
+
+                            $("#truck_code").prop("disabled", true);
+                            $("#driver_code").prop("disabled", true);
+                    
+                            $('#cashflow').prop("disabled", true);
+                        }
+                    }
+                );
+            });
+
+            $("#truck_code").change(function () {
+                var truck = $(this).val();
+
+                setSelectDriver(truck);
+            });
+
+            $('.change_condition').change(function(){
+                var condition = $(this).val();
+                if(condition == 'C')
+                {
+                    $("#supplier_code").prop("disabled", false);
+                    $("#truck_code").prop("disabled", false);
+                    $("#driver_code").prop("disabled", false);
+                    $("#cashflow").prop("disabled", false);
+                }
+                else{
+                    $("#supplier_code").prop("disabled", true);
+                    $("#truck_code").prop("disabled", true);
+                    $("#driver_code").prop("disabled", true);
+                    $("#cashflow").prop("disabled", true);
+                }
+            });
         }(jQuery));
 
-        function setTruckDropDown(supplyer) {
-        $("#truck_code option").remove();
-        $.post("/AutoComplete/GetTruckBySupplyer", {
-        code: supplyer
-        }, function (data) {
-        $('#truck_code').append("<option>-----เลือก-----</option>");
-        $.each(data.result, function (i, item) {
-        var option = "<option value='" + item.truck_code + "'>" + item.truck_license +
-        "</option>"
-        $('#truck_code').append(option)
-        });
-        if (sgfpplyer != 'SP26001') {
-        $('#truck_code').append("<option value='T000000'>ไม่ระบุ</option>");
-        }
-        });
-        }
-
         function setDriverDropDown(supplyer) {
-        $("#driver_code option").remove();
-        $.post("/Order/GetDriverData", {
+            $("#driver_code option").remove();
 
-        }, function (data) {
-        $('#driver_code').append("<option>-----เลือก-----</option>");
-        $.each(data.result, function (i, item) {
-        var option = "<option value='" + item.driver_code + "'>" + item.fullname +
-        "</option>"
-        $('#driver_code').append(option)
-        });
-        if (supplyer != 'SP26001') {
-        $('#driver_code').append("<option value='DV000000'>ไม่ระบุ</option>");
-        }
-        });
+            $.post(
+                "/Job/GetDriverData",
+                {driver_code: $('#DriverCode').val()},
+                function (data) {
+                    $("#driver_code").append(
+                        "<option value=''>-----เลือก-----</option>"
+                    );
+
+                    $.each(data.result, function (i, item) {
+                        var option =
+                            "<option value='" +
+                            item.driver_code +
+                            "'>" +
+                            item.fullname +
+                            "</option>";
+
+                        $("#driver_code").append(option);
+                    });
+
+                    if (supplyer !== "SP26001") {
+                        $("#driver_code").append(
+                            "<option value='DV000000'>ไม่ระบุ</option>"
+                        );
+                    }
+                }
+            );
         }
 
         function setSelectDriver(truck) {
-        $.post("/Order/GetTruckDriverByTruckCode", {
-        code: truck
-        }, function (result) {
-        $('#driver_code').val(result.driver_code);
-        });
+            $.post(
+                "/Order/GetTruckDriverByTruckCode",
+                {
+                    code: truck
+                },
+                function (result) {
+                    $("#driver_code").val(result.driver_code);
+                }
+            );
         }
+
 
         function OnValidate() {
-        var result = 0;
-        var e = $('#driver_cost');
-        var supplier = $('#supplyer_code').val();
-        var truck = $('#truck_code').val();
-        var driver = $('#driver_code').val();
-        var truck_element = $('#truck_code');
-        var driver_element = $('#driver_code');
+            var result = 0;
+            var condition = $('input[name="change_condition"]:checked').val();
+            var supplier = $("#supplyer_code").val();
+            var truck = $("#truck_code").val();
+            var driver = $("#driver_code").val();
 
-        if (supplier == 'SP26001') {
-        if (truck === '') {
+            var truckElement = $("#truck_code");
+            var driverElement = $("#driver_code");
 
-        truck_element.closest("div.form-group").addClass("has-error");
-        truck_element.closest('div.form-group').find('span.help-block').html('กรุณาเลือกทะเบียนรถ');
-        result++;
-        } else {
-        truck_element.closest("div.form-group").removeClass("has-error");
-        truck_element.closest('div.form-group').find('span.help-block').html('');
-        }
+            if(condition != 'W'){
+                if (supplier === "SP26001") {
+                    if (truck === "") {
+                        truckElement
+                            .closest("div.form-group")
+                            .addClass("has-error");
 
-        if (driver === '') {
+                        truckElement
+                            .closest("div.form-group")
+                            .find("span.help-block")
+                            .html("กรุณาเลือกทะเบียนรถ");
 
-        driver_element.closest("div.form-group").addClass("has-error");
-        driver_element.closest('div.form-group').find('span.help-block').html('กรุณาเลือกทะเบียนรถ');
-        result++;
-        } else {
-        driver_element.closest("div.form-group").removeClass("has-error");
-        driver_element.closest('div.form-group').find('span.help-block').html('');
-        }
-        } else {
-        truck_element.closest("div.form-group").removeClass("has-error");
-        truck_element.closest('div.form-group').find('span.help-block').html('');
+                        result++;
+                    } else {
+                        truckElement
+                            .closest("div.form-group")
+                            .removeClass("has-error");
 
-        driver_element.closest("div.form-group").removeClass("has-error");
-        driver_element.closest('div.form-group').find('span.help-block').html('');
-        }
+                        truckElement
+                            .closest("div.form-group")
+                            .find("span.help-block")
+                            .html("");
+                    }
 
-        if (result === 0) {
-        overLayForm();
-        return true;
-        } else {
-        return false;
-        }
+                    if (driver === "") {
+                        driverElement
+                            .closest("div.form-group")
+                            .addClass("has-error");
+
+                        driverElement
+                            .closest("div.form-group")
+                            .find("span.help-block")
+                            .html("กรุณาเลือกพนักงานขับรถ");
+
+                        result++;
+                    } else {
+                        driverElement
+                            .closest("div.form-group")
+                            .removeClass("has-error");
+
+                        driverElement
+                            .closest("div.form-group")
+                            .find("span.help-block")
+                            .html("");
+                    }
+                } else {
+                    truckElement
+                        .closest("div.form-group")
+                        .removeClass("has-error");
+
+                    truckElement
+                        .closest("div.form-group")
+                        .find("span.help-block")
+                        .html("");
+
+                    driverElement
+                        .closest("div.form-group")
+                        .removeClass("has-error");
+
+                    driverElement
+                        .closest("div.form-group")
+                        .find("span.help-block")
+                        .html("");
+                }
+            }
+
+            if (result === 0) {
+                overLayForm();
+                return true;
+            }
+
+            return false;
         }
     </script>
 }

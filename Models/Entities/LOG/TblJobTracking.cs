@@ -9,6 +9,12 @@ public partial class TblJobTracking
 
     public string JobDetailCode { get; set; } = null!;
 
+    public string TruckCode { get; set; } = null!;
+
+    public string DriverCode { get; set; } = null!;
+
+    public string SupplierCode { get; set; } = null!;
+
     public string TrackingStatus { get; set; } = null!;
 
     public DateTime TrackingDate { get; set; }
@@ -19,5 +25,11 @@ public partial class TblJobTracking
 
     public string? Speed { get; set; }
 
+    public virtual TblDriver DriverCodeNavigation { get; set; } = null!;
+
     public virtual TblJobDetail JobDetailCodeNavigation { get; set; } = null!;
+
+    public virtual TblSupplier SupplierCodeNavigation { get; set; } = null!;
+
+    public virtual TblTruck TruckCodeNavigation { get; set; } = null!;
 }

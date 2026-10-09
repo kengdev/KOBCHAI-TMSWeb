@@ -1,0 +1,259 @@
+@model TMSWeb.Models.Entities.LOG.AdvanceFund
+@{
+    Layout = "~/Views/Shared/_PartialLayout.cshtml";
+}
+<style>
+    .card-balance span {
+        font-size: 61px;
+        font-weight: bold;
+    }
+
+    .card-balance {
+        border: 2px solid #F3C200;
+        border-radius: 7px !important;
+        padding: 50px;
+        width: 400px;
+        height: 250px;
+        box-shadow: 3px 3px 5px #ccd;
+    }
+
+    .topic-label label {
+        font-weight: bold;
+    }
+
+    .card-action {
+        margin-top: 20px;
+    }
+
+        .card-action button {
+            background: #fce8a2;
+            border-radius: 3px !important;
+            font-weight: bold;
+            width: 150px;
+        }
+
+    .table td {
+        font-size: 11px;
+        vertical-align: middle !important;
+    }
+
+    .transaction-table {
+        margin-top: 20px;
+        display: inline-block;
+        width: 70%;
+        height: 280px;
+    }
+
+    .transaction-icon {
+        display: inline-block;
+        background: #fdf1c8;
+        width: 30px;
+        height: 30px;
+        border-radius: 50% !important;
+        padding-top: 5px;
+    }
+
+    .transaction-text {
+        display: inline-block;
+        margin-left: 10px !important;
+    }
+
+        .transaction-text div, .transaction-text label, .transaction-text span {
+            padding: 0 !important;
+            margin: 0 !important;
+            text-align: left;
+        }
+
+        .transaction-text label {
+            font-weight: bold;
+            color: #6d6d6d;
+        }
+
+        .transaction-text span {
+            color: #a5a6a5;
+        }
+
+    .transaction-card {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+    }
+
+    .form-content {
+        padding-top: 20px;
+        padding-left: 20px;
+        padding-right: 15px;
+        padding-bottom: 20px;
+    }
+
+    .form-group {
+        text-align: left;
+    }
+
+        .form-group label {
+            margin: 0;
+            font-size: 13px;
+            color: #000;
+        }
+
+    .font-sm-11 {
+        font-size: 11px;
+    }
+
+    .budget-wrapper {
+        border: 1px solid #ccc;
+        margin: 10px;
+        padding: 20px;
+    }
+</style>
+<div div class="budget-wrapper">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <div style="display: inline-block;">
+                <div class="card-balance">
+                    <div class="font-grey-gallery topic-label">
+                        <label>ยอดเงินคงเหลือ</label>
+                    </div>
+                    <span class="font-yellow-gold">@Model.CurrentBalance.ToString("#,##0.00")</span>
+                </div>
+            </div>
+            <div class="card-action">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                       
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <div class="transaction-table">
+                            <table class="table">
+                                <tbody>
+
+                                        @foreach (var itemTransaction in Model.AdvanceFundTransactions)
+                                        {
+                                        var itemRequest = Model.AdvanceRequests.Where(w => w.RequestId == itemTransaction.RequestId).FirstOrDefault();
+                                        <tr>
+                                                <td>@itemTransaction.TransactionDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                                @if (itemTransaction.TransactionType == "PAYMENT")
+                                                {
+                                                    <td class="font-red">@itemTransaction.TransactionType</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="font-green-jungle">@itemTransaction.TransactionType</td>
+                                                }
+
+                                                <td class="text-left font-blue">@itemTransaction.Remark</td>
+                                                <td class="text-left font-blue">
+                                                    <i class="fad fa-circle"></i>
+                                                    @itemRequest.PayeeName
+                                                </td>
+                                                @if (itemTransaction.TransactionType == "PAYMENT")
+                                                {
+                                                    <td class="text-right font-red">@itemTransaction.Amount.ToString("#,##0.00")</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-right font-green-jungle">@itemTransaction.Amount.ToString("#,##0.00")</td>
+                                                }
+                                            </tr>
+                                        }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-form-content" style="display: none;">
+    <div id="form-content">
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        (function ($) {
+            $('#add-balance').click(function(){
+                $.post("/Budget/_AddBalance", {
+                }, function (result) {
+                    $('#form-content').html(result)
+                    $('#modal-form-content').modal();
+                });
+            });
+
+            $('#add-payment').click(function(){
+                $.post("/Budget/_AddPayment", {
+                }, function (result) {
+                    $('#form-content').html(result)
+                    $('#modal-form-content').modal();
+                });
+            });
+        }(jQuery));
+
+        function setUpdate(){
+            $('#wrapper-action-modal').hide();
+            $('#spin-item').show();
+            overLayDiv('.form-content');
+
+            var amount = $('#amount').val();
+            var budget_date = $('#budget_date').val();
+            var remark = $('#remark').val();
+
+            $.post("/Budget/SetBalanceData", {
+                amount: amount,
+                budget_date: budget_date,
+                remark: remark
+            }, function (data) {
+                killOverlayDiv()
+                $('#wrapper-action-modal').show();
+                $('#spin-item').hide();
+                if (data.result == true) {
+                    $.alert.open('info', data.resultMessage, function (r) {
+                        closeModal();
+                        window.location.reload();
+                    });
+                } else {
+                    jAlert('ผลการทำงาน', data.resultMessage);
+                }
+            });
+        }
+
+        function setPayment(){
+            $('#wrapper-action-modal').hide();
+            $('#spin-item').show();
+            overLayDiv('.form-content');
+
+            var amount = $('#payment_amount').val();
+            var budget_date = $('#payment_budget_date').val();
+            var remark = $('#payment_remark').val();
+
+            $.post("/Budget/AddPaymentData", {
+                amount: amount,
+                budget_date: budget_date,
+                remark: remark
+            }, function (data) {
+                killOverlayDiv()
+                $('#wrapper-action-modal').show();
+                $('#spin-item').hide();
+                if (data.result == true) {
+                    $.alert.open('info', data.resultMessage, function (r) {
+                        closeModal();
+                        window.location.reload();
+                    });
+                } else {
+                    jAlert('ผลการทำงาน', data.resultMessage);
+                }
+            });
+        }
+
+        function closeModal() {
+            $.modal.close();
+        }
+    </script>
+}

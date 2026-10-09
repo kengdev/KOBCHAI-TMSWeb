@@ -11,11 +11,7 @@ public partial class TblJobcashflowAdvanceOther
 
     public decimal AdvanceOtherValue { get; set; }
 
-    public string JobDetailCode { get; set; } = null!;
+    public long CashflowAdvanceId { get; set; }
 
-    public string TruckCode { get; set; } = null!;
-
-    public string DriverCode { get; set; } = null!;
-
-    public string AdvanceCode { get; set; } = null!;
+    public virtual TblJobcashflowAdvance CashflowAdvance { get; set; } = null!;
 }

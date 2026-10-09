@@ -18,7 +18,7 @@ public class EntryContainerJob : ViewComponent
     {
         ViewData["ContainerSizeCode"] = from a in await _dropListService.GetContainerSize() select new SelectListItem { Value = a.key.ToString(), Text = a.label };
         ViewData["AgentCode"] = from a in await _dropListService.GetAgent() select new SelectListItem { Value = a.key.ToString(), Text = a.label };
-        ViewData["TruckTypegroupCode"] = from a in await _dropListService.GetTruckGroup() select new SelectListItem { Value = a.key.ToString(), Text = a.label };
+        ViewData["TruckTypeCode"] = from a in await _dropListService.GetTruckType() select new SelectListItem { Value = a.key.ToString(), Text = a.label };
 
         return View();
     }

@@ -192,7 +192,7 @@ public class OrderController : Controller
         ViewBag.Job = placeJob;
         ViewData["AgentCode"] = from a in await _dropListService.GetAgent() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.AgentCode };
         ViewData["ContainerSizeCode"] = from a in await _dropListService.GetContainerSize() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.ContainerSizeCode };
-        ViewData["TruckTypegroupCode"] = from a in await _dropListService.GetTruckGroup() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.TruckTypegroupCode };
+        ViewData["TruckTypeCode"] = from a in await _dropListService.GetTruckType() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.TruckTypeCode };
 
         return View(data);
     }
@@ -250,12 +250,12 @@ public class OrderController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> OrderTruck(TblJobDetail model)
+    public async Task<IActionResult> OrderTruck(TblJobDetail model, decimal cashflow)
     {
         ResponseViewModel response = new ResponseViewModel();
         string username = LoggedInUser;
 
-        model.DriverCode = model.SupplierCode != "SP26001" ? "DV000000" : model.DriverCode;
+        model.DriverCode = model.SupplierCode != "SP26001" ? "26000000" : model.DriverCode;
         model.TruckCode = model.SupplierCode != "SP26001" ? "T000000" : model.TruckCode;
         model.IsEnabled = true;
         model.CreateDate = DateTime.Now;
@@ -263,7 +263,7 @@ public class OrderController : Controller
         model.UpdateDate = DateTime.Now;
         model.UpdateBy = username;
 
-        response = await _orderService.OrderTruck(model);
+        response = await _orderService.OrderTruck(model, cashflow);
         return Json(response);
     }
 

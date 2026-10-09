@@ -111,30 +111,26 @@
                                 <tr>
                                     <th rowspan="2"> สังกัด</th>
                                     <th rowspan="2"> ชื่อสถานที่</th>
-                                    <th rowspan="2"> โซนการส่งสินค้า</th>
-                                    <th colspan="3" style="text-align: center!important;"> เรทราคา</th>
+                                    <th colspan="37" style="text-align: center!important;"> เรทราคา</th>
                                 </tr>
                                 <tr>
                                     <th style="text-align: center!important;"> 4W</th>
                                     <th style="text-align: center!important;"> 6W</th>
                                     <th style="text-align: center!important;"> 10W</th>
+                                    <th style="text-align: center!important;"> TR6W</th>
+                                    <th style="text-align: center!important;"> TR10W</th>
+                                    <th style="text-align: center!important;"> TR18W</th>
+                                    <th style="text-align: center!important;"> TRextra</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
                             <tfoot>
                                 <tr role="row" class="heading">
                                     <th class="filter"> @Html.DropDownList("supplyer_code", null, new { @Class = "form-control filterDropdown" })</th>
                                     <th class="filter"><input type="text" class="form-control filterText" id="filterMission" /></th>
-                                    <th class="filter"><input type="text" class="form-control filterText" id="filterZone" /></th>
+                                    <th class="filter"></th>
+                                    <th class="filter"></th>
+                                    <th class="filter"></th>
+                                    <th class="filter"></th>
                                     <th class="filter"></th>
                                     <th class="filter"></th>
                                     <th class="filter"></th>
@@ -169,6 +165,11 @@
                     var x6 = number_format(aData.rate_6W_value)
                     var x10 = number_format(aData.rate_10W_value)
 
+                    var tr6 = number_format(aData.rate_TR6W_value)
+                    var tr10 = number_format(aData.rate_TR10W_value)
+                    var tr18 = number_format(aData.rate_TR18W_value)
+                    var extra = number_format(aData.rate_TRextra_value)
+                    /*-----------------------*/
                     var t4W = "<div class='value-content'><span>" + x4 + "</span>";
                     t4W += "<input type='text' value='" + aData.rate_4W_value + "' class='form-control rate' /> </div>";
                     t4W += "<a href='javascript:;' class='btnEdit' onclick='edit(this)'><i class='fad fa-pencil'></i></a>&nbsp;&nbsp;";
@@ -187,9 +188,40 @@
                     t10W += "<a href='javascript:;' class='btnSave' onclick=save(this,'" + aData.supplyer_code + "','" + aData.place_code + "','10W')><span class='fad fa-save'></span></a>&nbsp;&nbsp;";
                     t10W += "<a href='javascript:;' class='btnCancel' onclick='cancel(this)'><span class='fal fa-times'></span></a>";
 
-                    $('td', row).eq(3).html(t4W);
-                    $('td', row).eq(4).html(t6W);
-                    $('td', row).eq(5).html(t10W);
+                    /*----------------Trailer*/
+                    var tr6W = "<div class='value-content'><span>" + tr6 + "</span>";
+                    tr6W += "<input type='text' value='" + aData.rate_TR6W_value + "' class='form-control rate' /> </div>";
+                    tr6W += "<a href='javascript:;' class='btnEdit' onclick='edit(this)'><i class='fad fa-pencil'></i></a>&nbsp;&nbsp;";
+                    tr6W += "<a href='javascript:;' class='btnSave' onclick=save(this,'" + aData.supplyer_code + "','" + aData.place_code + "','4W')><span class='fad fa-save'></span></a>&nbsp;&nbsp;";
+                    tr6W += "<a href='javascript:;' class='btnCancel' onclick='cancel(this)'><span class='fal fa-times'></span></a>";
+
+                    var tr10W = "<div class='value-content'><span>" + tr10 + "</span>";
+                    tr10W += "<input type='text' value='" + aData.rate_TR10W_value + "' class='form-control rate' /> </div>";
+                    tr10W += "<a href='javascript:;' class='btnEdit' onclick='edit(this)'><i class='fad fa-pencil'></i></a>&nbsp;&nbsp;";
+                    tr10W += "<a href='javascript:;' class='btnSave' onclick=save(this,'" + aData.supplyer_code + "','" + aData.place_code + "','6W')><span class='fad fa-save'></span></a>&nbsp;&nbsp;";
+                    tr10W += "<a href='javascript:;' class='btnCancel' onclick='cancel(this)'><span class='fal fa-times'></span></a>";
+
+                    var tr18W = "<div class='value-content'><span>" + tr18 + "</span>";
+                    tr18W += "<input type='text' value='" + aData.rate_TR18W_value + "' class='form-control rate' /> </div>";
+                    tr18W += "<a href='javascript:;' class='btnEdit' onclick='edit(this)'><i class='fad fa-pencil'></i></a>&nbsp;&nbsp;";
+                    tr18W += "<a href='javascript:;' class='btnSave' onclick=save(this,'" + aData.supplyer_code + "','" + aData.place_code + "','10W')><span class='fad fa-save'></span></a>&nbsp;&nbsp;";
+                    tr18W += "<a href='javascript:;' class='btnCancel' onclick='cancel(this)'><span class='fal fa-times'></span></a>";
+
+                    var trExtra = "<div class='value-content'><span>" + extra + "</span>";
+                    trExtra += "<input type='text' value='" + aData.rate_TRextra_value + "' class='form-control rate' /> </div>";
+                    trExtra += "<a href='javascript:;' class='btnEdit' onclick='edit(this)'><i class='fad fa-pencil'></i></a>&nbsp;&nbsp;";
+                    trExtra += "<a href='javascript:;' class='btnSave' onclick=save(this,'" + aData.supplyer_code + "','" + aData.place_code + "','10W')><span class='fad fa-save'></span></a>&nbsp;&nbsp;";
+                    trExtra += "<a href='javascript:;' class='btnCancel' onclick='cancel(this)'><span class='fal fa-times'></span></a>";
+
+
+                    $('td', row).eq(2).html(t4W);
+                    $('td', row).eq(3).html(t6W);
+                    $('td', row).eq(4).html(t10W);
+
+                    $('td', row).eq(5).html(tr6W);
+                    $('td', row).eq(6).html(tr10W);
+                    $('td', row).eq(7).html(tr18W);
+                    $('td', row).eq(8).html(trExtra);
                 },
                 "oLanguage": {
                     "sInfoFiltered": " ",
@@ -207,19 +239,25 @@
                 "columnDefs": [
                     { className: "name-td", targets: 0 },
                     { className: "name-td", targets: 1 },
-                    { className: "zone-td", targets: 2 },
+                    { className: "rate-td", targets: 2 },
                     { className: "rate-td", targets: 3 },
                     { className: "rate-td", targets: 4 },
-                    { className: "rate-td", targets: 5 }
+                    { className: "rate-td", targets: 5 },
+                    { className: "rate-td", targets: 6 },
+                    { className: "rate-td", targets: 7 },
+                    { className: "rate-td", targets: 8 }
                 ],
                 "columns":
                     [
                         { "data": "supplyer_name", "orderable": false },
                         { "data": "place_name" },
-                        { "data": "zone_name" },
                         { "data": "rate_4W_value", "orderable": false },
                         { "data": "rate_6W_value", "orderable": false },
-                        { "data": "rate_10W_value", "orderable": false }
+                        { "data": "rate_10W_value", "orderable": false },
+                        { "data": "rate_TR6W_value", "orderable": false },
+                        { "data": "rate_TR10W_value", "orderable": false },
+                        { "data": "rate_TR18W_value", "orderable": false },
+                        { "data": "rate_TRextra_value", "orderable": false }
                     ],
                 "createdRow": function (row, data, dataIndex) {
                     $(row).find('[data-toggle="tooltip"]').tooltip();

@@ -11,29 +11,19 @@ public partial class DbTMSContext : DbContext
     {
     }
 
+    public virtual DbSet<AdvanceExpenseType> AdvanceExpenseTypes { get; set; }
+
+    public virtual DbSet<AdvanceFund> AdvanceFunds { get; set; }
+
+    public virtual DbSet<AdvanceFundTransaction> AdvanceFundTransactions { get; set; }
+
+    public virtual DbSet<AdvanceRequest> AdvanceRequests { get; set; }
+
+    public virtual DbSet<AdvanceRequestReference> AdvanceRequestReferences { get; set; }
+
     public virtual DbSet<LcProvince> LcProvinces { get; set; }
 
-    public virtual DbSet<LogAllowanceDetail> LogAllowanceDetails { get; set; }
-
-    public virtual DbSet<LogApproved> LogApproveds { get; set; }
-
-    public virtual DbSet<LogBillingDetail> LogBillingDetails { get; set; }
-
-    public virtual DbSet<LogBillingOther> LogBillingOthers { get; set; }
-
-    public virtual DbSet<LogBudgetTransaction> LogBudgetTransactions { get; set; }
-
-    public virtual DbSet<LogCost> LogCosts { get; set; }
-
-    public virtual DbSet<LogCoversheetDetail> LogCoversheetDetails { get; set; }
-
-    public virtual DbSet<LogReceiptDetail> LogReceiptDetails { get; set; }
-
-    public virtual DbSet<LogSupplyerpaymentDetail> LogSupplyerpaymentDetails { get; set; }
-
     public virtual DbSet<LogSystem> LogSystems { get; set; }
-
-    public virtual DbSet<SeCustomerAccount> SeCustomerAccounts { get; set; }
 
     public virtual DbSet<SeGroup> SeGroups { get; set; }
 
@@ -59,29 +49,13 @@ public partial class DbTMSContext : DbContext
 
     public virtual DbSet<TblBank> TblBanks { get; set; }
 
-    public virtual DbSet<TblBillingDetail> TblBillingDetails { get; set; }
-
-    public virtual DbSet<TblBillingMaster> TblBillingMasters { get; set; }
-
-    public virtual DbSet<TblBillingOther> TblBillingOthers { get; set; }
-
     public virtual DbSet<TblBindingGenerate> TblBindingGenerates { get; set; }
 
     public virtual DbSet<TblBrand> TblBrands { get; set; }
 
-    public virtual DbSet<TblBudget> TblBudgets { get; set; }
-
-    public virtual DbSet<TblBudgetTransaction> TblBudgetTransactions { get; set; }
-
     public virtual DbSet<TblCodeGenerate> TblCodeGenerates { get; set; }
 
-    public virtual DbSet<TblConsignee> TblConsignees { get; set; }
-
     public virtual DbSet<TblContainerSize> TblContainerSizes { get; set; }
-
-    public virtual DbSet<TblCoversheet> TblCoversheets { get; set; }
-
-    public virtual DbSet<TblCoversheetDetail> TblCoversheetDetails { get; set; }
 
     public virtual DbSet<TblCustomer> TblCustomers { get; set; }
 
@@ -89,31 +63,23 @@ public partial class DbTMSContext : DbContext
 
     public virtual DbSet<TblCustomerCost> TblCustomerCosts { get; set; }
 
-    public virtual DbSet<TblCustomerPage> TblCustomerPages { get; set; }
-
     public virtual DbSet<TblCustomerRule> TblCustomerRules { get; set; }
 
     public virtual DbSet<TblCustomerType> TblCustomerTypes { get; set; }
 
-    public virtual DbSet<TblDailypayment> TblDailypayments { get; set; }
-
-    public virtual DbSet<TblDailypaymentDetail> TblDailypaymentDetails { get; set; }
-
-    public virtual DbSet<TblDailypaymentTransaction> TblDailypaymentTransactions { get; set; }
-
     public virtual DbSet<TblDriver> TblDrivers { get; set; }
+
+    public virtual DbSet<TblDriverCost> TblDriverCosts { get; set; }
 
     public virtual DbSet<TblDriverRate> TblDriverRates { get; set; }
 
     public virtual DbSet<TblDriverSpecialvalue> TblDriverSpecialvalues { get; set; }
 
-    public virtual DbSet<TblFleet> TblFleets { get; set; }
-
-    public virtual DbSet<TblFleetExternal> TblFleetExternals { get; set; }
-
-    public virtual DbSet<TblFleetInternal> TblFleetInternals { get; set; }
-
     public virtual DbSet<TblFleetRate> TblFleetRates { get; set; }
+
+    public virtual DbSet<TblFleetSupplier> TblFleetSuppliers { get; set; }
+
+    public virtual DbSet<TblFleetSupplierType> TblFleetSupplierTypes { get; set; }
 
     public virtual DbSet<TblFleetpayment> TblFleetpayments { get; set; }
 
@@ -132,8 +98,6 @@ public partial class DbTMSContext : DbContext
     public virtual DbSet<TblInsuranceType> TblInsuranceTypes { get; set; }
 
     public virtual DbSet<TblJobAllowance> TblJobAllowances { get; set; }
-
-    public virtual DbSet<TblJobBudgetTransaction> TblJobBudgetTransactions { get; set; }
 
     public virtual DbSet<TblJobDetail> TblJobDetails { get; set; }
 
@@ -167,49 +131,17 @@ public partial class DbTMSContext : DbContext
 
     public virtual DbSet<TblJobcashing> TblJobcashings { get; set; }
 
-    public virtual DbSet<TblMonthlypayment> TblMonthlypayments { get; set; }
-
-    public virtual DbSet<TblMonthlypaymentDetail> TblMonthlypaymentDetails { get; set; }
-
-    public virtual DbSet<TblPaymentType> TblPaymentTypes { get; set; }
-
     public virtual DbSet<TblPlace> TblPlaces { get; set; }
 
     public virtual DbSet<TblPortCashing> TblPortCashings { get; set; }
 
-    public virtual DbSet<TblQuotation> TblQuotations { get; set; }
-
-    public virtual DbSet<TblQuotationCondition> TblQuotationConditions { get; set; }
-
-    public virtual DbSet<TblQuotationDetail> TblQuotationDetails { get; set; }
-
     public virtual DbSet<TblReceipt> TblReceipts { get; set; }
 
-    public virtual DbSet<TblReceiptDetail> TblReceiptDetails { get; set; }
-
-    public virtual DbSet<TblReceiptOther> TblReceiptOthers { get; set; }
-
-    public virtual DbSet<TblReceiptOtherDetail> TblReceiptOtherDetails { get; set; }
-
     public virtual DbSet<TblReceiptType> TblReceiptTypes { get; set; }
-
-    public virtual DbSet<TblReceivePayment> TblReceivePayments { get; set; }
-
-    public virtual DbSet<TblReceivePaymentDetail> TblReceivePaymentDetails { get; set; }
-
-    public virtual DbSet<TblReceivePaymentReceipt> TblReceivePaymentReceipts { get; set; }
 
     public virtual DbSet<TblRequest> TblRequests { get; set; }
 
     public virtual DbSet<TblShipper> TblShippers { get; set; }
-
-    public virtual DbSet<TblShippingContact> TblShippingContacts { get; set; }
-
-    public virtual DbSet<TblShippingadvance> TblShippingadvances { get; set; }
-
-    public virtual DbSet<TblShippingpayment> TblShippingpayments { get; set; }
-
-    public virtual DbSet<TblShippingpaymentDetail> TblShippingpaymentDetails { get; set; }
 
     public virtual DbSet<TblSupplier> TblSuppliers { get; set; }
 
@@ -233,12 +165,6 @@ public partial class DbTMSContext : DbContext
 
     public virtual DbSet<TblTruck> TblTrucks { get; set; }
 
-    public virtual DbSet<TblTruckChecklist> TblTruckChecklists { get; set; }
-
-    public virtual DbSet<TblTruckChecklistChoice> TblTruckChecklistChoices { get; set; }
-
-    public virtual DbSet<TblTruckChecklistDetail> TblTruckChecklistDetails { get; set; }
-
     public virtual DbSet<TblTruckDetail> TblTruckDetails { get; set; }
 
     public virtual DbSet<TblTruckDriver> TblTruckDrivers { get; set; }
@@ -249,25 +175,11 @@ public partial class DbTMSContext : DbContext
 
     public virtual DbSet<TblTruckType> TblTruckTypes { get; set; }
 
-    public virtual DbSet<TblTruckTypegroup> TblTruckTypegroups { get; set; }
-
-    public virtual DbSet<TblVatinvoice> TblVatinvoices { get; set; }
-
-    public virtual DbSet<TblVatinvoicePayment> TblVatinvoicePayments { get; set; }
-
-    public virtual DbSet<TblWithholdingTax> TblWithholdingTaxes { get; set; }
-
-    public virtual DbSet<TblWithholdingTaxPayment> TblWithholdingTaxPayments { get; set; }
-
-    public virtual DbSet<TblWithholdingTaxSupplierpayment> TblWithholdingTaxSupplierpayments { get; set; }
-
     public virtual DbSet<TblYardCashing> TblYardCashings { get; set; }
 
     public virtual DbSet<TblYardport> TblYardports { get; set; }
 
     public virtual DbSet<TblZone> TblZones { get; set; }
-
-    public virtual DbSet<TmpRecept> TmpRecepts { get; set; }
 
     public virtual DbSet<ViewBillingListActive> ViewBillingListActives { get; set; }
 
@@ -313,6 +225,268 @@ public partial class DbTMSContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AdvanceExpenseType>(entity =>
+        {
+            entity.HasKey(e => e.ExpenseTypeId);
+
+            entity.ToTable("advance_expense_type");
+
+            entity.HasIndex(e => e.ExpenseTypeCode, "UQ_advance_expense_type_code").IsUnique();
+
+            entity.Property(e => e.ExpenseTypeId).HasColumnName("expense_type_id");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())", "DF_advance_expense_type_created_date")
+                .HasColumnName("created_date");
+            entity.Property(e => e.ExpenseTypeCode)
+                .HasMaxLength(30)
+                .HasColumnName("expense_type_code");
+            entity.Property(e => e.ExpenseTypeName)
+                .HasMaxLength(200)
+                .HasColumnName("expense_type_name");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true, "DF_advance_expense_type_is_active")
+                .HasColumnName("is_active");
+            entity.Property(e => e.IsTripRelated).HasColumnName("is_trip_related");
+            entity.Property(e => e.RequireDocument).HasColumnName("require_document");
+            entity.Property(e => e.RequireSettlement)
+                .HasDefaultValue(true, "DF_advance_expense_type_require_settlement")
+                .HasColumnName("require_settlement");
+            entity.Property(e => e.SortOrder).HasColumnName("sort_order");
+        });
+
+        modelBuilder.Entity<AdvanceFund>(entity =>
+        {
+            entity.HasKey(e => e.FundId);
+
+            entity.ToTable("advance_fund");
+
+            entity.HasIndex(e => e.FundCode, "UQ_advance_fund_fund_code").IsUnique();
+
+            entity.HasIndex(e => e.FundGuid, "UQ_advance_fund_fund_guid").IsUnique();
+
+            entity.Property(e => e.FundId).HasColumnName("fund_id");
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(50)
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())", "DF_advance_fund_created_date")
+                .HasColumnName("created_date");
+            entity.Property(e => e.CurrentBalance)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("current_balance");
+            entity.Property(e => e.FundCode)
+                .HasMaxLength(20)
+                .HasColumnName("fund_code");
+            entity.Property(e => e.FundGuid)
+                .HasDefaultValueSql("(newid())", "DF_advance_fund_fund_guid")
+                .HasColumnName("fund_guid");
+            entity.Property(e => e.FundName)
+                .HasMaxLength(200)
+                .HasColumnName("fund_name");
+            entity.Property(e => e.HolderCode)
+                .HasMaxLength(50)
+                .HasColumnName("holder_code");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true, "DF_advance_fund_is_active")
+                .HasColumnName("is_active");
+            entity.Property(e => e.Remark)
+                .HasMaxLength(500)
+                .HasColumnName("remark");
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+        });
+
+        modelBuilder.Entity<AdvanceFundTransaction>(entity =>
+        {
+            entity.HasKey(e => e.TransactionId);
+
+            entity.ToTable("advance_fund_transaction");
+
+            entity.HasIndex(e => new { e.FundId, e.TransactionDate }, "IX_advance_fund_transaction_fund_date");
+
+            entity.HasIndex(e => e.ReferenceTransactionId, "IX_advance_fund_transaction_reference").HasFilter("([reference_transaction_id] IS NOT NULL)");
+
+            entity.HasIndex(e => e.RequestId, "IX_advance_fund_transaction_request").HasFilter("([request_id] IS NOT NULL)");
+
+            entity.HasIndex(e => e.TransactionGuid, "UQ_advance_fund_transaction_guid").IsUnique();
+
+            entity.HasIndex(e => e.RequestId, "UX_advance_fund_transaction_request_payment")
+                .IsUnique()
+                .HasFilter("([request_id] IS NOT NULL AND [transaction_type]='PAYMENT')");
+
+            entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
+            entity.Property(e => e.Amount)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("amount");
+            entity.Property(e => e.CashflowId).HasColumnName("cashflow_id");
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(50)
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())", "DF_advance_fund_transaction_created_date")
+                .HasColumnName("created_date");
+            entity.Property(e => e.FundId).HasColumnName("fund_id");
+            entity.Property(e => e.ReferenceNo)
+                .HasMaxLength(100)
+                .HasColumnName("reference_no");
+            entity.Property(e => e.ReferenceTransactionId).HasColumnName("reference_transaction_id");
+            entity.Property(e => e.Remark)
+                .HasMaxLength(500)
+                .HasColumnName("remark");
+            entity.Property(e => e.RequestId).HasColumnName("request_id");
+            entity.Property(e => e.TransactionDate)
+                .HasDefaultValueSql("(getdate())", "DF_advance_fund_transaction_date")
+                .HasColumnName("transaction_date");
+            entity.Property(e => e.TransactionGuid)
+                .HasDefaultValueSql("(newid())", "DF_advance_fund_transaction_guid")
+                .HasColumnName("transaction_guid");
+            entity.Property(e => e.TransactionType)
+                .HasMaxLength(20)
+                .HasColumnName("transaction_type");
+
+            entity.HasOne(d => d.Fund).WithMany(p => p.AdvanceFundTransactions)
+                .HasForeignKey(d => d.FundId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_advance_fund_transaction_fund");
+
+            entity.HasOne(d => d.ReferenceTransaction).WithMany(p => p.InverseReferenceTransaction)
+                .HasForeignKey(d => d.ReferenceTransactionId)
+                .HasConstraintName("FK_advance_fund_transaction_reference");
+
+            entity.HasOne(d => d.Request).WithOne(p => p.AdvanceFundTransaction)
+                .HasForeignKey<AdvanceFundTransaction>(d => d.RequestId)
+                .HasConstraintName("FK_advance_fund_transaction_request");
+        });
+
+        modelBuilder.Entity<AdvanceRequest>(entity =>
+        {
+            entity.HasKey(e => e.RequestId);
+
+            entity.ToTable("advance_request");
+
+            entity.HasIndex(e => e.JobDetailCode, "IX_advance_request_job_detail_code").HasFilter("([job_detail_code] IS NOT NULL)");
+
+            entity.HasIndex(e => e.RequestCode, "UQ_advance_request_code").IsUnique();
+
+            entity.HasIndex(e => e.RequestGuid, "UQ_advance_request_guid").IsUnique();
+
+            entity.Property(e => e.RequestId).HasColumnName("request_id");
+            entity.Property(e => e.ApprovedAmount)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("approved_amount");
+            entity.Property(e => e.ApprovedBy)
+                .HasMaxLength(50)
+                .HasColumnName("approved_by");
+            entity.Property(e => e.ApprovedDate).HasColumnName("approved_date");
+            entity.Property(e => e.CancelledBy)
+                .HasMaxLength(50)
+                .HasColumnName("cancelled_by");
+            entity.Property(e => e.CancelledDate).HasColumnName("cancelled_date");
+            entity.Property(e => e.CancelledReason)
+                .HasMaxLength(500)
+                .HasColumnName("cancelled_reason");
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(50)
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())", "DF_advance_request_created_date")
+                .HasColumnName("created_date");
+            entity.Property(e => e.ExpenseTypeId).HasColumnName("expense_type_id");
+            entity.Property(e => e.FundId).HasColumnName("fund_id");
+            entity.Property(e => e.JobDetailCode)
+                .HasMaxLength(20)
+                .HasColumnName("job_detail_code");
+            entity.Property(e => e.PaidBy)
+                .HasMaxLength(50)
+                .HasColumnName("paid_by");
+            entity.Property(e => e.PaidDate).HasColumnName("paid_date");
+            entity.Property(e => e.PayeeCode)
+                .HasMaxLength(50)
+                .HasColumnName("payee_code");
+            entity.Property(e => e.PayeeName)
+                .HasMaxLength(200)
+                .HasColumnName("payee_name");
+            entity.Property(e => e.PayeeType)
+                .HasMaxLength(30)
+                .HasColumnName("payee_type");
+            entity.Property(e => e.Purpose)
+                .HasMaxLength(500)
+                .HasColumnName("purpose");
+            entity.Property(e => e.Remark)
+                .HasMaxLength(500)
+                .HasColumnName("remark");
+            entity.Property(e => e.RequestAmount)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("request_amount");
+            entity.Property(e => e.RequestCode)
+                .HasMaxLength(30)
+                .HasColumnName("request_code");
+            entity.Property(e => e.RequestDate)
+                .HasDefaultValueSql("(getdate())", "DF_advance_request_date")
+                .HasColumnName("request_date");
+            entity.Property(e => e.RequestGuid)
+                .HasDefaultValueSql("(newid())", "DF_advance_request_guid")
+                .HasColumnName("request_guid");
+            entity.Property(e => e.RequestedBy)
+                .HasMaxLength(50)
+                .HasColumnName("requested_by");
+            entity.Property(e => e.Status)
+                .HasMaxLength(30)
+                .HasDefaultValue("DRAFT", "DF_advance_request_status")
+                .HasColumnName("status");
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .HasColumnName("updated_by");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
+
+            entity.HasOne(d => d.ExpenseType).WithMany(p => p.AdvanceRequests)
+                .HasForeignKey(d => d.ExpenseTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_advance_request_expense_type");
+
+            entity.HasOne(d => d.Fund).WithMany(p => p.AdvanceRequests)
+                .HasForeignKey(d => d.FundId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_advance_request_fund");
+
+            entity.HasOne(d => d.JobDetailCodeNavigation).WithMany(p => p.AdvanceRequests)
+                .HasForeignKey(d => d.JobDetailCode)
+                .HasConstraintName("FK_advance_request_tbl_job_detail");
+        });
+
+        modelBuilder.Entity<AdvanceRequestReference>(entity =>
+        {
+            entity.HasKey(e => e.ReferenceId);
+
+            entity.ToTable("advance_request_reference");
+
+            entity.Property(e => e.ReferenceId).HasColumnName("reference_id");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())", "DF_advance_request_reference_created_date")
+                .HasColumnName("created_date");
+            entity.Property(e => e.IsPrimary).HasColumnName("is_primary");
+            entity.Property(e => e.ReferenceCode)
+                .HasMaxLength(100)
+                .HasColumnName("reference_code");
+            entity.Property(e => e.ReferenceName)
+                .HasMaxLength(300)
+                .HasColumnName("reference_name");
+            entity.Property(e => e.ReferenceType)
+                .HasMaxLength(30)
+                .HasColumnName("reference_type");
+            entity.Property(e => e.Remark)
+                .HasMaxLength(500)
+                .HasColumnName("remark");
+            entity.Property(e => e.RequestId).HasColumnName("request_id");
+
+            entity.HasOne(d => d.Request).WithMany(p => p.AdvanceRequestReferences)
+                .HasForeignKey(d => d.RequestId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_advance_request_reference_request");
+        });
+
         modelBuilder.Entity<LcProvince>(entity =>
         {
             entity.HasKey(e => e.ProvinceCode).HasName("PK_lc_province_1");
@@ -334,301 +508,6 @@ public partial class DbTMSContext : DbContext
                 .HasColumnName("province_name_tha");
         });
 
-        modelBuilder.Entity<LogAllowanceDetail>(entity =>
-        {
-            entity.ToTable("log_allowance_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Action)
-                .HasColumnType("text")
-                .HasColumnName("action");
-            entity.Property(e => e.AllowanceCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("allowance_code");
-            entity.Property(e => e.AllowanceDate).HasColumnName("allowance_date");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.FuelValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("fuel_value");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("job_detail_code");
-            entity.Property(e => e.OtherValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("other_value");
-            entity.Property(e => e.TripValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("trip_value");
-            entity.Property(e => e.WasteValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("waste_value");
-        });
-
-        modelBuilder.Entity<LogApproved>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK_lob_approved");
-
-            entity.ToTable("log_approved");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.CustomerCost)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("customer_cost");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("job_detail_code");
-            entity.Property(e => e.Message)
-                .HasColumnType("text")
-                .HasColumnName("message");
-            entity.Property(e => e.SupplierCost)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("supplier_cost");
-        });
-
-        modelBuilder.Entity<LogBillingDetail>(entity =>
-        {
-            entity.ToTable("log_billing_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Action)
-                .HasColumnType("text")
-                .HasColumnName("action");
-            entity.Property(e => e.AdvanceValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("advance_value");
-            entity.Property(e => e.BillingCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_code");
-            entity.Property(e => e.BillingValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("billing_value");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("job_detail_code");
-        });
-
-        modelBuilder.Entity<LogBillingOther>(entity =>
-        {
-            entity.ToTable("log_billing_other");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Action)
-                .HasColumnType("text")
-                .HasColumnName("action");
-            entity.Property(e => e.AdvanceCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("advance_code");
-            entity.Property(e => e.AdvanceId).HasColumnName("advance_id");
-            entity.Property(e => e.BillingCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_code");
-            entity.Property(e => e.BillingValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("billing_value");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-        });
-
-        modelBuilder.Entity<LogBudgetTransaction>(entity =>
-        {
-            entity.ToTable("log_budget_transaction");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Amount)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("amount");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("job_detail_code");
-            entity.Property(e => e.PaymentType)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_type");
-            entity.Property(e => e.TransactionCode)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("transaction_code");
-            entity.Property(e => e.TransactionName)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("transaction_name");
-
-            entity.HasOne(d => d.JobDetailCodeNavigation).WithMany(p => p.LogBudgetTransactions)
-                .HasForeignKey(d => d.JobDetailCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_log_budget_transaction_tbl_job_detail");
-        });
-
-        modelBuilder.Entity<LogCost>(entity =>
-        {
-            entity.ToTable("log_cost");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.CustomerCost)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("customer_cost");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("job_detail_code");
-            entity.Property(e => e.SupplierCost)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("supplier_cost");
-        });
-
-        modelBuilder.Entity<LogCoversheetDetail>(entity =>
-        {
-            entity.ToTable("log_coversheet_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Action)
-                .HasColumnType("text")
-                .HasColumnName("action");
-            entity.Property(e => e.BillingCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_code");
-            entity.Property(e => e.CoversheetCode)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("coversheet_code");
-            entity.Property(e => e.CoversheetValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("coversheet_value");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-        });
-
-        modelBuilder.Entity<LogReceiptDetail>(entity =>
-        {
-            entity.ToTable("log_receipt_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Action)
-                .HasColumnType("text")
-                .HasColumnName("action");
-            entity.Property(e => e.BillingCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_code");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.ReceiptAdvanceValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("receipt_advance_value");
-            entity.Property(e => e.ReceiptCode)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("receipt_code");
-            entity.Property(e => e.ReceiptTransportValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("receipt_transport_value");
-            entity.Property(e => e.ReceiptValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("receipt_value");
-        });
-
-        modelBuilder.Entity<LogSupplyerpaymentDetail>(entity =>
-        {
-            entity.ToTable("log_supplyerpayment_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Action)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("action");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("job_detail_code");
-            entity.Property(e => e.SupplyerpaymentCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("supplyerpayment_code");
-            entity.Property(e => e.SupplyerpaymentValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("supplyerpayment_value");
-        });
-
         modelBuilder.Entity<LogSystem>(entity =>
         {
             entity.ToTable("log_system");
@@ -648,58 +527,6 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("log_reference_code");
-        });
-
-        modelBuilder.Entity<SeCustomerAccount>(entity =>
-        {
-            entity.HasKey(e => e.CusUsername);
-
-            entity.ToTable("se_customer_account");
-
-            entity.Property(e => e.CusUsername)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("cus_username");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.CusPassword)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("cus_password");
-            entity.Property(e => e.CustomerCode)
-                .HasMaxLength(9)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("customer_code");
-            entity.Property(e => e.GroupCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("group_code");
-            entity.Property(e => e.IsActived).HasColumnName("is_actived");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-
-            entity.HasOne(d => d.CustomerCodeNavigation).WithMany(p => p.SeCustomerAccounts)
-                .HasForeignKey(d => d.CustomerCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_se_customer_account_tbl_customer");
-
-            entity.HasOne(d => d.GroupCodeNavigation).WithMany(p => p.SeCustomerAccounts)
-                .HasForeignKey(d => d.GroupCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_se_customer_account_se_group");
         });
 
         modelBuilder.Entity<SeGroup>(entity =>
@@ -1150,166 +977,6 @@ public partial class DbTMSContext : DbContext
                 .HasColumnName("bank_name");
         });
 
-        modelBuilder.Entity<TblBillingDetail>(entity =>
-        {
-            entity.ToTable("tbl_billing_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.AdvanceValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("advance_value");
-            entity.Property(e => e.BillingCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_code");
-            entity.Property(e => e.BillingValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("billing_value");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("job_detail_code");
-
-            entity.HasOne(d => d.BillingCodeNavigation).WithMany(p => p.TblBillingDetails)
-                .HasForeignKey(d => d.BillingCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_billing_detail_tbl_billing_master");
-
-            entity.HasOne(d => d.JobDetailCodeNavigation).WithMany(p => p.TblBillingDetails)
-                .HasForeignKey(d => d.JobDetailCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_billing_detail_tbl_job_detail");
-        });
-
-        modelBuilder.Entity<TblBillingMaster>(entity =>
-        {
-            entity.HasKey(e => e.BillingCode).HasName("PK_tbl_job_billing");
-
-            entity.ToTable("tbl_billing_master");
-
-            entity.Property(e => e.BillingCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_code");
-            entity.Property(e => e.AdvanceTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("advance_total");
-            entity.Property(e => e.BillingAmount).HasColumnName("billing_amount");
-            entity.Property(e => e.BillingDate).HasColumnName("billing_date");
-            entity.Property(e => e.BillingNetTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("billing_net_total");
-            entity.Property(e => e.BillingRemark)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("billing_remark");
-            entity.Property(e => e.BillingTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("billing_total");
-            entity.Property(e => e.BillingType)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_type");
-            entity.Property(e => e.BillingVat)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("billing_vat");
-            entity.Property(e => e.ClearingDate).HasColumnName("clearing_date");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.CustomerCode)
-                .HasMaxLength(9)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("customer_code");
-            entity.Property(e => e.IsAdvance).HasColumnName("is_advance");
-            entity.Property(e => e.IsClearing).HasColumnName("is_clearing");
-            entity.Property(e => e.IsCoversheet).HasColumnName("is_coversheet");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.IsVat)
-                .HasDefaultValue(true, "DF_tbl_billing_master_is_vat")
-                .HasColumnName("is_vat");
-            entity.Property(e => e.MissionPlaceCode)
-                .HasMaxLength(9)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("mission_place_code");
-            entity.Property(e => e.TaxAddress)
-                .HasColumnType("text")
-                .HasColumnName("tax_address");
-            entity.Property(e => e.TaxId)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("tax_id");
-            entity.Property(e => e.TaxName)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("tax_name");
-            entity.Property(e => e.TransportTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("transport_total");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-            entity.Property(e => e.VendorNo)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("vendor_no");
-
-            entity.HasOne(d => d.MissionPlaceCodeNavigation).WithMany(p => p.TblBillingMasters)
-                .HasForeignKey(d => d.MissionPlaceCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_billing_master_tbl_place");
-        });
-
-        modelBuilder.Entity<TblBillingOther>(entity =>
-        {
-            entity.ToTable("tbl_billing_other");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.AdvanceCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("advance_code");
-            entity.Property(e => e.AdvanceId).HasColumnName("advance_id");
-            entity.Property(e => e.BillingCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_code");
-            entity.Property(e => e.BillingValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("billing_value");
-
-            entity.HasOne(d => d.AdvanceCodeNavigation).WithMany(p => p.TblBillingOthers)
-                .HasForeignKey(d => d.AdvanceCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_billing_other_tbl_jobadvance");
-
-            entity.HasOne(d => d.Advance).WithMany(p => p.TblBillingOthers)
-                .HasForeignKey(d => d.AdvanceId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_billing_other_tbl_jobadvance_other");
-
-            entity.HasOne(d => d.BillingCodeNavigation).WithMany(p => p.TblBillingOthers)
-                .HasForeignKey(d => d.BillingCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_billing_other_tbl_billing_other");
-        });
-
         modelBuilder.Entity<TblBindingGenerate>(entity =>
         {
             entity.HasKey(e => new { e.JobCode, e.JobDetailCode });
@@ -1382,122 +1049,6 @@ public partial class DbTMSContext : DbContext
                 .HasColumnName("update_date");
         });
 
-        modelBuilder.Entity<TblBudget>(entity =>
-        {
-            entity.HasKey(e => e.BudgetCode);
-
-            entity.ToTable("tbl_budget");
-
-            entity.Property(e => e.BudgetCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("budget_code");
-            entity.Property(e => e.Balance)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("balance");
-            entity.Property(e => e.BudgetType)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("budget_type");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-        });
-
-        modelBuilder.Entity<TblBudgetTransaction>(entity =>
-        {
-            entity.HasKey(e => e.TransactionCode);
-
-            entity.ToTable("tbl_budget_transaction");
-
-            entity.Property(e => e.TransactionCode)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("transaction_code");
-            entity.Property(e => e.Amount)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("amount");
-            entity.Property(e => e.AmountDiff)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("amount_diff");
-            entity.Property(e => e.Balance)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("balance");
-            entity.Property(e => e.BudgetCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("budget_code");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.PaymentType)
-                .HasMaxLength(6)
-                .IsUnicode(false)
-                .HasColumnName("payment_type");
-            entity.Property(e => e.Remark)
-                .HasColumnType("text")
-                .HasColumnName("remark");
-            entity.Property(e => e.TransactionDate)
-                .HasColumnType("datetime")
-                .HasColumnName("transaction_date");
-            entity.Property(e => e.TransactionType)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("transaction_type");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-
-            entity.HasOne(d => d.BudgetCodeNavigation).WithMany(p => p.TblBudgetTransactions)
-                .HasForeignKey(d => d.BudgetCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_budget_transaction_tbl_budget");
-
-            entity.HasMany(d => d.DailypaymentCodes).WithMany(p => p.TransactionCodes)
-                .UsingEntity<Dictionary<string, object>>(
-                    "TblPaymentBudgetTransaction",
-                    r => r.HasOne<TblDailypayment>().WithMany()
-                        .HasForeignKey("DailypaymentCode")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_tbl_dailypayment_transaction_tbl_dailypayment"),
-                    l => l.HasOne<TblBudgetTransaction>().WithMany()
-                        .HasForeignKey("TransactionCode")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_tbl_dailypayment_transaction_tbl_budget_transaction"),
-                    j =>
-                    {
-                        j.HasKey("TransactionCode", "DailypaymentCode").HasName("PK_tbl_dailypayment_transaction");
-                        j.ToTable("tbl_payment_budget_transaction");
-                        j.IndexerProperty<string>("TransactionCode")
-                            .HasMaxLength(8)
-                            .IsUnicode(false)
-                            .IsFixedLength()
-                            .HasColumnName("transaction_code");
-                        j.IndexerProperty<string>("DailypaymentCode")
-                            .HasMaxLength(11)
-                            .IsUnicode(false)
-                            .IsFixedLength()
-                            .HasColumnName("dailypayment_code");
-                    });
-        });
-
         modelBuilder.Entity<TblCodeGenerate>(entity =>
         {
             entity.HasKey(e => e.CodeName);
@@ -1518,23 +1069,6 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id");
-        });
-
-        modelBuilder.Entity<TblConsignee>(entity =>
-        {
-            entity.HasKey(e => e.ConsigneeCode);
-
-            entity.ToTable("tbl_consignee");
-
-            entity.Property(e => e.ConsigneeCode)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("consignee_code");
-            entity.Property(e => e.ConsigneeName)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("consignee_name");
         });
 
         modelBuilder.Entity<TblContainerSize>(entity =>
@@ -1575,83 +1109,6 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.UpdateDate)
                 .HasColumnType("datetime")
                 .HasColumnName("update_date");
-        });
-
-        modelBuilder.Entity<TblCoversheet>(entity =>
-        {
-            entity.HasKey(e => e.CoversheetCode);
-
-            entity.ToTable("tbl_coversheet");
-
-            entity.Property(e => e.CoversheetCode)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("coversheet_code");
-            entity.Property(e => e.ClearingDate).HasColumnName("clearing_date");
-            entity.Property(e => e.CoversheetAmount).HasColumnName("coversheet_amount");
-            entity.Property(e => e.CoversheetDate)
-                .HasDefaultValueSql("(getdate())", "DF_tbl_coversheet_coversheet_date")
-                .HasColumnName("coversheet_date");
-            entity.Property(e => e.CoversheetRemark)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("coversheet_remark");
-            entity.Property(e => e.CoversheetTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("coversheet_total");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.CustomerCode)
-                .HasMaxLength(9)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("customer_code");
-            entity.Property(e => e.IsClearing).HasColumnName("is_clearing");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.IsVat).HasColumnName("is_vat");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-        });
-
-        modelBuilder.Entity<TblCoversheetDetail>(entity =>
-        {
-            entity.ToTable("tbl_coversheet_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BillingCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_code");
-            entity.Property(e => e.CoversheetCode)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("coversheet_code");
-            entity.Property(e => e.CoversheetValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("coversheet_value");
-
-            entity.HasOne(d => d.BillingCodeNavigation).WithMany(p => p.TblCoversheetDetails)
-                .HasForeignKey(d => d.BillingCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_coversheet_detail_tbl_billing_master");
-
-            entity.HasOne(d => d.CoversheetCodeNavigation).WithMany(p => p.TblCoversheetDetails)
-                .HasForeignKey(d => d.CoversheetCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_coversheet_detail_tbl_coversheet");
         });
 
         modelBuilder.Entity<TblCustomer>(entity =>
@@ -1728,33 +1185,6 @@ public partial class DbTMSContext : DbContext
                 .HasForeignKey(d => d.CustomerTypeCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tbl_customer_tbl_customer_type");
-
-            entity.HasMany(d => d.PlaceCodes).WithMany(p => p.CustomerCodes)
-                .UsingEntity<Dictionary<string, object>>(
-                    "SeCustomerPlaceAccount",
-                    r => r.HasOne<TblPlace>().WithMany()
-                        .HasForeignKey("PlaceCode")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_se_customer_place_account_tbl_place"),
-                    l => l.HasOne<TblCustomer>().WithMany()
-                        .HasForeignKey("CustomerCode")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_se_customer_place_account_tbl_customer"),
-                    j =>
-                    {
-                        j.HasKey("CustomerCode", "PlaceCode");
-                        j.ToTable("se_customer_place_account");
-                        j.IndexerProperty<string>("CustomerCode")
-                            .HasMaxLength(9)
-                            .IsUnicode(false)
-                            .IsFixedLength()
-                            .HasColumnName("customer_code");
-                        j.IndexerProperty<string>("PlaceCode")
-                            .HasMaxLength(9)
-                            .IsUnicode(false)
-                            .IsFixedLength()
-                            .HasColumnName("place_code");
-                    });
         });
 
         modelBuilder.Entity<TblCustomerAddress>(entity =>
@@ -1859,42 +1289,6 @@ public partial class DbTMSContext : DbContext
                 .HasConstraintName("FK_tbl_customer_cost_tbl_customer");
         });
 
-        modelBuilder.Entity<TblCustomerPage>(entity =>
-        {
-            entity.HasKey(e => new { e.CustomerCode, e.MissionCode });
-
-            entity.ToTable("tbl_customer_page");
-
-            entity.Property(e => e.CustomerCode)
-                .HasMaxLength(9)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("customer_code");
-            entity.Property(e => e.MissionCode)
-                .HasMaxLength(9)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("mission_code");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-
-            entity.HasOne(d => d.CustomerCodeNavigation).WithMany(p => p.TblCustomerPages)
-                .HasForeignKey(d => d.CustomerCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_customer_page_tbl_customer");
-
-            entity.HasOne(d => d.MissionCodeNavigation).WithMany(p => p.TblCustomerPages)
-                .HasForeignKey(d => d.MissionCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_customer_page_tbl_place");
-        });
-
         modelBuilder.Entity<TblCustomerRule>(entity =>
         {
             entity.HasKey(e => e.CustomerCode).HasName("PK_tbl_customer_payment");
@@ -1955,96 +1349,6 @@ public partial class DbTMSContext : DbContext
                 .HasColumnName("update_date");
         });
 
-        modelBuilder.Entity<TblDailypayment>(entity =>
-        {
-            entity.HasKey(e => e.DailypaymentCode);
-
-            entity.ToTable("tbl_dailypayment");
-
-            entity.Property(e => e.DailypaymentCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("dailypayment_code");
-            entity.Property(e => e.ApproveStatus)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("approve_status");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.IsPaid).HasColumnName("is_paid");
-            entity.Property(e => e.NetTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("net_total");
-            entity.Property(e => e.PaymentDate).HasColumnName("payment_date");
-            entity.Property(e => e.PaymentMethod)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_method");
-            entity.Property(e => e.Remark)
-                .HasColumnType("text")
-                .HasColumnName("remark");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-        });
-
-        modelBuilder.Entity<TblDailypaymentDetail>(entity =>
-        {
-            entity.ToTable("tbl_dailypayment_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Amount)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("amount");
-            entity.Property(e => e.DailypaymentCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("dailypayment_code");
-            entity.Property(e => e.Description)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("description");
-            entity.Property(e => e.PaymentOrderDate).HasColumnName("payment_order_date");
-            entity.Property(e => e.Quantity).HasColumnName("quantity");
-
-            entity.HasOne(d => d.DailypaymentCodeNavigation).WithMany(p => p.TblDailypaymentDetails)
-                .HasForeignKey(d => d.DailypaymentCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_dailypayment_detail_tbl_dailypayment_detail");
-        });
-
-        modelBuilder.Entity<TblDailypaymentTransaction>(entity =>
-        {
-            entity.HasKey(e => new { e.TransactionCode, e.DailypaymentCode }).HasName("PK_tbl_payment_budget_transaction");
-
-            entity.ToTable("tbl_dailypayment_transaction");
-
-            entity.Property(e => e.TransactionCode)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("transaction_code");
-            entity.Property(e => e.DailypaymentCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("dailypayment_code");
-        });
-
         modelBuilder.Entity<TblDriver>(entity =>
         {
             entity.HasKey(e => e.DriverCode).HasName("PK_tbl_driver_1");
@@ -2065,6 +1369,42 @@ public partial class DbTMSContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("driver_phone");
             entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
+        });
+
+        modelBuilder.Entity<TblDriverCost>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_tbl_driver_cost_1");
+
+            entity.ToTable("tbl_driver_cost");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.DriverCode)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("driver_code");
+            entity.Property(e => e.IsWeeklypayment).HasColumnName("is_weeklypayment");
+            entity.Property(e => e.JobDetailCode)
+                .HasMaxLength(20)
+                .HasColumnName("job_detail_code");
+            entity.Property(e => e.TripRound)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("trip_round");
+            entity.Property(e => e.TripValue)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("trip_value");
+
+            entity.HasOne(d => d.DriverCodeNavigation).WithMany(p => p.TblDriverCosts)
+                .HasForeignKey(d => d.DriverCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_driver_cost_tbl_driver");
+
+            entity.HasOne(d => d.JobDetailCodeNavigation).WithMany(p => p.TblDriverCosts)
+                .HasForeignKey(d => d.JobDetailCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_driver_cost_tbl_driver_cost");
         });
 
         modelBuilder.Entity<TblDriverRate>(entity =>
@@ -2124,110 +1464,34 @@ public partial class DbTMSContext : DbContext
                 .HasConstraintName("FK_tbl_driver_subtract_tbl_driver");
         });
 
-        modelBuilder.Entity<TblFleet>(entity =>
-        {
-            entity.HasKey(e => e.FleetCode);
-
-            entity.ToTable("tbl_fleet");
-
-            entity.Property(e => e.FleetCode)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("fleet_code");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.FleetName)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("fleet_name");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-        });
-
-        modelBuilder.Entity<TblFleetExternal>(entity =>
-        {
-            entity.HasKey(e => new { e.SupplierCode, e.FleetTypeCode });
-
-            entity.ToTable("tbl_fleet_external");
-
-            entity.Property(e => e.SupplierCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("supplier_code");
-            entity.Property(e => e.FleetTypeCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("fleet_type_code");
-
-            entity.HasOne(d => d.SupplierCodeNavigation).WithMany(p => p.TblFleetExternals)
-                .HasForeignKey(d => d.SupplierCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_fleet_external_tbl_supplier");
-        });
-
-        modelBuilder.Entity<TblFleetInternal>(entity =>
-        {
-            entity.HasKey(e => new { e.SupplierCode, e.FleetCode });
-
-            entity.ToTable("tbl_fleet_internal");
-
-            entity.Property(e => e.SupplierCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("supplier_code");
-            entity.Property(e => e.FleetCode)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("fleet_code");
-            entity.Property(e => e.FleetTypeCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("fleet_type_code");
-
-            entity.HasOne(d => d.FleetCodeNavigation).WithMany(p => p.TblFleetInternals)
-                .HasForeignKey(d => d.FleetCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_fleet_internal_tbl_fleet");
-
-            entity.HasOne(d => d.SupplierCodeNavigation).WithMany(p => p.TblFleetInternals)
-                .HasForeignKey(d => d.SupplierCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_fleet_internal_tbl_supplier");
-        });
-
         modelBuilder.Entity<TblFleetRate>(entity =>
         {
-            entity.HasKey(e => new { e.FleetCode, e.PlaceCode }).HasName("PK_tbl_fleet_cost_rate");
+            entity.HasKey(e => new { e.FleetSupplierTypeCode, e.PlaceCode }).HasName("PK_tbl_fleet_cost_rate");
 
             entity.ToTable("tbl_fleet_rate");
 
-            entity.Property(e => e.FleetCode)
+            entity.Property(e => e.FleetSupplierTypeCode)
                 .HasMaxLength(5)
                 .IsUnicode(false)
                 .IsFixedLength()
-                .HasColumnName("fleet_code");
+                .HasColumnName("fleet_supplier_type_code");
             entity.Property(e => e.PlaceCode)
                 .HasMaxLength(9)
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("place_code");
+            entity.Property(e => e.Trailer10w)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("trailer_10W");
+            entity.Property(e => e.Trailer18w)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("trailer_18W");
+            entity.Property(e => e.Trailer6w)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("trailer_6W");
+            entity.Property(e => e.TrailerExtra)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("trailer_extra");
             entity.Property(e => e.Truck10w)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("truck_10W");
@@ -2238,15 +1502,68 @@ public partial class DbTMSContext : DbContext
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("truck_6W");
 
-            entity.HasOne(d => d.FleetCodeNavigation).WithMany(p => p.TblFleetRates)
-                .HasForeignKey(d => d.FleetCode)
+            entity.HasOne(d => d.FleetSupplierTypeCodeNavigation).WithMany(p => p.TblFleetRates)
+                .HasForeignKey(d => d.FleetSupplierTypeCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_fleet_rate_tbl_fleet");
+                .HasConstraintName("FK_tbl_fleet_rate_tbl_fleet_supplier_type");
 
             entity.HasOne(d => d.PlaceCodeNavigation).WithMany(p => p.TblFleetRates)
                 .HasForeignKey(d => d.PlaceCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_fleet_rate_tbl_place");
+        });
+
+        modelBuilder.Entity<TblFleetSupplier>(entity =>
+        {
+            entity.HasKey(e => e.FleetSupplierCode);
+
+            entity.ToTable("tbl_fleet_supplier");
+
+            entity.Property(e => e.FleetSupplierCode)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("fleet_supplier_code");
+            entity.Property(e => e.CreateBy)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("create_by");
+            entity.Property(e => e.CreateDate)
+                .HasColumnType("datetime")
+                .HasColumnName("create_date");
+            entity.Property(e => e.FleetSupplierName)
+                .HasMaxLength(250)
+                .HasColumnName("fleet_supplier_name");
+            entity.Property(e => e.FleetSuppplierTypeCode)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("fleet_suppplier_type_code");
+            entity.Property(e => e.IsActived).HasColumnName("is_actived");
+            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
+            entity.Property(e => e.Remark).HasColumnName("remark");
+
+            entity.HasOne(d => d.FleetSuppplierTypeCodeNavigation).WithMany(p => p.TblFleetSuppliers)
+                .HasForeignKey(d => d.FleetSuppplierTypeCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_fleet_supplier_tbl_fleet_supplier_type");
+        });
+
+        modelBuilder.Entity<TblFleetSupplierType>(entity =>
+        {
+            entity.HasKey(e => e.FleetSupplierTypeCode);
+
+            entity.ToTable("tbl_fleet_supplier_type");
+
+            entity.Property(e => e.FleetSupplierTypeCode)
+                .HasMaxLength(5)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("fleet_supplier_type_code");
+            entity.Property(e => e.FleetSupplierTypeName)
+                .HasMaxLength(150)
+                .IsUnicode(false)
+                .HasColumnName("fleet_supplier_type_name");
         });
 
         modelBuilder.Entity<TblFleetpayment>(entity =>
@@ -2385,9 +1702,7 @@ public partial class DbTMSContext : DbContext
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("fuel_total_value");
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.PaymentValue)
                 .HasColumnType("decimal(18, 2)")
@@ -2440,11 +1755,6 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.UpdateDate)
                 .HasColumnType("datetime")
                 .HasColumnName("update_date");
-
-            entity.HasOne(d => d.TruckTypegroupCodeNavigation).WithMany(p => p.TblFuelRates)
-                .HasForeignKey(d => d.TruckTypegroupCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_fuelrate_tbl_truck_typegroup");
 
             entity.HasOne(d => d.ZoneCodeNavigation).WithMany(p => p.TblFuelRates)
                 .HasForeignKey(d => d.ZoneCode)
@@ -2667,10 +1977,13 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.IsWeeklypayment).HasColumnName("is_weeklypayment");
             entity.Property(e => e.JobDate).HasColumnName("job_date");
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
+                .HasMaxLength(20)
+                .HasColumnName("job_detail_code");
+            entity.Property(e => e.RoundTrip)
+                .HasMaxLength(1)
                 .IsUnicode(false)
                 .IsFixedLength()
-                .HasColumnName("job_detail_code");
+                .HasColumnName("round_trip");
             entity.Property(e => e.SupplierAllowance)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("supplier_allowance");
@@ -2706,24 +2019,6 @@ public partial class DbTMSContext : DbContext
                 .HasConstraintName("FK_tbl_job_allowance_tbl_truck");
         });
 
-        modelBuilder.Entity<TblJobBudgetTransaction>(entity =>
-        {
-            entity.HasKey(e => new { e.TransactionCode, e.JobDetailCode });
-
-            entity.ToTable("tbl_job_budget_transaction");
-
-            entity.Property(e => e.TransactionCode)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("transaction_code");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("job_detail_code");
-        });
-
         modelBuilder.Entity<TblJobDetail>(entity =>
         {
             entity.HasKey(e => e.JobDetailCode);
@@ -2731,9 +2026,7 @@ public partial class DbTMSContext : DbContext
             entity.ToTable("tbl_job_detail");
 
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.ContainerNo)
                 .HasMaxLength(50)
@@ -2869,9 +2162,7 @@ public partial class DbTMSContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.JobDetailImg).HasColumnName("job_detail_img");
             entity.Property(e => e.JobType)
@@ -2976,12 +2267,12 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(8)
                 .IsUnicode(false)
                 .HasColumnName("trade_type");
-            entity.Property(e => e.TruckTypegroupCode)
+            entity.Property(e => e.TruckTypeCode)
                 .HasMaxLength(2)
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasDefaultValueSql("((99))", "DF_tbl_job_master_truck_type_code")
-                .HasColumnName("truck_typegroup_code");
+                .HasColumnName("truck_type_code");
             entity.Property(e => e.UpdateBy)
                 .HasMaxLength(20)
                 .IsUnicode(false)
@@ -3005,10 +2296,10 @@ public partial class DbTMSContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tbl_job_master_tbl_customer");
 
-            entity.HasOne(d => d.TruckTypegroupCodeNavigation).WithMany(p => p.TblJobMasters)
-                .HasForeignKey(d => d.TruckTypegroupCode)
+            entity.HasOne(d => d.TruckTypeCodeNavigation).WithMany(p => p.TblJobMasters)
+                .HasForeignKey(d => d.TruckTypeCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_job_master_tbl_truck_typegroup");
+                .HasConstraintName("FK_tbl_job_master_tbl_truck_type");
         });
 
         modelBuilder.Entity<TblJobOcean>(entity =>
@@ -3154,10 +2445,13 @@ public partial class DbTMSContext : DbContext
             entity.ToTable("tbl_job_tracking");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
+            entity.Property(e => e.DriverCode)
+                .HasMaxLength(8)
                 .IsUnicode(false)
                 .IsFixedLength()
+                .HasColumnName("driver_code");
+            entity.Property(e => e.JobDetailCode)
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.Lattitude)
                 .HasMaxLength(50)
@@ -3171,6 +2465,11 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("speed");
+            entity.Property(e => e.SupplierCode)
+                .HasMaxLength(7)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("supplier_code");
             entity.Property(e => e.TrackingDate)
                 .HasColumnType("datetime")
                 .HasColumnName("tracking_date");
@@ -3179,11 +2478,31 @@ public partial class DbTMSContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("tracking_status");
+            entity.Property(e => e.TruckCode)
+                .HasMaxLength(7)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("truck_code");
+
+            entity.HasOne(d => d.DriverCodeNavigation).WithMany(p => p.TblJobTrackings)
+                .HasForeignKey(d => d.DriverCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_job_tracking_tbl_driver");
 
             entity.HasOne(d => d.JobDetailCodeNavigation).WithMany(p => p.TblJobTrackings)
                 .HasForeignKey(d => d.JobDetailCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tbl_job_tracking_tbl_job_detail");
+
+            entity.HasOne(d => d.SupplierCodeNavigation).WithMany(p => p.TblJobTrackings)
+                .HasForeignKey(d => d.SupplierCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_job_tracking_tbl_supplier");
+
+            entity.HasOne(d => d.TruckCodeNavigation).WithMany(p => p.TblJobTrackings)
+                .HasForeignKey(d => d.TruckCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_job_tracking_tbl_truck");
         });
 
         modelBuilder.Entity<TblJobTruck>(entity =>
@@ -3198,9 +2517,7 @@ public partial class DbTMSContext : DbContext
                 .HasColumnName("driver_code");
             entity.Property(e => e.IsFinish).HasColumnName("is_finish");
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.TruckCode)
                 .HasMaxLength(7)
@@ -3298,9 +2615,7 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.IsClearing).HasColumnName("is_clearing");
             entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.UpdateBy)
                 .HasMaxLength(20)
@@ -3351,9 +2666,7 @@ public partial class DbTMSContext : DbContext
             entity.ToTable("tbl_jobadvance_payment");
 
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.AdvanceValue)
                 .HasColumnType("decimal(18, 2)")
@@ -3371,47 +2684,35 @@ public partial class DbTMSContext : DbContext
 
         modelBuilder.Entity<TblJobcashflow>(entity =>
         {
-            entity.HasKey(e => new { e.JobDetailCode, e.TruckCode, e.DriverCode }).HasName("PK_tbl_jobadvance_cashflow");
+            entity.HasKey(e => e.Id).HasName("PK_tbl_jobadvance_cashflow");
 
             entity.ToTable("tbl_jobcashflow");
 
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AdvanceRemark)
+                .HasMaxLength(250)
+                .IsUnicode(false)
+                .HasColumnName("advance_remark");
+            entity.Property(e => e.CashFlow)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("cash_flow");
+            entity.Property(e => e.ClearingDate)
+                .HasColumnType("datetime")
+                .HasColumnName("clearing_date");
+            entity.Property(e => e.DriverCode)
+                .HasMaxLength(8)
                 .IsUnicode(false)
                 .IsFixedLength()
+                .HasColumnName("driver_code");
+            entity.Property(e => e.IsClearing).HasColumnName("is_clearing");
+            entity.Property(e => e.JobDetailCode)
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.TruckCode)
                 .HasMaxLength(7)
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("truck_code");
-            entity.Property(e => e.DriverCode)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("driver_code");
-            entity.Property(e => e.AdvanceLiftoff)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("advance_liftoff");
-            entity.Property(e => e.AdvanceLifton)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("advance_lifton");
-            entity.Property(e => e.AdvancePort)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("advance_port");
-            entity.Property(e => e.AdvanceRemark)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("advance_remark");
-            entity.Property(e => e.AdvanceTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("advance_total");
-            entity.Property(e => e.AdvanceYard)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("advance_yard");
-            entity.Property(e => e.CashFlow)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("cash_flow");
 
             entity.HasOne(d => d.DriverCodeNavigation).WithMany(p => p.TblJobcashflows)
                 .HasForeignKey(d => d.DriverCode)
@@ -3431,30 +2732,11 @@ public partial class DbTMSContext : DbContext
 
         modelBuilder.Entity<TblJobcashflowAdvance>(entity =>
         {
-            entity.HasKey(e => new { e.JobDetailCode, e.TruckCode, e.DriverCode }).HasName("PK_tbl_jobcashing_advance");
+            entity.HasKey(e => e.Id).HasName("PK_tbl_jobcashing_advance");
 
             entity.ToTable("tbl_jobcashflow_advance");
 
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("job_detail_code");
-            entity.Property(e => e.TruckCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_code");
-            entity.Property(e => e.DriverCode)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("driver_code");
-            entity.Property(e => e.AdvanceCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("advance_code");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AdvanceLiftoff)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("advance_liftoff");
@@ -3470,16 +2752,44 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.AdvanceYard)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("advance_yard");
+            entity.Property(e => e.DriverCode)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("driver_code");
+            entity.Property(e => e.JobDetailCode)
+                .HasMaxLength(20)
+                .HasColumnName("job_detail_code");
+            entity.Property(e => e.SupplierCode)
+                .HasMaxLength(7)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("supplier_code");
+            entity.Property(e => e.TruckCode)
+                .HasMaxLength(7)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("truck_code");
 
-            entity.HasOne(d => d.AdvanceCodeNavigation).WithMany(p => p.TblJobcashflowAdvances)
-                .HasForeignKey(d => d.AdvanceCode)
+            entity.HasOne(d => d.DriverCodeNavigation).WithMany(p => p.TblJobcashflowAdvances)
+                .HasForeignKey(d => d.DriverCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_jobcashflow_advance_tbl_jobadvance");
+                .HasConstraintName("FK_tbl_jobcashflow_advance_tbl_driver");
 
-            entity.HasOne(d => d.TblJobcashflow).WithOne(p => p.TblJobcashflowAdvance)
-                .HasForeignKey<TblJobcashflowAdvance>(d => new { d.JobDetailCode, d.TruckCode, d.DriverCode })
+            entity.HasOne(d => d.JobDetailCodeNavigation).WithMany(p => p.TblJobcashflowAdvances)
+                .HasForeignKey(d => d.JobDetailCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_jobcashflow_advance_tbl_jobcashflow");
+                .HasConstraintName("FK_tbl_jobcashflow_advance_tbl_job_detail");
+
+            entity.HasOne(d => d.SupplierCodeNavigation).WithMany(p => p.TblJobcashflowAdvances)
+                .HasForeignKey(d => d.SupplierCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_jobcashflow_advance_tbl_supplier");
+
+            entity.HasOne(d => d.TruckCodeNavigation).WithMany(p => p.TblJobcashflowAdvances)
+                .HasForeignKey(d => d.TruckCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_jobcashflow_advance_tbl_truck");
         });
 
         modelBuilder.Entity<TblJobcashflowAdvanceOther>(entity =>
@@ -3489,11 +2799,6 @@ public partial class DbTMSContext : DbContext
             entity.ToTable("tbl_jobcashflow_advance_other");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.AdvanceCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("advance_code");
             entity.Property(e => e.AdvanceOther)
                 .HasMaxLength(70)
                 .IsUnicode(false)
@@ -3501,21 +2806,12 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.AdvanceOtherValue)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("advance_other_value");
-            entity.Property(e => e.DriverCode)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("driver_code");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("job_detail_code");
-            entity.Property(e => e.TruckCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_code");
+            entity.Property(e => e.CashflowAdvanceId).HasColumnName("cashflow_advance_id");
+
+            entity.HasOne(d => d.CashflowAdvance).WithMany(p => p.TblJobcashflowAdvanceOthers)
+                .HasForeignKey(d => d.CashflowAdvanceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_jobcashflow_advance_other_tbl_jobcashflow_advance");
         });
 
         modelBuilder.Entity<TblJobcashflowCashing>(entity =>
@@ -3536,20 +2832,38 @@ public partial class DbTMSContext : DbContext
                 .IsFixedLength()
                 .HasColumnName("driver_code");
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
+                .HasMaxLength(20)
+                .HasColumnName("job_detail_code");
+            entity.Property(e => e.SupplierCode)
+                .HasMaxLength(7)
                 .IsUnicode(false)
                 .IsFixedLength()
-                .HasColumnName("job_detail_code");
+                .HasColumnName("supplier_code");
             entity.Property(e => e.TruckCode)
                 .HasMaxLength(7)
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("truck_code");
 
-            entity.HasOne(d => d.TblJobcashflow).WithMany(p => p.TblJobcashflowCashings)
-                .HasForeignKey(d => new { d.JobDetailCode, d.TruckCode, d.DriverCode })
+            entity.HasOne(d => d.DriverCodeNavigation).WithMany(p => p.TblJobcashflowCashings)
+                .HasForeignKey(d => d.DriverCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_jobcashflow_cashing_tbl_jobcashflow");
+                .HasConstraintName("FK_tbl_jobcashflow_cashing_tbl_driver");
+
+            entity.HasOne(d => d.JobDetailCodeNavigation).WithMany(p => p.TblJobcashflowCashings)
+                .HasForeignKey(d => d.JobDetailCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_jobcashflow_cashing_tbl_job_detail");
+
+            entity.HasOne(d => d.SupplierCodeNavigation).WithMany(p => p.TblJobcashflowCashings)
+                .HasForeignKey(d => d.SupplierCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_jobcashflow_cashing_tbl_supplier");
+
+            entity.HasOne(d => d.TruckCodeNavigation).WithMany(p => p.TblJobcashflowCashings)
+                .HasForeignKey(d => d.TruckCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_jobcashflow_cashing_tbl_truck");
         });
 
         modelBuilder.Entity<TblJobcashing>(entity =>
@@ -3567,148 +2881,13 @@ public partial class DbTMSContext : DbContext
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("cashing_value");
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
 
             entity.HasOne(d => d.JobDetailCodeNavigation).WithMany(p => p.TblJobcashings)
                 .HasForeignKey(d => d.JobDetailCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tbl_jobcashing_tbl_job_detail");
-        });
-
-        modelBuilder.Entity<TblMonthlypayment>(entity =>
-        {
-            entity.HasKey(e => e.MonthlyPaymentCode);
-
-            entity.ToTable("tbl_monthlypayment");
-
-            entity.Property(e => e.MonthlyPaymentCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("monthly_payment_code");
-            entity.Property(e => e.AccountNo)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("account_no");
-            entity.Property(e => e.BankBranchName)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("bank_branch_name");
-            entity.Property(e => e.BankName)
-                .HasMaxLength(70)
-                .IsUnicode(false)
-                .HasColumnName("bank_name");
-            entity.Property(e => e.ChequeNo)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("cheque_no");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.IsTax).HasColumnName("is_tax");
-            entity.Property(e => e.IsVat).HasColumnName("is_vat");
-            entity.Property(e => e.NetTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("net_total");
-            entity.Property(e => e.PaymentDate).HasColumnName("payment_date");
-            entity.Property(e => e.PaymentMethod)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_method");
-            entity.Property(e => e.PaymentTypeCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_type_code");
-            entity.Property(e => e.Remark)
-                .HasColumnType("text")
-                .HasColumnName("remark");
-            entity.Property(e => e.SupplierCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("supplier_code");
-            entity.Property(e => e.Tax)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("tax");
-            entity.Property(e => e.Total)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("total");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-            entity.Property(e => e.Vat)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("vat");
-
-            entity.HasOne(d => d.PaymentTypeCodeNavigation).WithMany(p => p.TblMonthlypayments)
-                .HasForeignKey(d => d.PaymentTypeCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_monthlypayment_tbl_payment_type");
-
-            entity.HasOne(d => d.SupplierCodeNavigation).WithMany(p => p.TblMonthlypayments)
-                .HasForeignKey(d => d.SupplierCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_monthlypayment_tbl_supplier");
-        });
-
-        modelBuilder.Entity<TblMonthlypaymentDetail>(entity =>
-        {
-            entity.ToTable("tbl_monthlypayment_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Amount)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("amount");
-            entity.Property(e => e.Description)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("description");
-            entity.Property(e => e.MonthlyPaymentCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("monthly_payment_code");
-            entity.Property(e => e.PaymentDocDate).HasColumnName("payment_doc_date");
-            entity.Property(e => e.PaymentDocNo)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("payment_doc_no");
-
-            entity.HasOne(d => d.MonthlyPaymentCodeNavigation).WithMany(p => p.TblMonthlypaymentDetails)
-                .HasForeignKey(d => d.MonthlyPaymentCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_monthlypayment_detail_tbl_monthlypayment");
-        });
-
-        modelBuilder.Entity<TblPaymentType>(entity =>
-        {
-            entity.HasKey(e => e.PaymentTypeCode);
-
-            entity.ToTable("tbl_payment_type");
-
-            entity.Property(e => e.PaymentTypeCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_type_code");
-            entity.Property(e => e.PaymentTypeName)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("payment_type_name");
         });
 
         modelBuilder.Entity<TblPlace>(entity =>
@@ -3787,161 +2966,6 @@ public partial class DbTMSContext : DbContext
                 .HasForeignKey(d => d.YardportCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tbl_port_cashing_tbl_yardport");
-        });
-
-        modelBuilder.Entity<TblQuotation>(entity =>
-        {
-            entity.HasKey(e => e.QuotationCode).HasName("PK_Table_1_1");
-
-            entity.ToTable("tbl_quotation");
-
-            entity.Property(e => e.QuotationCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("quotation_code");
-            entity.Property(e => e.ChargeCutchassis)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("charge_cutchassis");
-            entity.Property(e => e.Commodity)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("commodity");
-            entity.Property(e => e.ConditionCharged)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("condition_charged");
-            entity.Property(e => e.ConditionHour)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("condition_hour");
-            entity.Property(e => e.ContactLine)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("contact_line");
-            entity.Property(e => e.ContactName)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("contact_name");
-            entity.Property(e => e.ContainerSize1)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("container_size1");
-            entity.Property(e => e.ContainerSize2)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("container_size2");
-            entity.Property(e => e.ContainerSize3)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("container_size3");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.CustomerName)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("customer_name");
-            entity.Property(e => e.ExpireDate).HasColumnName("expire_date");
-            entity.Property(e => e.InsuranceRate)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("insurance_rate");
-            entity.Property(e => e.IsActived).HasColumnName("is_actived");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.MinimumRate)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("minimum_rate");
-            entity.Property(e => e.PriceIncrease)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("price_increase");
-            entity.Property(e => e.PriceLength)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("price_length");
-            entity.Property(e => e.Remark)
-                .IsUnicode(false)
-                .HasColumnName("remark");
-            entity.Property(e => e.Route)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("route");
-            entity.Property(e => e.Scope)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("scope");
-            entity.Property(e => e.StartDate).HasColumnName("start_date");
-            entity.Property(e => e.StartPrice)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("start_price");
-            entity.Property(e => e.StartRate)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("start_rate");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-        });
-
-        modelBuilder.Entity<TblQuotationCondition>(entity =>
-        {
-            entity.ToTable("tbl_quotation_condition");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Condition)
-                .HasColumnType("text")
-                .HasColumnName("condition");
-            entity.Property(e => e.QuotationCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("quotation_code");
-
-            entity.HasOne(d => d.QuotationCodeNavigation).WithMany(p => p.TblQuotationConditions)
-                .HasForeignKey(d => d.QuotationCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_quotation_condition_tbl_quotation");
-        });
-
-        modelBuilder.Entity<TblQuotationDetail>(entity =>
-        {
-            entity.ToTable("tbl_quotation_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CostValue1)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("cost_value1");
-            entity.Property(e => e.CostValue2)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("cost_value2");
-            entity.Property(e => e.CostValue3)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("cost_value3");
-            entity.Property(e => e.FuelRate)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("fuel_rate");
-            entity.Property(e => e.IsActive).HasColumnName("is_active");
-            entity.Property(e => e.QuotationCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("quotation_code");
-            entity.Property(e => e.Token)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("token");
-
-            entity.HasOne(d => d.QuotationCodeNavigation).WithMany(p => p.TblQuotationDetails)
-                .HasForeignKey(d => d.QuotationCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_quotation_detail_tbl_quotation");
         });
 
         modelBuilder.Entity<TblReceipt>(entity =>
@@ -4042,158 +3066,6 @@ public partial class DbTMSContext : DbContext
                 .HasConstraintName("FK_tbl_receipt_tbl_customer");
         });
 
-        modelBuilder.Entity<TblReceiptDetail>(entity =>
-        {
-            entity.ToTable("tbl_receipt_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BillingCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_code");
-            entity.Property(e => e.BillingType)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("billing_type");
-            entity.Property(e => e.ReceiptAdvanceValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("receipt_advance_value");
-            entity.Property(e => e.ReceiptCode)
-                .HasMaxLength(13)
-                .IsUnicode(false)
-                .HasColumnName("receipt_code");
-            entity.Property(e => e.ReceiptTransportValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("receipt_transport_value");
-            entity.Property(e => e.ReceiptValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("receipt_value");
-
-            entity.HasOne(d => d.BillingCodeNavigation).WithMany(p => p.TblReceiptDetails)
-                .HasForeignKey(d => d.BillingCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_receipt_detail_tbl_billing_master");
-
-            entity.HasOne(d => d.ReceiptCodeNavigation).WithMany(p => p.TblReceiptDetails)
-                .HasForeignKey(d => d.ReceiptCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_receipt_detail_tbl_receipt");
-        });
-
-        modelBuilder.Entity<TblReceiptOther>(entity =>
-        {
-            entity.HasKey(e => e.ReceiptOtherCode);
-
-            entity.ToTable("tbl_receipt_other");
-
-            entity.Property(e => e.ReceiptOtherCode)
-                .HasMaxLength(13)
-                .IsUnicode(false)
-                .HasColumnName("receipt_other_code");
-            entity.Property(e => e.BankBranchName)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("bank_branch_name");
-            entity.Property(e => e.BankName)
-                .HasMaxLength(70)
-                .IsUnicode(false)
-                .HasColumnName("bank_name");
-            entity.Property(e => e.ChequeDate).HasColumnName("cheque_date");
-            entity.Property(e => e.ChequeNo)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("cheque_no");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.CustomerAddress)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("customer_address");
-            entity.Property(e => e.CustomerName)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("customer_name");
-            entity.Property(e => e.CustomerTax)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("customer_tax");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.NetTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("net_total");
-            entity.Property(e => e.PaymentType)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_type");
-            entity.Property(e => e.ReceiptDate).HasColumnName("receipt_date");
-            entity.Property(e => e.ReceiptOtherType)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("receipt_other_type");
-            entity.Property(e => e.Total)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("total");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-            entity.Property(e => e.Vat)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("vat");
-
-            entity.HasOne(d => d.ReceiptOtherTypeNavigation).WithMany(p => p.TblReceiptOthers)
-                .HasForeignKey(d => d.ReceiptOtherType)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_receipt_other_tbl_receipt_type");
-        });
-
-        modelBuilder.Entity<TblReceiptOtherDetail>(entity =>
-        {
-            entity.ToTable("tbl_receipt_other_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ContainerSize)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("container_size");
-            entity.Property(e => e.Description)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("description");
-            entity.Property(e => e.Price)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("price");
-            entity.Property(e => e.Quantity).HasColumnName("quantity");
-            entity.Property(e => e.ReceiptOtherCode)
-                .HasMaxLength(13)
-                .IsUnicode(false)
-                .HasColumnName("receipt_other_code");
-            entity.Property(e => e.ReceiptOtherName)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("receipt_other_name");
-            entity.Property(e => e.Total)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("total");
-
-            entity.HasOne(d => d.ReceiptOtherCodeNavigation).WithMany(p => p.TblReceiptOtherDetails)
-                .HasForeignKey(d => d.ReceiptOtherCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_receipt_other_detail_tbl_receipt_other");
-        });
-
         modelBuilder.Entity<TblReceiptType>(entity =>
         {
             entity.HasKey(e => e.ReceiptTypeCode);
@@ -4209,160 +3081,6 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(70)
                 .IsUnicode(false)
                 .HasColumnName("receipt_type_name");
-        });
-
-        modelBuilder.Entity<TblReceivePayment>(entity =>
-        {
-            entity.HasKey(e => e.ReceivePaymentCode);
-
-            entity.ToTable("tbl_receive_payment");
-
-            entity.Property(e => e.ReceivePaymentCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("receive_payment_code");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.DueDate).HasColumnName("due_date");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.IsPaid).HasColumnName("is_paid");
-            entity.Property(e => e.IsTax).HasColumnName("is_tax");
-            entity.Property(e => e.IsVat).HasColumnName("is_vat");
-            entity.Property(e => e.NetTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("net_total");
-            entity.Property(e => e.PaymentDate).HasColumnName("payment_date");
-            entity.Property(e => e.PaymentTopic)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("payment_topic");
-            entity.Property(e => e.PaymentTypeCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_type_code");
-            entity.Property(e => e.RefDoc)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("ref_doc");
-            entity.Property(e => e.Remark)
-                .HasColumnType("text")
-                .HasColumnName("remark");
-            entity.Property(e => e.SupplierCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("supplier_code");
-            entity.Property(e => e.Tax)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("tax");
-            entity.Property(e => e.Total)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("total");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-            entity.Property(e => e.Vat)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("vat");
-
-            entity.HasOne(d => d.SupplierCodeNavigation).WithMany(p => p.TblReceivePayments)
-                .HasForeignKey(d => d.SupplierCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_receive_payment_tbl_supplier");
-        });
-
-        modelBuilder.Entity<TblReceivePaymentDetail>(entity =>
-        {
-            entity.ToTable("tbl_receive_payment_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Amount).HasColumnName("amount");
-            entity.Property(e => e.Description)
-                .HasMaxLength(250)
-                .IsUnicode(false)
-                .HasColumnName("description");
-            entity.Property(e => e.Price)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("price");
-            entity.Property(e => e.ReceivePaymentCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("receive_payment_code");
-            entity.Property(e => e.Total)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("total");
-            entity.Property(e => e.Unit)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("unit");
-
-            entity.HasOne(d => d.ReceivePaymentCodeNavigation).WithMany(p => p.TblReceivePaymentDetails)
-                .HasForeignKey(d => d.ReceivePaymentCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_receive_payment_detail_tbl_receive_payment_detail");
-        });
-
-        modelBuilder.Entity<TblReceivePaymentReceipt>(entity =>
-        {
-            entity.HasKey(e => new { e.ReceiptCode, e.ReceivePaymentCode });
-
-            entity.ToTable("tbl_receive_payment_receipt");
-
-            entity.Property(e => e.ReceiptCode)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("receipt_code");
-            entity.Property(e => e.ReceivePaymentCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("receive_payment_code");
-            entity.Property(e => e.BankBranchName)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("bank_branch_name");
-            entity.Property(e => e.BankName)
-                .HasMaxLength(70)
-                .IsUnicode(false)
-                .HasColumnName("bank_name");
-            entity.Property(e => e.ChequeNo)
-                .HasMaxLength(30)
-                .IsUnicode(false)
-                .HasColumnName("cheque_no");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.PaymentType)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_type");
-            entity.Property(e => e.ReceiptDate).HasColumnName("receipt_date");
-            entity.Property(e => e.Remark)
-                .HasColumnType("text")
-                .HasColumnName("remark");
-
-            entity.HasOne(d => d.ReceivePaymentCodeNavigation).WithMany(p => p.TblReceivePaymentReceipts)
-                .HasForeignKey(d => d.ReceivePaymentCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_receive_payment_receipt_tbl_receive_payment");
         });
 
         modelBuilder.Entity<TblRequest>(entity =>
@@ -4397,115 +3115,6 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(150)
                 .IsUnicode(false)
                 .HasColumnName("shipper_name");
-        });
-
-        modelBuilder.Entity<TblShippingContact>(entity =>
-        {
-            entity.HasKey(e => e.ShippingContactCode);
-
-            entity.ToTable("tbl_shipping_contact");
-
-            entity.Property(e => e.ShippingContactCode)
-                .HasMaxLength(5)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("shipping_contact_code");
-            entity.Property(e => e.ShippingContactName)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("shipping_contact_name");
-        });
-
-        modelBuilder.Entity<TblShippingadvance>(entity =>
-        {
-            entity.HasKey(e => e.JobDetailCode).HasName("PK_tbl_shipping_advance");
-
-            entity.ToTable("tbl_shippingadvance");
-
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("job_detail_code");
-            entity.Property(e => e.AdvanceValue)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("advance_value");
-            entity.Property(e => e.IsPaid).HasColumnName("is_paid");
-
-            entity.HasOne(d => d.JobDetailCodeNavigation).WithOne(p => p.TblShippingadvance)
-                .HasForeignKey<TblShippingadvance>(d => d.JobDetailCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_shippingadvance_tbl_job_detail");
-        });
-
-        modelBuilder.Entity<TblShippingpayment>(entity =>
-        {
-            entity.HasKey(e => e.PaymentCode).HasName("PK_tbl_shipping_payment");
-
-            entity.ToTable("tbl_shippingpayment");
-
-            entity.Property(e => e.PaymentCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_code");
-            entity.Property(e => e.Amount).HasColumnName("amount");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.CustomerCode)
-                .HasMaxLength(9)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("customer_code");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.ReceiveDate).HasColumnName("receive_date");
-            entity.Property(e => e.Total)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("total");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-
-            entity.HasOne(d => d.CustomerCodeNavigation).WithMany(p => p.TblShippingpayments)
-                .HasForeignKey(d => d.CustomerCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_shippingpayment_tbl_customer");
-        });
-
-        modelBuilder.Entity<TblShippingpaymentDetail>(entity =>
-        {
-            entity.ToTable("tbl_shippingpayment_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("job_detail_code");
-            entity.Property(e => e.PaymentCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_code");
-
-            entity.HasOne(d => d.JobDetailCodeNavigation).WithMany(p => p.TblShippingpaymentDetails)
-                .HasForeignKey(d => d.JobDetailCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_shippingpayment_detail_tbl_shippingpayment_detail");
-
-            entity.HasOne(d => d.PaymentCodeNavigation).WithMany(p => p.TblShippingpaymentDetails)
-                .HasForeignKey(d => d.PaymentCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_shippingpayment_detail_tbl_shippingpayment");
         });
 
         modelBuilder.Entity<TblSupplier>(entity =>
@@ -4591,9 +3200,7 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.IsPayment).HasColumnName("is_payment");
             entity.Property(e => e.JobDate).HasColumnName("job_date");
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.SupplierAllowance)
                 .HasColumnType("decimal(18, 2)")
@@ -4764,9 +3371,7 @@ public partial class DbTMSContext : DbContext
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("advance_value");
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.LiftoffValue)
                 .HasColumnType("decimal(18, 2)")
@@ -5010,34 +3615,12 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.CreateDate)
                 .HasColumnType("datetime")
                 .HasColumnName("create_date");
-            entity.Property(e => e.FleetType)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("fleet_type");
             entity.Property(e => e.IsActived).HasColumnName("is_actived");
             entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.SupplierCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("supplier_code");
             entity.Property(e => e.TruckLicense)
                 .HasMaxLength(12)
                 .IsUnicode(false)
                 .HasColumnName("truck_license");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-
-            entity.HasOne(d => d.SupplierCodeNavigation).WithMany(p => p.TblTrucks)
-                .HasForeignKey(d => d.SupplierCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_truck_tbl_supplier");
 
             entity.HasMany(d => d.FleetpaymentCodes).WithMany(p => p.TruckCodes)
                 .UsingEntity<Dictionary<string, object>>(
@@ -5067,94 +3650,6 @@ public partial class DbTMSContext : DbContext
                     });
         });
 
-        modelBuilder.Entity<TblTruckChecklist>(entity =>
-        {
-            entity.HasKey(e => e.ChecklistCode).HasName("PK_tbl_checklist");
-
-            entity.ToTable("tbl_truck_checklist");
-
-            entity.Property(e => e.ChecklistCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("checklist_code");
-            entity.Property(e => e.ChecklistDate).HasColumnName("checklist_date");
-            entity.Property(e => e.DriverCode)
-                .HasMaxLength(8)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("driver_code");
-            entity.Property(e => e.TruckCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_code");
-
-            entity.HasOne(d => d.TruckCodeNavigation).WithMany(p => p.TblTruckChecklists)
-                .HasForeignKey(d => d.TruckCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_truck_checklist_tbl_truck");
-        });
-
-        modelBuilder.Entity<TblTruckChecklistChoice>(entity =>
-        {
-            entity.HasKey(e => e.TruckCheckCode).HasName("PK_tbl_truck_checklist");
-
-            entity.ToTable("tbl_truck_checklist_choice");
-
-            entity.Property(e => e.TruckCheckCode)
-                .HasMaxLength(3)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_check_code");
-            entity.Property(e => e.TrcukCheckStandard)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("trcuk_check_standard");
-            entity.Property(e => e.TruckCheckGroup)
-                .HasMaxLength(1)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_check_group");
-            entity.Property(e => e.TruckCheckIndex).HasColumnName("truck_check_index");
-            entity.Property(e => e.TruckCheckName)
-                .HasMaxLength(170)
-                .IsUnicode(false)
-                .HasColumnName("truck_check_name");
-        });
-
-        modelBuilder.Entity<TblTruckChecklistDetail>(entity =>
-        {
-            entity.ToTable("tbl_truck_checklist_detail");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ChecklistCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("checklist_code");
-            entity.Property(e => e.TruckCheckCode)
-                .HasMaxLength(3)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_check_code");
-            entity.Property(e => e.TruckCheckFixed)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("truck_check_fixed");
-            entity.Property(e => e.TruckCheckValue).HasColumnName("truck_check_value");
-
-            entity.HasOne(d => d.ChecklistCodeNavigation).WithMany(p => p.TblTruckChecklistDetails)
-                .HasForeignKey(d => d.ChecklistCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_truck_checklist_detail_tbl_truck_checklist");
-
-            entity.HasOne(d => d.TruckCheckCodeNavigation).WithMany(p => p.TblTruckChecklistDetails)
-                .HasForeignKey(d => d.TruckCheckCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_truck_checklist_detail_tbl_truck_checklist_choice");
-        });
-
         modelBuilder.Entity<TblTruckDetail>(entity =>
         {
             entity.HasKey(e => e.TruckCode).HasName("PK_tbl_truck");
@@ -5171,6 +3666,11 @@ public partial class DbTMSContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("brand_code");
+            entity.Property(e => e.FleetSupplierCode)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("fleet_supplier_code");
             entity.Property(e => e.FuelTypeCode)
                 .HasMaxLength(2)
                 .IsUnicode(false)
@@ -5209,6 +3709,11 @@ public partial class DbTMSContext : DbContext
                 .HasForeignKey(d => d.BrandCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tbl_truck_tbl_brand");
+
+            entity.HasOne(d => d.FleetSupplierCodeNavigation).WithMany(p => p.TblTruckDetails)
+                .HasForeignKey(d => d.FleetSupplierCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tbl_truck_detail_tbl_fleet_supplier");
 
             entity.HasOne(d => d.FuelTypeCodeNavigation).WithMany(p => p.TblTruckDetails)
                 .HasForeignKey(d => d.FuelTypeCode)
@@ -5380,263 +3885,10 @@ public partial class DbTMSContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("truck_type_code");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
             entity.Property(e => e.TruckTypeName)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("truck_type_name");
-            entity.Property(e => e.TruckTypegroupCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_typegroup_code");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-
-            entity.HasOne(d => d.TruckTypegroupCodeNavigation).WithMany(p => p.TblTruckTypes)
-                .HasForeignKey(d => d.TruckTypegroupCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_truck_type_tbl_truck_typegroup");
-        });
-
-        modelBuilder.Entity<TblTruckTypegroup>(entity =>
-        {
-            entity.HasKey(e => e.TruckTypegroupCode);
-
-            entity.ToTable("tbl_truck_typegroup");
-
-            entity.Property(e => e.TruckTypegroupCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_typegroup_code");
-            entity.Property(e => e.TruckTypegroupName)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("truck_typegroup_name");
-        });
-
-        modelBuilder.Entity<TblVatinvoice>(entity =>
-        {
-            entity.HasKey(e => e.VatinvoiceCode).HasName("PK_tbl_vat_invoice");
-
-            entity.ToTable("tbl_vatinvoice");
-
-            entity.Property(e => e.VatinvoiceCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("vatinvoice_code");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.PaymentNetTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("payment_net_total");
-            entity.Property(e => e.PaymentTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("payment_total");
-            entity.Property(e => e.Remark)
-                .HasColumnType("text")
-                .HasColumnName("remark");
-            entity.Property(e => e.SupplierCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("supplier_code");
-            entity.Property(e => e.TruckCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_code");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-            entity.Property(e => e.VatTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("vat_total");
-            entity.Property(e => e.VatinvoiceDate).HasColumnName("vatinvoice_date");
-            entity.Property(e => e.VatinvoiceType)
-                .HasMaxLength(70)
-                .IsUnicode(false)
-                .HasColumnName("vatinvoice_type");
-
-            entity.HasOne(d => d.SupplierCodeNavigation).WithMany(p => p.TblVatinvoices)
-                .HasForeignKey(d => d.SupplierCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_vat_invoice_tbl_supplier");
-
-            entity.HasOne(d => d.TruckCodeNavigation).WithMany(p => p.TblVatinvoices)
-                .HasForeignKey(d => d.TruckCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_vat_invoice_tbl_truck");
-        });
-
-        modelBuilder.Entity<TblVatinvoicePayment>(entity =>
-        {
-            entity.HasKey(e => new { e.VatinvoiceCode, e.PaymentCode });
-
-            entity.ToTable("tbl_vatinvoice_payment");
-
-            entity.Property(e => e.VatinvoiceCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("vatinvoice_code");
-            entity.Property(e => e.PaymentCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_code");
-
-            entity.HasOne(d => d.VatinvoiceCodeNavigation).WithMany(p => p.TblVatinvoicePayments)
-                .HasForeignKey(d => d.VatinvoiceCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_vatinvoice_payment_tbl_vatinvoice");
-        });
-
-        modelBuilder.Entity<TblWithholdingTax>(entity =>
-        {
-            entity.HasKey(e => e.WithholdingTaxCode);
-
-            entity.ToTable("tbl_withholding_tax");
-
-            entity.Property(e => e.WithholdingTaxCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("withholding_tax_code");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.PaymentNetTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("payment_net_total");
-            entity.Property(e => e.PaymentTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("payment_total");
-            entity.Property(e => e.PaymentTypeCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("payment_type_code");
-            entity.Property(e => e.SupplierCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("supplier_code");
-            entity.Property(e => e.TaxTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("tax_total");
-            entity.Property(e => e.UpdateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("update_by");
-            entity.Property(e => e.UpdateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("update_date");
-            entity.Property(e => e.WithholdingTaxDate).HasColumnName("withholding_tax_date");
-
-            entity.HasOne(d => d.PaymentTypeCodeNavigation).WithMany(p => p.TblWithholdingTaxes)
-                .HasForeignKey(d => d.PaymentTypeCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_withholding_tax_tbl_payment_type");
-        });
-
-        modelBuilder.Entity<TblWithholdingTaxPayment>(entity =>
-        {
-            entity.HasKey(e => new { e.WithholdingTaxCode, e.MonthlyPaymentCode }).HasName("PK_tbl_tax_payment");
-
-            entity.ToTable("tbl_withholding_tax_payment");
-
-            entity.Property(e => e.WithholdingTaxCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("withholding_tax_code");
-            entity.Property(e => e.MonthlyPaymentCode)
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("monthly_payment_code");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-
-            entity.HasOne(d => d.MonthlyPaymentCodeNavigation).WithMany(p => p.TblWithholdingTaxPayments)
-                .HasForeignKey(d => d.MonthlyPaymentCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_tax_payment_tbl_monthlypayment");
-
-            entity.HasOne(d => d.WithholdingTaxCodeNavigation).WithMany(p => p.TblWithholdingTaxPayments)
-                .HasForeignKey(d => d.WithholdingTaxCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_tax_payment_tbl_withholding_tax");
-        });
-
-        modelBuilder.Entity<TblWithholdingTaxSupplierpayment>(entity =>
-        {
-            entity.HasKey(e => new { e.WithholdingTaxCode, e.SupplierpaymentCode });
-
-            entity.ToTable("tbl_withholding_tax_supplierpayment");
-
-            entity.Property(e => e.WithholdingTaxCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("withholding_tax_code");
-            entity.Property(e => e.SupplierpaymentCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("supplierpayment_code");
-            entity.Property(e => e.CreateBy)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("create_by");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("datetime")
-                .HasColumnName("create_date");
-
-            entity.HasOne(d => d.SupplierpaymentCodeNavigation).WithMany(p => p.TblWithholdingTaxSupplierpayments)
-                .HasForeignKey(d => d.SupplierpaymentCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_withholding_tax_supplierpayment_tbl_supplierpayment");
-
-            entity.HasOne(d => d.WithholdingTaxCodeNavigation).WithMany(p => p.TblWithholdingTaxSupplierpayments)
-                .HasForeignKey(d => d.WithholdingTaxCode)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_withholding_tax_supplierpayment_tbl_withholding_tax");
         });
 
         modelBuilder.Entity<TblYardCashing>(entity =>
@@ -5724,28 +3976,6 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(150)
                 .IsUnicode(false)
                 .HasColumnName("zone_name");
-        });
-
-        modelBuilder.Entity<TmpRecept>(entity =>
-        {
-            entity.HasKey(e => e.Code).HasName("PK_tmpRecept_1");
-
-            entity.ToTable("tmpRecept");
-
-            entity.Property(e => e.Code)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("code");
-            entity.Property(e => e.AdvanceTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("advance_total");
-            entity.Property(e => e.Total)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("total");
-            entity.Property(e => e.TransportTotal)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("transport_total");
         });
 
         modelBuilder.Entity<ViewBillingListActive>(entity =>
@@ -6227,20 +4457,16 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("driver_phone");
-            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
-            entity.Property(e => e.SupplierCode)
-                .HasMaxLength(7)
+            entity.Property(e => e.FleetSupplierTypeCode)
+                .HasMaxLength(5)
                 .IsUnicode(false)
                 .IsFixedLength()
-                .HasColumnName("supplier_code");
-            entity.Property(e => e.SupplierFullname)
+                .HasColumnName("fleet_supplier_type_code");
+            entity.Property(e => e.FleetSupplierTypeName)
                 .HasMaxLength(150)
                 .IsUnicode(false)
-                .HasColumnName("supplier_fullname");
-            entity.Property(e => e.SupplierName)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("supplier_name");
+                .HasColumnName("fleet_supplier_type_name");
+            entity.Property(e => e.IsEnabled).HasColumnName("is_enabled");
             entity.Property(e => e.TruckCode)
                 .HasMaxLength(7)
                 .IsUnicode(false)
@@ -6251,7 +4477,7 @@ public partial class DbTMSContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("truck_license");
             entity.Property(e => e.TruckNo)
-                .HasMaxLength(7)
+                .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("truck_no");
             entity.Property(e => e.TruckTypeName)
@@ -6906,6 +5132,9 @@ public partial class DbTMSContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("customer_type_code");
+            entity.Property(e => e.DriverAllowance)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("driver_allowance");
             entity.Property(e => e.DriverCode)
                 .HasMaxLength(8)
                 .IsUnicode(false)
@@ -6953,9 +5182,7 @@ public partial class DbTMSContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("job_date");
             entity.Property(e => e.JobDetailCode)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .IsFixedLength()
+                .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
             entity.Property(e => e.JobInvoice)
                 .HasMaxLength(50)
@@ -7001,6 +5228,11 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("receipt_tax");
+            entity.Property(e => e.RoundTrip)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("round_trip");
             entity.Property(e => e.SealNo)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -7014,6 +5246,9 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("start_name");
+            entity.Property(e => e.SupplierAllowance)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("supplier_allowance");
             entity.Property(e => e.SupplierCode)
                 .HasMaxLength(7)
                 .IsUnicode(false)
@@ -7035,6 +5270,10 @@ public partial class DbTMSContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("tracking_status");
+            entity.Property(e => e.TradeType)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .HasColumnName("trade_type");
             entity.Property(e => e.TrailerLicense)
                 .HasMaxLength(12)
                 .IsUnicode(false)
@@ -7597,29 +5836,28 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("driver_phone");
-            entity.Property(e => e.FleetCode)
+            entity.Property(e => e.FleetSupplierCode)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("fleet_supplier_code");
+            entity.Property(e => e.FleetSupplierName)
+                .HasMaxLength(250)
+                .HasColumnName("fleet_supplier_name");
+            entity.Property(e => e.FleetSupplierTypeCode)
                 .HasMaxLength(5)
                 .IsUnicode(false)
                 .IsFixedLength()
-                .HasColumnName("fleet_code");
-            entity.Property(e => e.FleetName)
-                .HasMaxLength(50)
+                .HasColumnName("fleet_supplier_type_code");
+            entity.Property(e => e.FleetSupplierTypeName)
+                .HasMaxLength(150)
                 .IsUnicode(false)
-                .HasColumnName("fleet_name");
+                .HasColumnName("fleet_supplier_type_name");
             entity.Property(e => e.FuelTypeName)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("fuel_type_name");
             entity.Property(e => e.IsActived).HasColumnName("is_actived");
-            entity.Property(e => e.SupplierCode)
-                .HasMaxLength(7)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("supplier_code");
-            entity.Property(e => e.SupplierName)
-                .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("supplier_name");
             entity.Property(e => e.TruckChassisNumber)
                 .HasMaxLength(50)
                 .IsUnicode(false)

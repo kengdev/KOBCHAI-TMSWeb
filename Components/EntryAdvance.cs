@@ -19,12 +19,10 @@ public class EntryAdvance : ViewComponent
         _jobService = jobService;
     }
 
-    public async Task<IViewComponentResult> InvokeAsync(string code, string driver)
+    public async Task<IViewComponentResult> InvokeAsync(string code)
     {
-        var advance = await _jobService.GetAdvanceByJob(code);
-        var advance_other = await _jobService.GetAdvanceOtherByJob(advance.AdvanceCode);
+        var cashflow = await _jobService.GetAdvanceByJob(code);
 
-        ViewBag.Other = advance_other;
-        return View(advance);
+        return View(cashflow);
     }
 }

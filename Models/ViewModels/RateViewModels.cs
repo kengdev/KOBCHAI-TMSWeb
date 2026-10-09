@@ -9,9 +9,9 @@ public class DriverRateViewModel
 
 public class SupplyerRateViewModel
 {
-    public string supplyer_code { get; set; }
     public string place_code { get; set; }
     public string place_name { get; set; }
+    public string supplyer_code { get; set; }
     public string supplyer_name { get; set; }
     public string zone_name { get; set; }
     public string truck_typegroup_name { get; set; }
@@ -19,6 +19,10 @@ public class SupplyerRateViewModel
     public decimal rate_4W_value { get; set; }
     public decimal rate_6W_value { get; set; }
     public decimal rate_10W_value { get; set; }
+    public decimal rate_TR6W_value { get; set; }
+    public decimal rate_TR10W_value { get; set; }
+    public decimal rate_TR18W_value { get; set; }
+    public decimal rate_TRextra_value { get; set; }
     public decimal rate_sup_value { get; set; }
 }
 

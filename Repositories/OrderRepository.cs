@@ -10,18 +10,20 @@ public class OrderRepository
 {
     private readonly DbTMSContext db;
     private readonly CodeRepository _codeService;
+    private readonly AdvanceFundRepository _fundService;
 
     public OrderRepository(DbTMSContext context)
     {
         db = context;
         _codeService = new CodeRepository(context);
+        _fundService = new AdvanceFundRepository(context);
     }
 
-    public async Task<ViewJobListActive?> GetOrderByHash(string code)
+    public async Task<ViewJobListActive?> GetOrderById(int code)
     {
         return await db.ViewJobListActives
             .AsNoTracking()
-            .FirstOrDefaultAsync(w => w.HashCode == code);
+            .FirstOrDefaultAsync(w => w.Id == code);
     }
 
     public async Task<ViewJobListActive?> GetOrderByCode(string code)
@@ -29,18 +31,6 @@ public class OrderRepository
         return await db.ViewJobListActives
             .AsNoTracking()
             .FirstOrDefaultAsync(w => w.JobDetailCode == code);
-    }
-
-    public async Task<TblBudgetTransaction?> GetLastestTransactionByJob(string code)
-    {
-        return await (
-            from a in db.TblJobBudgetTransactions.AsNoTracking()
-            join b in db.TblBudgetTransactions.AsNoTracking()
-                on a.TransactionCode equals b.TransactionCode
-            where a.JobDetailCode == code
-            orderby b.CreateDate descending
-            select b)
-            .FirstOrDefaultAsync();
     }
 
     public async Task<ViewJobListActive?> GetOrderBySearchDetail(string code)
@@ -55,7 +45,7 @@ public class OrderRepository
         return await db.TblJobMasters
             .AsNoTracking()
             .Include(i => i.CostCodeNavigation)
-            .Include(i => i.TruckTypegroupCodeNavigation)
+            .Include(i => i.TruckTypeCodeNavigation)
             .FirstOrDefaultAsync(w => w.JobCode == code);
     }
 
@@ -172,7 +162,8 @@ public class OrderRepository
 
     public async Task<List<DriverViewModel>> GetDriver()
     {
-        return await db.ViewDriverListActives
+        return await db.TblDrivers
+            .Where(w => w.IsEnabled == true)
             .AsNoTracking()
             .OrderBy(o => o.DriverFullname)
             .Select(s => new DriverViewModel
@@ -206,7 +197,7 @@ public class OrderRepository
             .ToListAsync();
     }
 
-    public async Task<ResponseViewModel> OrderTruck(TblJobDetail model)
+    public async Task<ResponseViewModel> OrderTruck(TblJobDetail model, decimal cashflow)
     {
         await using var tr = await db.Database.BeginTransactionAsync();
 
@@ -230,7 +221,6 @@ public class OrderRepository
                 where a.TruckCode == model.TruckCode
                 select new
                 {
-                    supplier = a.SupplierCode,
                     truck_type = b.TruckTypegroupCode
                 })
                 .FirstOrDefaultAsync();
@@ -254,7 +244,7 @@ public class OrderRepository
             }
 
             jobMaster.LiftedAmount = jobMaster.LiftedAmount + 1;
-            jobMaster.TruckTypegroupCode = truck != null ? truck.truck_type : "04";
+            jobMaster.TruckTypeCode = truck != null ? truck.truck_type : "04";
 
             model.SupplierInvoice = supplierData.FleetTypeCode != "F1" ? "-" : model.JobDetailCode;
             model.ContainerNo = "-";
@@ -269,28 +259,21 @@ public class OrderRepository
             model.IsPayment = false;
             db.TblJobDetails.Add(model);
 
-            db.TblJobadvances.Add(new TblJobadvance
+            db.TblJobTrackings.Add(new TblJobTracking
             {
-                AdvanceCode = advanceCode,
                 JobDetailCode = model.JobDetailCode,
-                AdvanceLifton = jobPlace.LiftonValue,
-                AdvanceLiftoff = jobPlace.LiftoffValue,
-                AdvanceYard = jobPlace.YardValue,
-                AdvancePort = jobPlace.PortValue,
-                AdvanceTotal = jobPlace.LiftonValue + jobPlace.LiftoffValue + jobPlace.YardValue + jobPlace.PortValue,
-                AdvanceRemark = "",
-                IsBilling = false,
-                IsClearing = false,
-                ClearingDate = null,
-                IsEnabled = true,
-                CreateDate = now,
-                CreateBy = model.CreateBy,
-                UpdateDate = now,
-                UpdateBy = model.CreateBy
+                TruckCode = model.TruckCode,
+                DriverCode = model.DriverCode,
+                SupplierCode = model.SupplierCode,
+                TrackingStatus = "PN",
+                TrackingDate = DateTime.Now,
+                Lattitude = "0",
+                Longitude = "0",
+                Speed = "0"
             });
 
             string supplierCode;
-            supplierCode = truck?.supplier ?? model.SupplierCode;
+
             db.TblJobAllowances.Add(new TblJobAllowance
             {
                 JobDetailCode = model.JobDetailCode,
@@ -299,13 +282,13 @@ public class OrderRepository
                 DriverCode = supplierData.FleetTypeCode == "F1" ? model.DriverCode : "26000000",
                 DriverAllowance = supplierData.FleetTypeCode == "F1" ? await GetDriverCostAsync(jobPlace.MissionCode) : 0,
                 SupplierCode = model.SupplierCode,
-                SupplierAllowance = await GetSupplierCostAsync(model.SupplierCode, jobMaster.TruckTypegroupCode, jobPlace.MissionCode),
+                SupplierAllowance = supplierData.FleetTypeCode == "F1" ? await GetFleetCostAsync(model.TruckCode, truck.truck_type,jobPlace.MissionCode) : await GetSupplierCostAsync(model.SupplierCode, jobPlace.MissionCode),
+                RoundTrip = "A",
                 IsComplete = false,
                 IsWeeklypayment = false
             });
 
-            var binding = await db.TblBindingGenerates
-                .FindAsync(model.JobCode, model.JobDetailCode);
+            var binding = await db.TblBindingGenerates.FindAsync(model.JobCode, model.JobDetailCode);
 
             if (binding != null)
             {
@@ -313,6 +296,21 @@ public class OrderRepository
                 binding.UpdateDate = now;
                 binding.UpdateBy = model.CreateBy;
             }
+
+            var cashflowData = new TblJobcashflow
+            {
+                JobDetailCode = model.JobDetailCode,
+                TruckCode = model.TruckCode,
+                DriverCode = model.DriverCode,
+                CashFlow = cashflow,
+                AdvanceRemark = "-",
+                IsClearing = false
+            };
+
+            db.TblJobcashflows.Add(cashflowData);
+            await db.SaveChangesAsync();
+
+            AdvanceFundResult fundResult = await _fundService.PayAsync(model.JobDetailCode, cashflowData.Id, 2, cashflow, model.DriverCode,model.CreateBy);
 
             log.AddSystemLog(model.JobDetailCode, $"Add truck to job. [{model.JobCode}]", model.UpdateBy);
 
@@ -538,10 +536,10 @@ public class OrderRepository
         return await GetDriverCostAsync(place_code);
     }
 
-    public async Task<decimal> GetSupplierCost(string supplyer_code, string truck_type, string place_code)
+    /*public async Task<decimal> GetSupplierCost(string supplyer_code, string truck_type, string place_code)
     {
         return await GetSupplierCostAsync(supplyer_code, truck_type, place_code);
-    }
+    }*/
 
     public async Task<ViewDriverListActive?> GetDriverCodeByTruck(string code)
     {
@@ -588,53 +586,44 @@ public class OrderRepository
             .FirstOrDefaultAsync() ?? 0;
     }
 
-    private async Task<decimal> GetSupplierCostAsync(
-        string supplierCode,
-        string truckType,
-        string placeCode)
+    private async Task<decimal> GetSupplierCostAsync(string supplierCode, string placeCode)
     {
-        string? fleetTypeCode = await db.TblSuppliers
-            .AsNoTracking()
-            .Where(w => w.SupplierCode == supplierCode)
-            .Select(s => s.FleetTypeCode)
-            .FirstOrDefaultAsync();
-
-        if (fleetTypeCode == "F1")
-        {
-            var fleet = await (
-                from a in db.TblFleetInternals.AsNoTracking()
-                join b in db.TblFleetRates.AsNoTracking()
-                    on a.FleetCode equals b.FleetCode
-                where a.SupplierCode == supplierCode &&
-                      b.PlaceCode == placeCode
-                select new
-                {
-                    b.Truck4w,
-                    b.Truck6w,
-                    b.Truck10w
-                })
-                .FirstOrDefaultAsync();
-
-            if (fleet == null)
-            {
-                return 0;
-            }
-
-            return truckType switch
-            {
-                "01" => (decimal?)fleet.Truck4w ?? 0,
-                "02" => (decimal?)fleet.Truck6w ?? 0,
-                "03" => (decimal?)fleet.Truck10w ?? 0,
-                _ => 0
-            };
-        }
-
         return await db.TblSupplierRates
             .AsNoTracking()
             .Where(w => w.SupplierCode == supplierCode &&
                         w.PlaceCode == placeCode)
             .Select(s => (decimal?)s.CostRate)
             .FirstOrDefaultAsync() ?? 0;
+    }
+
+    private async Task<decimal> GetFleetCostAsync(
+        string truckCode,
+        string truckType,
+        string placeCode)
+    {
+
+        var fleetRate = await (from fleetrate in db.TblFleetRates.AsNoTracking()
+                                  join fleetsuppliertype in db.TblFleetSupplierTypes.AsNoTracking()
+                                     on fleetrate.FleetSupplierTypeCode equals fleetsuppliertype.FleetSupplierTypeCode
+                                  join fleetsupplier in db.TblFleetSuppliers.AsNoTracking()
+                                     on fleetsuppliertype.FleetSupplierTypeCode equals fleetsupplier.FleetSuppplierTypeCode
+                                  join truck in db.TblTruckDetails.AsNoTracking()
+                                     on fleetsupplier.FleetSupplierCode equals truck.FleetSupplierCode
+                                  where truck.TruckCode == truckCode && fleetrate.PlaceCode == placeCode
+                                  select fleetrate).FirstOrDefaultAsync();
+
+        if (fleetRate == null)
+        {
+            return 0;
+        }
+
+        return truckType switch
+        {
+            "01" => (decimal?)fleetRate.Truck4w ?? 0,
+            "02" => (decimal?)fleetRate.Truck6w ?? 0,
+            "03" => (decimal?)fleetRate.Truck10w ?? 0,
+            _ => 0
+        };
     }
 
     private async Task<TblJobPlace> BuildContainerPlaceAsync(

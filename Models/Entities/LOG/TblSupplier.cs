@@ -41,25 +41,19 @@ public partial class TblSupplier
 
     public string UpdateBy { get; set; } = null!;
 
-    public virtual ICollection<TblFleetExternal> TblFleetExternals { get; set; } = new List<TblFleetExternal>();
-
-    public virtual ICollection<TblFleetInternal> TblFleetInternals { get; set; } = new List<TblFleetInternal>();
-
     public virtual ICollection<TblJobAllowance> TblJobAllowances { get; set; } = new List<TblJobAllowance>();
 
     public virtual ICollection<TblJobDetail> TblJobDetails { get; set; } = new List<TblJobDetail>();
 
-    public virtual ICollection<TblMonthlypayment> TblMonthlypayments { get; set; } = new List<TblMonthlypayment>();
+    public virtual ICollection<TblJobTracking> TblJobTrackings { get; set; } = new List<TblJobTracking>();
 
-    public virtual ICollection<TblReceivePayment> TblReceivePayments { get; set; } = new List<TblReceivePayment>();
+    public virtual ICollection<TblJobcashflowAdvance> TblJobcashflowAdvances { get; set; } = new List<TblJobcashflowAdvance>();
+
+    public virtual ICollection<TblJobcashflowCashing> TblJobcashflowCashings { get; set; } = new List<TblJobcashflowCashing>();
 
     public virtual ICollection<TblSupplierAllowance> TblSupplierAllowances { get; set; } = new List<TblSupplierAllowance>();
 
     public virtual ICollection<TblSupplierRate> TblSupplierRates { get; set; } = new List<TblSupplierRate>();
 
     public virtual ICollection<TblSupplierpayment> TblSupplierpayments { get; set; } = new List<TblSupplierpayment>();
-
-    public virtual ICollection<TblTruck> TblTrucks { get; set; } = new List<TblTruck>();
-
-    public virtual ICollection<TblVatinvoice> TblVatinvoices { get; set; } = new List<TblVatinvoice>();
 }

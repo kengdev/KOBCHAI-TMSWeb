@@ -54,22 +54,25 @@ public class RateRepository
     public async Task<List<SupplyerRateViewModel>> GetFleetRate(string supplier_code)
     {
         return await (
-            from b in db.TblFleetRates.AsNoTracking()
-            join a in db.TblFleets.AsNoTracking()
-                on b.FleetCode equals a.FleetCode
+            from a in db.TblFleetRates.AsNoTracking()
+            join b in db.TblFleetSupplierTypes.AsNoTracking()
+                on a.FleetSupplierTypeCode equals b.FleetSupplierTypeCode
             join c in db.TblPlaces.AsNoTracking()
-                on b.PlaceCode equals c.PlaceCode
-            where b.FleetCode == supplier_code &&
-                  c.IsActived == true
+                on a.PlaceCode equals c.PlaceCode
+            where b.FleetSupplierTypeCode == supplier_code && c.IsActived == true
             select new SupplyerRateViewModel
             {
                 place_name = c.PlaceName,
-                supplyer_name = a.FleetName,
-                supplyer_code = a.FleetCode,
-                place_code = b.PlaceCode,
-                rate_4W_value = b.Truck4w,
-                rate_6W_value = b.Truck6w,
-                rate_10W_value = b.Truck10w
+                supplyer_name = b.FleetSupplierTypeName,
+                supplyer_code = b.FleetSupplierTypeCode,
+                place_code = c.PlaceCode,
+                rate_4W_value = a.Truck4w,
+                rate_6W_value = a.Truck6w,
+                rate_10W_value = a.Truck10w,
+                rate_TR6W_value = a.Trailer6w,
+                rate_TR10W_value = a.Trailer10w,
+                rate_TR18W_value = a.Trailer18w,
+                rate_TRextra_value = a.TrailerExtra,
             })
             .OrderBy(o => o.place_name)
             .ToListAsync();
@@ -139,7 +142,7 @@ public class RateRepository
             {
                 case "4W":
                     affectedRows = await db.TblFleetRates
-                        .Where(w => w.FleetCode == fleet_code &&
+                        .Where(w => w.FleetSupplierTypeCode == fleet_code &&
                                     w.PlaceCode == place_code)
                         .ExecuteUpdateAsync(setters => setters
                             .SetProperty(s => s.Truck4w, value));
@@ -147,7 +150,7 @@ public class RateRepository
 
                 case "6W":
                     affectedRows = await db.TblFleetRates
-                        .Where(w => w.FleetCode == fleet_code &&
+                        .Where(w => w.FleetSupplierTypeCode == fleet_code &&
                                     w.PlaceCode == place_code)
                         .ExecuteUpdateAsync(setters => setters
                             .SetProperty(s => s.Truck6w, value));
@@ -155,7 +158,7 @@ public class RateRepository
 
                 case "10W":
                     affectedRows = await db.TblFleetRates
-                        .Where(w => w.FleetCode == fleet_code &&
+                        .Where(w => w.FleetSupplierTypeCode == fleet_code &&
                                     w.PlaceCode == place_code)
                         .ExecuteUpdateAsync(setters => setters
                             .SetProperty(s => s.Truck10w, value));

@@ -60,6 +60,4 @@ public partial class TblSupplierpayment
     public virtual TblSupplier SupplierCodeNavigation { get; set; } = null!;
 
     public virtual ICollection<TblSupplierpaymentDetail> TblSupplierpaymentDetails { get; set; } = new List<TblSupplierpaymentDetail>();
-
-    public virtual ICollection<TblWithholdingTaxSupplierpayment> TblWithholdingTaxSupplierpayments { get; set; } = new List<TblWithholdingTaxSupplierpayment>();
 }

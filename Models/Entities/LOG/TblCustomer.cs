@@ -39,21 +39,13 @@ public partial class TblCustomer
 
     public virtual TblCustomerType CustomerTypeCodeNavigation { get; set; } = null!;
 
-    public virtual ICollection<SeCustomerAccount> SeCustomerAccounts { get; set; } = new List<SeCustomerAccount>();
-
     public virtual TblCustomerAddress? TblCustomerAddress { get; set; }
 
     public virtual ICollection<TblCustomerCost> TblCustomerCosts { get; set; } = new List<TblCustomerCost>();
-
-    public virtual ICollection<TblCustomerPage> TblCustomerPages { get; set; } = new List<TblCustomerPage>();
 
     public virtual TblCustomerRule? TblCustomerRule { get; set; }
 
     public virtual ICollection<TblJobMaster> TblJobMasters { get; set; } = new List<TblJobMaster>();
 
     public virtual ICollection<TblReceipt> TblReceipts { get; set; } = new List<TblReceipt>();
-
-    public virtual ICollection<TblShippingpayment> TblShippingpayments { get; set; } = new List<TblShippingpayment>();
-
-    public virtual ICollection<TblPlace> PlaceCodes { get; set; } = new List<TblPlace>();
 }

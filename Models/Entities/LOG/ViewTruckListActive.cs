@@ -23,10 +23,6 @@ public partial class ViewTruckListActive
 
     public string TruckImage { get; set; } = null!;
 
-    public string SupplierCode { get; set; } = null!;
-
-    public string SupplierName { get; set; } = null!;
-
     public bool IsActived { get; set; }
 
     public string? DriverCode { get; set; }
@@ -35,7 +31,11 @@ public partial class ViewTruckListActive
 
     public string? DriverPhone { get; set; }
 
-    public string FleetCode { get; set; } = null!;
+    public string FleetSupplierCode { get; set; } = null!;
 
-    public string FleetName { get; set; } = null!;
+    public string FleetSupplierName { get; set; } = null!;
+
+    public string FleetSupplierTypeCode { get; set; } = null!;
+
+    public string FleetSupplierTypeName { get; set; } = null!;
 }

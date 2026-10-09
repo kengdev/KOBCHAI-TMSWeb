@@ -19,7 +19,5 @@ public partial class TblFleet
 
     public string UpdateBy { get; set; } = null!;
 
-    public virtual ICollection<TblFleetInternal> TblFleetInternals { get; set; } = new List<TblFleetInternal>();
-
     public virtual ICollection<TblFleetRate> TblFleetRates { get; set; } = new List<TblFleetRate>();
 }

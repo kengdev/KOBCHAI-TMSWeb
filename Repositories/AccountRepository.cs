@@ -68,17 +68,6 @@ public class AccountRepository
         return data;
     }
 
-    public ProfileViewModel GetCustomerByUser(string username)
-    {
-        var data = (from a in db.SeCustomerAccounts
-                    where a.CusUsername == username
-                    select new ProfileViewModel
-                    {
-                        usercode = a.CustomerCode
-                    }).FirstOrDefault();
-        return data;
-    }
-
     public ResponseViewModel Add(TblAccount model)
     {
         var response = new ResponseViewModel();
