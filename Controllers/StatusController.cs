@@ -36,7 +36,7 @@ public class StatusController : Controller
             model.job_detail_code = data.JobDetailCode;
             model.booking_no = data.BookingNo;
             model.mission_name = data.MissionName;
-            model.job_date = data.JobDate;
+            model.job_date = data.JobDate.Value;
             model.container_no = data.ContainerNo;
             model.seal_no = data.SealNo;
             model.trailer_license = data.TrailerLicense;
@@ -50,7 +50,7 @@ public class StatusController : Controller
             model.job_detail_code = data.JobDetailCode;
             model.booking_no = data.BookingNo;
             model.mission_name = data.MissionName;
-            model.job_date = data.JobDate;
+            model.job_date = data.JobDate.Value;
             model.tracking_status = "-";
         }
 
@@ -87,7 +87,7 @@ public class StatusController : Controller
             model.job_detail_code = data.JobDetailCode;
             model.booking_no = data.BookingNo;
             model.mission_name = data.MissionName;
-            model.job_date = data.JobDate;
+            model.job_date = data.JobDate.Value;
             model.container_no = data.ContainerNo;
             model.seal_no = data.SealNo;
             model.trailer_license = data.TrailerLicense;
@@ -105,7 +105,7 @@ public class StatusController : Controller
             model.job_detail_code = data.JobDetailCode;
             model.booking_no = data.BookingNo;
             model.mission_name = data.MissionName;
-            model.job_date = data.JobDate;
+            model.job_date = data.JobDate.Value;
             model.tracking_status = "-";
         }
 
@@ -141,7 +141,7 @@ public class StatusController : Controller
             model.job_detail_code = data.JobDetailCode;
             model.booking_no = data.BookingNo;
             model.mission_name = data.MissionName;
-            model.job_date = data.JobDate;
+            model.job_date = data.JobDate.Value;
             model.container_no = data.ContainerNo;
             model.seal_no = data.SealNo;
             model.trailer_license = data.TrailerLicense;
@@ -159,7 +159,7 @@ public class StatusController : Controller
             model.job_detail_code = data.JobDetailCode;
             model.booking_no = data.BookingNo;
             model.mission_name = data.MissionName;
-            model.job_date = data.JobDate;
+            model.job_date = data.JobDate.Value;
             model.tracking_status = "-";
         }
 

@@ -142,7 +142,7 @@ public class DashboardRepository
             .OrderBy(o => o.JobDate)
             .Select(s => new JobLoadPlaceViewModel
             {
-                job_date = s.JobDate,
+                job_date = s.JobDate.Value,
                 driver_fullname = s.DriverFullname,
                 truck_license = s.TruckLicense,
                 job_code = s.JobCode,

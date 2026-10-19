@@ -484,6 +484,11 @@ th.filter {
     pointer-events: none !important
 }
 
+.table tr:hover td.CA {
+    background: red !important;
+    pointer-events: none !important
+}
+
 .table tr:hover td.pending {
     background: #e1de04 !important;
     pointer-events: none !important
@@ -601,6 +606,14 @@ th.filter {
     font-weight: bold;
     color: #fff;
     background-color: #402cf7;
+    text-align: center;
+    width: 60px;
+}
+
+.CA {
+    font-weight: bold;
+    color: #fff;
+    background-color: red;
     text-align: center;
     width: 60px;
 }

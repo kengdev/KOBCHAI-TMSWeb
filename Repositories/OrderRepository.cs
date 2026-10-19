@@ -221,7 +221,7 @@ public class OrderRepository
                 where a.TruckCode == model.TruckCode
                 select new
                 {
-                    truck_type = b.TruckTypegroupCode
+                    truck_type = b.TruckTypeCode
                 })
                 .FirstOrDefaultAsync();
 
@@ -310,7 +310,7 @@ public class OrderRepository
             db.TblJobcashflows.Add(cashflowData);
             await db.SaveChangesAsync();
 
-            AdvanceFundResult fundResult = await _fundService.PayAsync(model.JobDetailCode, cashflowData.Id, 2, cashflow, model.DriverCode,model.CreateBy);
+            AdvanceFundResult fundResult = await _fundService.PayAsync(model.JobDetailCode, cashflowData.Id, cashflow, model.DriverCode,model.CreateBy);
 
             log.AddSystemLog(model.JobDetailCode, $"Add truck to job. [{model.JobCode}]", model.UpdateBy);
 

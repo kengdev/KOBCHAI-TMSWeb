@@ -17,8 +17,6 @@ public partial class TblTruckDetail
 
     public string BrandCode { get; set; } = null!;
 
-    public string TruckTypegroupCode { get; set; } = null!;
-
     public string TruckTypeCode { get; set; } = null!;
 
     public string FuelTypeCode { get; set; } = null!;

@@ -13,10 +13,6 @@ public partial class ViewDriverListActive
 
     public string? TruckNo { get; set; }
 
-    public string? TruckTypegroupCode { get; set; }
-
-    public string? TruckTypegroupName { get; set; }
-
     public string? TruckTypeName { get; set; }
 
     public string DriverFullname { get; set; } = null!;

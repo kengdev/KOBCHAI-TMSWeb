@@ -5,11 +5,9 @@ namespace TMSWeb.Models.Entities.LOG;
 
 public partial class AdvanceFund
 {
-    public long FundId { get; set; }
+    public string FundCode { get; set; } = null!;
 
     public Guid FundGuid { get; set; }
-
-    public string FundCode { get; set; } = null!;
 
     public string FundName { get; set; } = null!;
 

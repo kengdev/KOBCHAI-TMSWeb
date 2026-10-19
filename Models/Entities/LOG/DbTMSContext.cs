@@ -256,7 +256,7 @@ public partial class DbTMSContext : DbContext
 
         modelBuilder.Entity<AdvanceFund>(entity =>
         {
-            entity.HasKey(e => e.FundId);
+            entity.HasKey(e => e.FundCode);
 
             entity.ToTable("advance_fund");
 
@@ -264,7 +264,9 @@ public partial class DbTMSContext : DbContext
 
             entity.HasIndex(e => e.FundGuid, "UQ_advance_fund_fund_guid").IsUnique();
 
-            entity.Property(e => e.FundId).HasColumnName("fund_id");
+            entity.Property(e => e.FundCode)
+                .HasMaxLength(20)
+                .HasColumnName("fund_code");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
                 .HasColumnName("created_by");
@@ -274,9 +276,6 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.CurrentBalance)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("current_balance");
-            entity.Property(e => e.FundCode)
-                .HasMaxLength(20)
-                .HasColumnName("fund_code");
             entity.Property(e => e.FundGuid)
                 .HasDefaultValueSql("(newid())", "DF_advance_fund_fund_guid")
                 .HasColumnName("fund_guid");
@@ -304,17 +303,11 @@ public partial class DbTMSContext : DbContext
 
             entity.ToTable("advance_fund_transaction");
 
-            entity.HasIndex(e => new { e.FundId, e.TransactionDate }, "IX_advance_fund_transaction_fund_date");
+            entity.HasIndex(e => new { e.FundCode, e.TransactionDate }, "IX_advance_fund_transaction_fund_date");
 
             entity.HasIndex(e => e.ReferenceTransactionId, "IX_advance_fund_transaction_reference").HasFilter("([reference_transaction_id] IS NOT NULL)");
 
-            entity.HasIndex(e => e.RequestId, "IX_advance_fund_transaction_request").HasFilter("([request_id] IS NOT NULL)");
-
             entity.HasIndex(e => e.TransactionGuid, "UQ_advance_fund_transaction_guid").IsUnique();
-
-            entity.HasIndex(e => e.RequestId, "UX_advance_fund_transaction_request_payment")
-                .IsUnique()
-                .HasFilter("([request_id] IS NOT NULL AND [transaction_type]='PAYMENT')");
 
             entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
             entity.Property(e => e.Amount)
@@ -327,7 +320,9 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())", "DF_advance_fund_transaction_created_date")
                 .HasColumnName("created_date");
-            entity.Property(e => e.FundId).HasColumnName("fund_id");
+            entity.Property(e => e.FundCode)
+                .HasMaxLength(20)
+                .HasColumnName("fund_code");
             entity.Property(e => e.ReferenceNo)
                 .HasMaxLength(100)
                 .HasColumnName("reference_no");
@@ -335,7 +330,9 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.Remark)
                 .HasMaxLength(500)
                 .HasColumnName("remark");
-            entity.Property(e => e.RequestId).HasColumnName("request_id");
+            entity.Property(e => e.RequestCode)
+                .HasMaxLength(30)
+                .HasColumnName("request_code");
             entity.Property(e => e.TransactionDate)
                 .HasDefaultValueSql("(getdate())", "DF_advance_fund_transaction_date")
                 .HasColumnName("transaction_date");
@@ -346,23 +343,24 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("transaction_type");
 
-            entity.HasOne(d => d.Fund).WithMany(p => p.AdvanceFundTransactions)
-                .HasForeignKey(d => d.FundId)
+            entity.HasOne(d => d.FundCodeNavigation).WithMany(p => p.AdvanceFundTransactions)
+                .HasForeignKey(d => d.FundCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_advance_fund_transaction_fund");
+                .HasConstraintName("FK_advance_fund_transaction_advance_fund");
 
             entity.HasOne(d => d.ReferenceTransaction).WithMany(p => p.InverseReferenceTransaction)
                 .HasForeignKey(d => d.ReferenceTransactionId)
                 .HasConstraintName("FK_advance_fund_transaction_reference");
 
-            entity.HasOne(d => d.Request).WithOne(p => p.AdvanceFundTransaction)
-                .HasForeignKey<AdvanceFundTransaction>(d => d.RequestId)
-                .HasConstraintName("FK_advance_fund_transaction_request");
+            entity.HasOne(d => d.RequestCodeNavigation).WithMany(p => p.AdvanceFundTransactions)
+                .HasForeignKey(d => d.RequestCode)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_advance_fund_transaction_advance_request");
         });
 
         modelBuilder.Entity<AdvanceRequest>(entity =>
         {
-            entity.HasKey(e => e.RequestId);
+            entity.HasKey(e => e.RequestCode);
 
             entity.ToTable("advance_request");
 
@@ -372,7 +370,9 @@ public partial class DbTMSContext : DbContext
 
             entity.HasIndex(e => e.RequestGuid, "UQ_advance_request_guid").IsUnique();
 
-            entity.Property(e => e.RequestId).HasColumnName("request_id");
+            entity.Property(e => e.RequestCode)
+                .HasMaxLength(30)
+                .HasColumnName("request_code");
             entity.Property(e => e.ApprovedAmount)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("approved_amount");
@@ -394,7 +394,9 @@ public partial class DbTMSContext : DbContext
                 .HasDefaultValueSql("(getdate())", "DF_advance_request_created_date")
                 .HasColumnName("created_date");
             entity.Property(e => e.ExpenseTypeId).HasColumnName("expense_type_id");
-            entity.Property(e => e.FundId).HasColumnName("fund_id");
+            entity.Property(e => e.FundCode)
+                .HasMaxLength(20)
+                .HasColumnName("fund_code");
             entity.Property(e => e.JobDetailCode)
                 .HasMaxLength(20)
                 .HasColumnName("job_detail_code");
@@ -420,15 +422,15 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.RequestAmount)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("request_amount");
-            entity.Property(e => e.RequestCode)
-                .HasMaxLength(30)
-                .HasColumnName("request_code");
             entity.Property(e => e.RequestDate)
                 .HasDefaultValueSql("(getdate())", "DF_advance_request_date")
                 .HasColumnName("request_date");
             entity.Property(e => e.RequestGuid)
                 .HasDefaultValueSql("(newid())", "DF_advance_request_guid")
                 .HasColumnName("request_guid");
+            entity.Property(e => e.RequestId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("request_id");
             entity.Property(e => e.RequestedBy)
                 .HasMaxLength(50)
                 .HasColumnName("requested_by");
@@ -446,10 +448,10 @@ public partial class DbTMSContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_advance_request_expense_type");
 
-            entity.HasOne(d => d.Fund).WithMany(p => p.AdvanceRequests)
-                .HasForeignKey(d => d.FundId)
+            entity.HasOne(d => d.FundCodeNavigation).WithMany(p => p.AdvanceRequests)
+                .HasForeignKey(d => d.FundCode)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_advance_request_fund");
+                .HasConstraintName("FK_advance_request_advance_fund");
 
             entity.HasOne(d => d.JobDetailCodeNavigation).WithMany(p => p.AdvanceRequests)
                 .HasForeignKey(d => d.JobDetailCode)
@@ -479,12 +481,9 @@ public partial class DbTMSContext : DbContext
             entity.Property(e => e.Remark)
                 .HasMaxLength(500)
                 .HasColumnName("remark");
-            entity.Property(e => e.RequestId).HasColumnName("request_id");
-
-            entity.HasOne(d => d.Request).WithMany(p => p.AdvanceRequestReferences)
-                .HasForeignKey(d => d.RequestId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_advance_request_reference_request");
+            entity.Property(e => e.RequestCode)
+                .HasMaxLength(30)
+                .HasColumnName("request_code");
         });
 
         modelBuilder.Entity<LcProvince>(entity =>
@@ -3694,11 +3693,6 @@ public partial class DbTMSContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("truck_type_code");
-            entity.Property(e => e.TruckTypegroupCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_typegroup_code");
             entity.Property(e => e.TruckYear)
                 .HasMaxLength(4)
                 .IsUnicode(false)
@@ -4484,15 +4478,6 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("truck_type_name");
-            entity.Property(e => e.TruckTypegroupCode)
-                .HasMaxLength(2)
-                .IsUnicode(false)
-                .IsFixedLength()
-                .HasColumnName("truck_typegroup_code");
-            entity.Property(e => e.TruckTypegroupName)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("truck_typegroup_name");
         });
 
         modelBuilder.Entity<ViewDriverPaymentListActive>(entity =>
@@ -5292,10 +5277,15 @@ public partial class DbTMSContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("truck_no");
-            entity.Property(e => e.TruckTypegroupName)
-                .HasMaxLength(15)
+            entity.Property(e => e.TruckTypeCode)
+                .HasMaxLength(2)
                 .IsUnicode(false)
-                .HasColumnName("truck_typegroup_name");
+                .IsFixedLength()
+                .HasColumnName("truck_type_code");
+            entity.Property(e => e.TruckTypeName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("truck_type_name");
         });
 
         modelBuilder.Entity<ViewJobSummary>(entity =>

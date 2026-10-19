@@ -18,9 +18,9 @@ public class AdvanceFundRepository
     // BALANCE
     // ============================================================
 
-    public async Task<decimal> GetBalanceAsync(long fundId)
+    public async Task<decimal> GetBalanceAsync(string fundCode)
     {
-        return await GetBalanceInternalAsync(fundId);
+        return await GetBalanceInternalAsync(fundCode);
     }
 
 
@@ -32,21 +32,15 @@ public class AdvanceFundRepository
     public async Task<AdvanceFundResult> PayAsync(
     string jobDetailCode,
     long cashflowId,
-    long fundId,
     decimal amount,
     string driverCode,
     string username)
     {
+        string fundCode = "FUND0001";
         if (string.IsNullOrWhiteSpace(jobDetailCode))
         {
             return AdvanceFundResult.Fail(
                 "ไม่พบรหัสเที่ยวงาน");
-        }
-
-        if (fundId <= 0)
-        {
-            return AdvanceFundResult.Fail(
-                "ไม่พบกองเงินสำรอง");
         }
 
         if (amount <= 0)
@@ -96,7 +90,7 @@ public class AdvanceFundRepository
             var affected =
                 await _db.AdvanceFunds
                     .Where(x =>
-                        x.FundId == fundId &&
+                        x.FundCode == fundCode &&
                         x.IsActive &&
                         x.CurrentBalance >= amount)
                     .ExecuteUpdateAsync(s =>
@@ -106,7 +100,7 @@ public class AdvanceFundRepository
 
             if (affected == 0)
             {
-                var balance = await GetBalanceAsync(fundId);
+                var balance = await GetBalanceAsync(fundCode);
 
                 return AdvanceFundResult.Fail(
                     $"เงินสำรองไม่เพียงพอ " +
@@ -126,16 +120,14 @@ public class AdvanceFundRepository
             {
                 RequestGuid = Guid.NewGuid(),
 
-                RequestCode =
-                    $"ADV{now:yyMMddHHmmssfff}",
+                RequestCode = $"ADV{now:yyMMddHHmmssfff}",
 
-                FundId = fundId,
+                FundCode = fundCode,
 
                 ExpenseTypeId =
                     expenseType.ExpenseTypeId,
 
-                JobDetailCode =
-                    jobDetailCode,
+                JobDetailCode = jobDetailCode,
 
                 RequestDate = now,
 
@@ -178,9 +170,9 @@ public class AdvanceFundRepository
                 {
                     TransactionGuid = Guid.NewGuid(),
 
-                    FundId = fundId,
+                    FundCode = fundCode,
 
-                    RequestId = request.RequestId,
+                    RequestCode = request.RequestCode,
 
                     TransactionDate = now,
 
@@ -211,7 +203,7 @@ public class AdvanceFundRepository
             // =====================================================
 
             var currentBalance =
-                await GetBalanceAsync(fundId);
+                await GetBalanceAsync(fundCode);
 
 
             return AdvanceFundResult.Ok(
@@ -238,8 +230,8 @@ public class AdvanceFundRepository
         string jobDetailCode,
         long cashflowId,
         decimal returnAmount,
-        string username,
         string driverCode,
+        string username,
         string? remark = null,
         bool cancelTrip = false)
     {
@@ -283,7 +275,7 @@ public class AdvanceFundRepository
 
             var request = await _db.AdvanceRequests
                 .FirstOrDefaultAsync(x =>
-                    x.RequestId == payment.RequestId);
+                    x.RequestCode == payment.RequestCode);
 
             if (request == null)
             {
@@ -333,9 +325,9 @@ public class AdvanceFundRepository
                 {
                     TransactionGuid = Guid.NewGuid(),
 
-                    FundId = payment.FundId,
+                    FundCode = payment.FundCode,
 
-                    RequestId = request.RequestId,
+                    RequestCode = request.RequestCode,
 
                     TransactionDate = now,
 
@@ -413,7 +405,7 @@ public class AdvanceFundRepository
             request.UpdatedBy = username;
             request.UpdatedDate = now;
 
-            var fund = await _db.AdvanceFunds.FirstOrDefaultAsync(x => x.FundId == payment.FundId);
+            var fund = await _db.AdvanceFunds.FirstOrDefaultAsync(x => x.FundCode == payment.FundCode);
 
             if (fund == null)
             {
@@ -428,7 +420,7 @@ public class AdvanceFundRepository
 
             var balance =
                 await GetBalanceInternalAsync(
-                    payment.FundId);
+                    payment.FundCode);
 
             return AdvanceFundResult.Ok(
                 $"รับคืนเงินเที่ยว {jobDetailCode} " +
@@ -476,7 +468,7 @@ public class AdvanceFundRepository
         var payment =
             await _db.AdvanceFundTransactions
                 .AnyAsync(x =>
-                    x.RequestId == request.RequestId &&
+                    x.RequestCode == request.RequestCode &&
                     x.TransactionType == "PAYMENT");
 
         /*
@@ -541,7 +533,7 @@ public class AdvanceFundRepository
             await _db.AdvanceFundTransactions
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x =>
-                    x.RequestId == request.RequestId &&
+                    x.RequestCode == request.RequestCode &&
                     x.TransactionType == "PAYMENT");
 
         if (payment == null)
@@ -571,11 +563,11 @@ public class AdvanceFundRepository
     // ============================================================
 
     private async Task<decimal> GetBalanceInternalAsync(
-        long fundId)
+        string fundCode)
     {
         var balance =
             await _db.AdvanceFundTransactions
-                .Where(x => x.FundId == fundId)
+                .Where(x => x.FundCode == fundCode)
                 .Select(x =>
 
                     x.TransactionType == "TOPUP" ||

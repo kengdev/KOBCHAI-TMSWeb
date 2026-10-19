@@ -26,16 +26,16 @@
 
                             @if (Model.ContainerNo != "-" && Model.ContainerNo != "")
                             {
-                                <div class="font-blue">@Model.TruckNo <span class="font-blue-hoki">[@Model.TruckTypegroupName]</span></div>
+                                <div class="font-blue">@Model.TruckNo <span class="font-blue-hoki">[@Model.TruckTypeName]</span></div>
                                 <label class="bold font-green-jungle"> @Model.ContainerNo</label>
                             }
                             else
                             {
-                                <div class="bold font-blue">@Model.TruckNo <span class="font-blue-hoki">[@Model.TruckTypegroupName]</span></div>
+                                <div class="bold font-blue">@Model.TruckNo <span class="font-blue-hoki">[@Model.TruckTypeName]</span></div>
                                 <label class="bold font-red">ไม่ระบุเบอร์ตู้</label>
                             }
 
-                            <span class="datetime"> | @Model.JobDate.ToString("dd MMM yyyy HH:mm") </span>
+                            <span class="datetime"> | @Model.JobDate.Value.ToString("dd MMM yyyy HH:mm") </span>
                             <span class="body">@Model.StartName to @Model.MissionName</span>
                         </div>
                     </li>

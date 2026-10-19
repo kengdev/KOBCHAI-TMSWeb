@@ -7,11 +7,11 @@ public partial class AdvanceRequest
 {
     public long RequestId { get; set; }
 
-    public Guid RequestGuid { get; set; }
-
     public string RequestCode { get; set; } = null!;
 
-    public long FundId { get; set; }
+    public Guid RequestGuid { get; set; }
+
+    public string FundCode { get; set; } = null!;
 
     public int ExpenseTypeId { get; set; }
 
@@ -59,13 +59,11 @@ public partial class AdvanceRequest
 
     public string? JobDetailCode { get; set; }
 
-    public virtual AdvanceFundTransaction? AdvanceFundTransaction { get; set; }
-
-    public virtual ICollection<AdvanceRequestReference> AdvanceRequestReferences { get; set; } = new List<AdvanceRequestReference>();
+    public virtual ICollection<AdvanceFundTransaction> AdvanceFundTransactions { get; set; } = new List<AdvanceFundTransaction>();
 
     public virtual AdvanceExpenseType ExpenseType { get; set; } = null!;
 
-    public virtual AdvanceFund Fund { get; set; } = null!;
+    public virtual AdvanceFund FundCodeNavigation { get; set; } = null!;
 
     public virtual TblJobDetail? JobDetailCodeNavigation { get; set; }
 }

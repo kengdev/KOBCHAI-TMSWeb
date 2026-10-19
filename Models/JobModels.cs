@@ -85,6 +85,7 @@ public class ChangeDriverModel
 
 public class CancelJobModel
 {
+    public long allowance_id { get; set; }
     public string job_detail_code { get; set; }
     public string driver_code { get; set; }
     public decimal trip_cost { get; set; }

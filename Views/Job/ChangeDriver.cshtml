@@ -71,13 +71,13 @@
                                         <td class="topic">
                                             <span class="font-green-sharp">รับตู้</span>
                                         </td>
-                                        <td> @data.JobDate.ToString("dd-MM-yyyy HH:mm") </td>
+                                        <td> @data.JobDate.Value.ToString("dd-MM-yyyy HH:mm") </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
                                             <span class="font-green-sharp">เปิด/บรรจุ</span>
                                         </td>
-                                        <td> @data.LoadingDate.ToString("dd-MM-yyyy HH:mm") </td>
+                                        <td> @data.LoadingDate.Value.ToString("dd-MM-yyyy HH:mm") </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
@@ -104,7 +104,7 @@
                                         <td class="topic">
                                             <span class="font-green-sharp">ประเภท</span>
                                         </td>
-                                        <td> @data.TruckTypegroupName</td>
+                                        <td> @data.TruckTypeName</td>
                                     </tr>
                                     <tr>
                                         <td class="topic" style="vertical-align:top;">

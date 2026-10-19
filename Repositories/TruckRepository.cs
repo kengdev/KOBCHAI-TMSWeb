@@ -147,7 +147,6 @@ public class TruckRepository
                     BrandCode = truckToAdd.brand_code,
                     TruckTypeCode = truckToAdd.truck_type_code,
                     FuelTypeCode = truckToAdd.fuel_type_code,
-                    TruckTypegroupCode = truckTypeGroupCode,
                     TruckImage = truckToAdd.truck_img
                 }
             };
@@ -262,7 +261,6 @@ public class TruckRepository
                     .SetProperty(s => s.TruckYear, truckToEdit.truck_year)
                     .SetProperty(s => s.BrandCode, truckToEdit.brand_code)
                     .SetProperty(s => s.TruckTypeCode, truckToEdit.truck_type_code)
-                    .SetProperty(s => s.TruckTypegroupCode, truckTypeGroupCode)
                     .SetProperty(s => s.FuelTypeCode, truckToEdit.fuel_type_code)
                     .SetProperty(s => s.TruckImage, truckToEdit.truck_img));
 
@@ -276,7 +274,6 @@ public class TruckRepository
                     TruckYear = truckToEdit.truck_year,
                     BrandCode = truckToEdit.brand_code,
                     TruckTypeCode = truckToEdit.truck_type_code,
-                    TruckTypegroupCode = truckTypeGroupCode,
                     FuelTypeCode = truckToEdit.fuel_type_code,
                     TruckImage = truckToEdit.truck_img
                 });

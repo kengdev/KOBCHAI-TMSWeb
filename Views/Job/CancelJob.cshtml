@@ -3,7 +3,7 @@
     ViewBag.Title = "Add";
     Layout = "~/Views/Shared/_PartialLayout.cshtml";
     var data = (TMSWeb.Models.Entities.LOG.ViewJobListActive)ViewBag.Data;
-    var allowanceData = (List<TMSWeb.Models.Entities.LOG.TblJobAllowance>)ViewBag.Allowance;
+    var allowanceData = (List<TMSWeb.Models.ViewModels.CashflowViewModel>)ViewBag.Allowance;
 }
 @section Styles {
     <link rel="stylesheet" type="text/css" href="~/css/profile/todo-2.min.css" />
@@ -31,22 +31,22 @@
             <div class="caption">
                 <i class="fad fa-times-circle"></i>
                 <span class="caption-subject bold uppercase"> ยกเลิกงาน</span>
-                <span class="caption-helper">[เลขที่ @Model.job_detail_code]</span>
+                <span class="caption-helper">[เลขที่ @data.JobDetailCode]</span>
             </div>
         </div>
         @using (Html.BeginForm("CancelJobData", "Job", FormMethod.Post, new
         {
             role = "form",
             id = "frmEdit",
-            onsubmit =
-        "return OnValidate()"
+            onsubmit = "return OnValidate()"
         }))
         {
-            @Html.HiddenFor(m => m.job_detail_code)
+            @Html.Hidden("job_detail_code", data.JobDetailCode)
+            @Html.Hidden("allowance_id", data.Id)
             <div class="portlet-body form">
                 <div class="form-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-7">
                             <div class="table-scrollable table-scrollable-borderless">
                                 <table class="table table-light">
                                     <tr>
@@ -69,13 +69,13 @@
                                         <td class="topic">
                                             <span class="font-green-sharp">รับตู้</span>
                                         </td>
-                                        <td> @data.JobDate.ToString("dd-MM-yyyy HH:mm") </td>
+                                        <td> @data.JobDate.Value.ToString("dd-MM-yyyy HH:mm") </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
                                             <span class="font-green-sharp">เปิด/บรรจุ</span>
                                         </td>
-                                        <td> @data.LoadingDate.ToString("dd-MM-yyyy HH:mm") </td>
+                                        <td> @data.LoadingDate.Value.ToString("dd-MM-yyyy HH:mm") </td>
                                     </tr>
                                     <tr>
                                         <td class="topic">
@@ -102,25 +102,28 @@
                                         <td class="topic">
                                             <span class="font-green-sharp">ประเภท</span>
                                         </td>
-                                        <td> @data.TruckTypegroupName</td>
+                                        <td> @data.TruckTypeName</td>
                                     </tr>
-                                    <tr>
-                                        <td class="topic" style="vertical-align:top;">
-                                            <span class="font-green-sharp">ทะเบียน/คนขับ</span>
-                                        </td>
-                                        <td>
-                                            @foreach (var item in allowanceData)
-                                            {
-                                                <div>
-                                                    <span> @item.JobDate.ToString("yyyy-MM-dd")</span>
-                                                    <i class="fa fa-caret-right font-red-intense"></i>
-                                                    @item.TruckCodeNavigation.TruckLicense
-                                                    <i class="fad fa-dot-circle font-green-jungle"></i>
-                                                    @item.DriverCodeNavigation.DriverFullname
-                                                </div>
-                                            }
-                                        </td>
-                                    </tr>
+                                    @if (data.FleetTypeCode == "F1")
+                                    {
+                                        <tr>
+                                            <td class="topic" style="vertical-align:top;">
+                                                <span class="font-green-sharp">ทะเบียน/คนขับ</span>
+                                            </td>
+                                            <td>
+                                                @foreach (var item in allowanceData)
+                                                {
+                                                    <div>
+                                                        <span> @item.job_date.ToString("yyyy-MM-dd")</span>
+                                                        <i class="fa fa-caret-right font-red-intense"></i>
+                                                        @item.license
+                                                        <i class="fad fa-dot-circle font-green-jungle"></i>
+                                                        @item.driver
+                                                    </div>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
                                     <tr>
                                         <td class="topic">
                                             <span class="font-green-sharp">หมายเหตุ</span>
@@ -131,7 +134,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -148,36 +151,42 @@
                                     </div>
                                 </div>
                             </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>
-                                            ค่าเที่ยว (สำหรับจ่ายรถ)<span class="required"> * </span>
-                                        </label>
-                                        @Html.TextBoxFor(m => m.supplier_cost, new
-                                        {
-                                            @Class = "form-control",
-                                            autocomplete = "off"
-                                        })
-                                        <span class="help-block"></span>
+                            @if (data.RoundTrip != "C")
+                            {
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>
+                                                จ่ายรถ<span class="required"> * </span>
+                                            </label>
+                                            @Html.TextBoxFor(m => m.supplier_cost, new
+                                                {
+                                                    @Class = "form-control",
+                                                    autocomplete = "off"
+                                                })
+                                            <span class="help-block"></span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>
-                                            ค่าเที่ยว (สำหรับพนักงานขับรถ)<span class="required"> * </span>
-                                        </label>
-                                        @Html.TextBoxFor(m => m.driver_cost, new
-                                        {
-                                            @Class = "form-control",
-                                            autocomplete = "off"
-                                        })
-                                        <span class="help-block"></span>
-                                    </div>
+                                <div class="row">
+                                    @if (data.FleetTypeCode == "F1")
+                                    {
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>
+                                                    จ่ายพนักงานขับรถ<span class="required"> * </span>
+                                                </label>
+                                                @Html.TextBoxFor(m => m.driver_cost, new
+                                                {
+                                                    @Class = "form-control",
+                                                    autocomplete = "off"
+                                                })
+                                                <span class="help-block"></span>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-                            </div>
-
+                            }
 
                         </div>
                     </div>

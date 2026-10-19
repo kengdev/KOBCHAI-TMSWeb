@@ -201,6 +201,7 @@
                                         <option value="FN">เปิด/บรรจุเรียบร้อย</option>
                                         <option value="DO">เสร็จสิ้น</option>
                                         <option value="BO">คืนตู้</option>
+                                        <option value="CA">ยกเลิก</option>
                                     </select>
                                 </th>
                                 <th class="filter"></th>
@@ -223,7 +224,7 @@
             'use strict';
 
             const tableSelector = '#table-station';
-            const statusClasses = 'PN ST WP PU AR FN DO BO';
+            const statusClasses = 'PN ST WP PU AR FN DO BO CA';
             let filterTimer = null;
 
             function escapeHtml(value) {
@@ -265,6 +266,8 @@
                         return { cssClass: 'DO', text: 'เสร็จสิ้น' };
                     case 'BO':
                         return { cssClass: 'BO', text: 'คืนตู้' };
+                    case 'CA':
+                        return { cssClass: 'CA', text: 'ยกเลิก' };
                     default:
                         return { cssClass: '', text: '-' };
                 }
@@ -284,158 +287,180 @@
                                         <i class="fa fa-angle-down"></i>
                                     </button>
                                     <ul class="dropdown-menu pull-left" role="menu">`;
-
-                if(data.round_status == 'A'){
-                    toolItem += `<li>
-                                    <a href="#"
-                                        class="js-job-action"
-                                        data-action="edit"
-                                        data-code="${id}">
-                                        <i class="fad fa-user-friends"></i>
-                                        เปลี่ยนพนักงานขับรถ
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        class="js-job-action"
-                                        data-action="finish"
-                                        data-code="${id}">
-                                        <i class="fad fa-file-check"></i>
-                                        เคลียร์เงินและเอกสาร
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        class="js-job-action"
-                                        data-action="update"
-                                        data-code="${id}">
-                                        <i class="fad fa-sync"></i>
-                                        ปรับปรุงข้อมูล
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                        <li>
-                                        <a href="#"
-                                           class="js-job-action"
-                                           data-action="status"
-                                           data-code="${id}">
-                                            <i class="fad fa-map-signs"></i>
-                                            สถานะการส่งสินค้า
-                                        </a>
-                                </li>
-                                <li class="divider"></li>
-
-                                <li class="dropdown-submenu">
-                                        <a href="javascript:;">
-                                            <i class="fad fa-print"></i>
-                                            พิมพ์เอกสาร
-                                </a>
-
-                                <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="#"
-                                                   class="js-job-action"
-                                                   data-action="truckDoc"
-                                                   data-code="${jobDetailCode}">
-                                                    <i class="fad fa-file-alt"></i>
-                                                    ใบสั่งปฏิบัติ
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#"
-                                                   class="js-job-action"
-                                                   data-action="paidDoc"
-                                                   data-code="${jobDetailCode}">
-                                                    <i class="fad fa-file-alt"></i>
-                                                    ใบจ่ายเงิน
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-
-                                    <li class="divider"></li>
-
-                                    <li class="dropdown-submenu">
-                                        <a href="javascript:;">อื่น ๆ</a>
-
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="#"
-                                                   class="js-job-action"
-                                                   data-action="cancel"
-                                                   data-code="${id}">
-                                                    <i class="fa fa-times"></i>
-                                                    ยกเลิกงาน
-                                                </a>
-                                            </li>
-
-                                            <li>
-                                                <a href="#"
-                                                   class="js-job-action"
-                                                   data-action="remove"
-                                                   data-code="${jobDetailCode}">
-                                                    <i class="fad fa-trash"></i>
-                                                    ลบ
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                            `;
-                }
-                else if(data.round_status == 'B'){
-                    toolItem += `
-                                    <li>
-                                        <a href="#"
-                                            class="js-job-action"
-                                            data-action="cashflowclearing"
-                                            data-code="${id}">
-                                            <i class="fad fa-file-check"></i>
-                                            เคลียร์เงินและเอกสาร
-                                        </a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li>
-                                        <a href="#"
-                                            class="js-job-action"
-                                            data-action="status"
-                                            data-code="${id}">
-                                            <i class="fad fa-map-signs"></i>
-                                            สถานะการส่งสินค้า
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        `;
-                }
-                else if(data.round_status == 'C'){
-                    toolItem += `
-                                    <li>
+                if(data.tracking_status != 'CA'){
+                    if(data.round_status == 'A'){
+                        toolItem += `<li>
                                         <a href="#"
                                             class="js-job-action"
                                             data-action="edit"
                                             data-code="${id}">
                                             <i class="fad fa-user-friends"></i>
-                                            จัดรถใหม่
+                                            เปลี่ยนพนักงานขับรถ
                                         </a>
                                     </li>
-                                    <li class="divider"></li>
                                     <li>
                                         <a href="#"
                                             class="js-job-action"
-                                            data-action="status"
+                                            data-action="finish"
+                                            data-code="${id}">
+                                            <i class="fad fa-file-check"></i>
+                                            เคลียร์เงินและเอกสาร
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#"
+                                            class="js-job-action"
+                                            data-action="update"
+                                            data-code="${id}">
+                                            <i class="fad fa-sync"></i>
+                                            ปรับปรุงข้อมูล
+                                        </a>
+                                    </li>
+                                    <li class="divider"></li>
+                                            <li>
+                                            <a href="#"
+                                               class="js-job-action"
+                                               data-action="status"
                                                data-code="${id}">
                                                 <i class="fad fa-map-signs"></i>
                                                 สถานะการส่งสินค้า
-                                        </a>
+                                            </a>
                                     </li>
+                                    <li class="divider"></li>
+
+                                    <li class="dropdown-submenu">
+                                            <a href="javascript:;">
+                                                <i class="fad fa-print"></i>
+                                                พิมพ์เอกสาร
+                                    </a>
+
+                                    <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#"
+                                                       class="js-job-action"
+                                                       data-action="truckDoc"
+                                                       data-code="${jobDetailCode}">
+                                                        <i class="fad fa-file-alt"></i>
+                                                        ใบสั่งปฏิบัติ
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#"
+                                                       class="js-job-action"
+                                                       data-action="paidDoc"
+                                                       data-code="${jobDetailCode}">
+                                                        <i class="fad fa-file-alt"></i>
+                                                        ใบจ่ายเงิน
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <li class="divider"></li>
+
+                                        <li class="dropdown-submenu">
+                                            <a href="javascript:;">อื่น ๆ</a>
+
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#"
+                                                       class="js-job-action"
+                                                       data-action="cancel"
+                                                       data-code="${id}">
+                                                        <i class="fa fa-times"></i>
+                                                        ยกเลิกงาน
+                                                    </a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="#"
+                                                       class="js-job-action"
+                                                       data-action="remove"
+                                                       data-code="${jobDetailCode}">
+                                                        <i class="fad fa-trash"></i>
+                                                        ลบ
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                `;
+                    }
+                    else if(data.round_status == 'B'){
+                        toolItem += `
+                                        <li>
+                                            <a href="#"
+                                                class="js-job-action"
+                                                data-action="cashflowclearing"
+                                                data-code="${id}">
+                                                <i class="fad fa-file-check"></i>
+                                                เคลียร์เงินและเอกสาร
+                                            </a>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li>
+                                            <a href="#"
+                                                class="js-job-action"
+                                                data-action="status"
+                                                data-code="${id}">
+                                                <i class="fad fa-map-signs"></i>
+                                                สถานะการส่งสินค้า
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            `;
+                    }
+                    else if(data.round_status == 'C'){
+                        toolItem += `
+                                        <li>
+                                            <a href="#"
+                                                class="js-job-action"
+                                                data-action="edit"
+                                                data-code="${id}">
+                                                <i class="fad fa-user-friends"></i>
+                                                จัดรถใหม่
+                                            </a>
+                                        </li>
+                                        <li>
+                                                    <a href="#"
+                                                       class="js-job-action"
+                                                       data-action="cancel"
+                                                       data-code="${id}">
+                                                        <i class="fa fa-times"></i>
+                                                        ยกเลิกงาน
+                                                    </a>
+                                                </li>
+                                        <li class="divider"></li>
+                                        <li>
+                                            <a href="#"
+                                                class="js-job-action"
+                                                data-action="status"
+                                                   data-code="${id}">
+                                                    <i class="fad fa-map-signs"></i>
+                                                    สถานะการส่งสินค้า
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            `;
+                    }
+                }
+                else{
+                    toolItem += `<li>
+                                            <a href="#"
+                                                class="js-job-action"
+                                                data-action="cashflowclearing"
+                                                data-code="${id}">
+                                                <i class="fad fa-file-check"></i>
+                                                เคลียร์เงินและเอกสาร
+                                            </a>
+                                 </li>
                                 </ul>
-                            </div>
-                        `;
+                            </div>`;
                 }
                     
-
                 return toolItem;
             }
 
@@ -907,7 +932,7 @@
                 '/job/canceljob/' + encodeURIComponent(code),
                 'Cancel Station',
                 1000,
-                648
+                570
             );
         }
     </script>

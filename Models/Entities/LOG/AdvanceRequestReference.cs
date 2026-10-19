@@ -7,7 +7,7 @@ public partial class AdvanceRequestReference
 {
     public long ReferenceId { get; set; }
 
-    public long RequestId { get; set; }
+    public string RequestCode { get; set; } = null!;
 
     public string ReferenceType { get; set; } = null!;
 
@@ -20,6 +20,4 @@ public partial class AdvanceRequestReference
     public string? Remark { get; set; }
 
     public DateTime CreatedDate { get; set; }
-
-    public virtual AdvanceRequest Request { get; set; } = null!;
 }

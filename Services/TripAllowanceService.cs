@@ -65,7 +65,7 @@ namespace TMSWeb.Services
             //รถใหม่เป็นภายใน
             if (newSupplier.FleetTypeCode == "F1")
             {
-                allowance.truckValue = await this.GetFleetcostAsync(newTruck.TruckCode, newTruck.TruckTypegroupCode, placeCode);
+                allowance.truckValue = await this.GetFleetcostAsync(newTruck.TruckCode, newTruck.TruckTypeCode, placeCode);
                 allowance.newTruck =  allowance.truckValue - deductTruck;
 
                 //รถเก่าเป็นภายใน

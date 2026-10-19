@@ -120,7 +120,6 @@
             <div class="card-action">
                 <div class="row">
                     <div class="col-md-12 text-center">
-                       
                     </div>
                 </div>
 
@@ -130,10 +129,12 @@
                             <table class="table">
                                 <tbody>
 
-                                        @foreach (var itemTransaction in Model.AdvanceFundTransactions)
+                                    @foreach (var itemTransaction in Model.AdvanceFundTransactions)
+                                    {
+                                        if (itemTransaction.RequestCode != null)
                                         {
-                                        var itemRequest = Model.AdvanceRequests.Where(w => w.RequestId == itemTransaction.RequestId).FirstOrDefault();
-                                        <tr>
+                                            var itemRequest = Model.AdvanceRequests.Where(w => w.RequestCode == itemTransaction.RequestCode).FirstOrDefault();
+                                            <tr>
                                                 <td>@itemTransaction.TransactionDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
                                                 @if (itemTransaction.TransactionType == "PAYMENT")
                                                 {
@@ -159,6 +160,7 @@
                                                 }
                                             </tr>
                                         }
+                                    }
 
                                 </tbody>
                             </table>
@@ -178,25 +180,25 @@
 @section scripts
 {
     <script type="text/javascript">
-        (function ($) {
-            $('#add-balance').click(function(){
+        (function($) {
+            $('#add-balance').click(function() {
                 $.post("/Budget/_AddBalance", {
-                }, function (result) {
+                }, function(result) {
                     $('#form-content').html(result)
                     $('#modal-form-content').modal();
                 });
             });
 
-            $('#add-payment').click(function(){
+            $('#add-payment').click(function() {
                 $.post("/Budget/_AddPayment", {
-                }, function (result) {
+                }, function(result) {
                     $('#form-content').html(result)
                     $('#modal-form-content').modal();
                 });
             });
         }(jQuery));
 
-        function setUpdate(){
+        function setUpdate() {
             $('#wrapper-action-modal').hide();
             $('#spin-item').show();
             overLayDiv('.form-content');
@@ -209,12 +211,12 @@
                 amount: amount,
                 budget_date: budget_date,
                 remark: remark
-            }, function (data) {
+            }, function(data) {
                 killOverlayDiv()
                 $('#wrapper-action-modal').show();
                 $('#spin-item').hide();
                 if (data.result == true) {
-                    $.alert.open('info', data.resultMessage, function (r) {
+                    $.alert.open('info', data.resultMessage, function(r) {
                         closeModal();
                         window.location.reload();
                     });
@@ -224,7 +226,7 @@
             });
         }
 
-        function setPayment(){
+        function setPayment() {
             $('#wrapper-action-modal').hide();
             $('#spin-item').show();
             overLayDiv('.form-content');
@@ -237,12 +239,12 @@
                 amount: amount,
                 budget_date: budget_date,
                 remark: remark
-            }, function (data) {
+            }, function(data) {
                 killOverlayDiv()
                 $('#wrapper-action-modal').show();
                 $('#spin-item').hide();
                 if (data.result == true) {
-                    $.alert.open('info', data.resultMessage, function (r) {
+                    $.alert.open('info', data.resultMessage, function(r) {
                         closeModal();
                         window.location.reload();
                     });

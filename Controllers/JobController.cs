@@ -211,7 +211,7 @@ public class JobController : Controller
     {
         var model = new ChangeDriverModel();
         var data = await _jobService.GetOrderByCode(code);
-        var allowance = await _jobService.GetJobAllowanceListAsync(data.JobDetailCode);
+        var allowance = await _jobService.GetJobCashflowListAsync(data.JobDetailCode);
 
         model.driver_code = data.DriverCode;
         model.truck_code = data.TruckCode;
@@ -247,14 +247,12 @@ public class JobController : Controller
     [Authorize(Roles = "Administrator, Transport, Super")]
     public async Task<IActionResult> CancelJob(int code)
     {
-        var model = new CancelJobModel();
         var data = await _jobService.GetOrderByCode(code);
-        var allowance = await _jobService.GetJobAllowanceListAsync(data.JobDetailCode);
-
-        model.job_detail_code = data.JobDetailCode;
+        var allowance = await _jobService.GetJobCashflowListAsync(data.JobDetailCode);
+        
         ViewBag.Data = data;
         ViewBag.Allowance = allowance;
-        return View(model);
+        return View();
     }
 
     public async Task<IActionResult> CancelJobData(CancelJobModel model)
@@ -271,7 +269,7 @@ public class JobController : Controller
     {
         var data = await _jobService.GetOrderByCode(code);
         var detail = await _jobService.GetDetailDataByCode(data.JobDetailCode);
-        var allowance = await _jobService.GetJobAllowanceListAsync(data.JobDetailCode);
+        var allowance = await _jobService.GetJobCashflowListAsync(data.JobDetailCode);
 
         ViewData["new_supplier_code"] = from a in await _dropListService.GetSupplierTransport() select new SelectListItem { Value = a.key.ToString(), Text = a.label, Selected = a.key == data.SupplierCode };
         ViewData["new_truck_code"] = from a in await _dropListService.GetChangeTruck(detail.TruckCode) select new SelectListItem { Value = a.key.ToString(), Text = a.label };

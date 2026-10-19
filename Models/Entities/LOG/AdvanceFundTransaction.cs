@@ -9,9 +9,9 @@ public partial class AdvanceFundTransaction
 
     public Guid TransactionGuid { get; set; }
 
-    public long FundId { get; set; }
+    public string FundCode { get; set; } = null!;
 
-    public long? RequestId { get; set; }
+    public string RequestCode { get; set; } = null!;
 
     public DateTime TransactionDate { get; set; }
 
@@ -31,11 +31,11 @@ public partial class AdvanceFundTransaction
 
     public DateTime CreatedDate { get; set; }
 
-    public virtual AdvanceFund Fund { get; set; } = null!;
+    public virtual AdvanceFund FundCodeNavigation { get; set; } = null!;
 
     public virtual ICollection<AdvanceFundTransaction> InverseReferenceTransaction { get; set; } = new List<AdvanceFundTransaction>();
 
     public virtual AdvanceFundTransaction? ReferenceTransaction { get; set; }
 
-    public virtual AdvanceRequest? Request { get; set; }
+    public virtual AdvanceRequest RequestCodeNavigation { get; set; } = null!;
 }
