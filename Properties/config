@@ -1,1 +1,1 @@
-dotnet ef dbcontext scaffold "Server=Alice;Database=dbkobchailog;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -o Models/Entities/LOG -f -v --no-onconfiguring --context DbTMSContext
+
